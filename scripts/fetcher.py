@@ -1,4 +1,4 @@
-"""RSS fetcher for SORCE — fetches articles from Ukrainska Pravda."""
+"""RSS fetcher for SORCE — fetches articles from all sources."""
 
 import os
 from datetime import datetime, timezone
@@ -11,7 +11,6 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env.loca
 
 SUPABASE_URL = os.environ["NEXT_PUBLIC_SUPABASE_URL"]
 SUPABASE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
-RSS_URL = "https://www.pravda.com.ua/rss/"
 
 
 def parse_published(entry) -> str | None:
@@ -22,26 +21,18 @@ def parse_published(entry) -> str | None:
     return None
 
 
-def main():
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+def fetch_source(supabase, source):
+    """Fetch and insert articles for a single source."""
+    source_id = source["id"]
+    name = source["name"]
+    rss_url = source["rss_url"]
+    language = source["language"]
 
-    # 1. Find source
-    source_resp = (
-        supabase.table("sources")
-        .select("id, language")
-        .eq("handle", "ukrpravda")
-        .single()
-        .execute()
-    )
-    source_id = source_resp.data["id"]
-    language = source_resp.data["language"]
-
-    # 2. Fetch RSS
-    feed = feedparser.parse(RSS_URL)
+    feed = feedparser.parse(rss_url)
     entries = feed.entries
-    print(f"Fetched {len(entries)} entries from RSS")
+    fetched = len(entries)
 
-    # 3. Get existing URLs for this source to skip duplicates
+    # Get existing URLs for this source to skip duplicates
     existing_resp = (
         supabase.table("articles")
         .select("url")
@@ -50,7 +41,6 @@ def main():
     )
     existing_urls = {row["url"] for row in existing_resp.data}
 
-    # 4. Prepare new articles
     inserted = 0
     skipped = 0
 
@@ -66,9 +56,8 @@ def main():
 
         title = entry.get("title", "").strip()
         description = entry.get("summary", "").strip()
-        published_at = parse_published(entry)
+        published_at = parse_published(entry) or datetime.now(timezone.utc).isoformat()
 
-        # Extract image from media content or enclosures if available
         image_url = None
         if hasattr(entry, "media_content") and entry.media_content:
             image_url = entry.media_content[0].get("url")
@@ -87,10 +76,43 @@ def main():
             "published_at": published_at,
         }
 
-        supabase.table("articles").insert(article).execute()
-        inserted += 1
+        try:
+            supabase.table("articles").insert(article).execute()
+            inserted += 1
+        except Exception as e:
+            if "23505" in str(e):
+                skipped += 1
+            else:
+                raise
 
-    print(f"Done: {inserted} inserted, {skipped} skipped")
+    print(f"  {name}: fetched={fetched}, inserted={inserted}, skipped={skipped}")
+    return inserted, skipped
+
+
+def main():
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+    # Get all sources
+    sources_resp = (
+        supabase.table("sources")
+        .select("id, handle, name, rss_url, language")
+        .execute()
+    )
+    sources = sources_resp.data
+    print(f"Found {len(sources)} sources\n")
+
+    total_inserted = 0
+    total_skipped = 0
+
+    for source in sources:
+        try:
+            ins, skip = fetch_source(supabase, source)
+            total_inserted += ins
+            total_skipped += skip
+        except Exception as e:
+            print(f"  ❌ {source['name']}: error — {e}")
+
+    print(f"\nDone: {total_inserted} inserted, {total_skipped} skipped across {len(sources)} sources")
 
 
 if __name__ == "__main__":
