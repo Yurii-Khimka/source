@@ -2,8 +2,28 @@
 
 import os
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 
 import feedparser
+
+
+class HTMLStripper(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.reset()
+        self.fed = []
+
+    def handle_data(self, d):
+        self.fed.append(d)
+
+    def get_data(self):
+        return ' '.join(self.fed).strip()
+
+
+def strip_html(html):
+    s = HTMLStripper()
+    s.feed(html)
+    return s.get_data()
 from dotenv import load_dotenv
 from supabase import create_client
 
@@ -55,7 +75,8 @@ def fetch_source(supabase, source):
             continue
 
         title = entry.get("title", "").strip()
-        description = entry.get("summary", "").strip()
+        raw_desc = entry.get("summary", "").strip()
+        description = strip_html(raw_desc)[:300] if raw_desc else ""
         published_at = parse_published(entry) or datetime.now(timezone.utc).isoformat()
 
         image_url = None
