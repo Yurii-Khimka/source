@@ -76,6 +76,14 @@
 - Text: "Support The Source"
 - Wait for Monobank jar link from owner before implementing
 
+### Responsive / Mobile design
+- Mobile breakpoint: 375px (iPhone)
+- Tablet breakpoint: 768px (iPad)
+- Sidebar collapses to bottom navigation on mobile
+- Article cards full width on mobile
+- Header simplified on mobile
+- Do after design polish pass on Monday
+
 ### Other
 - OG image extraction in fetcher (articles need real thumbnails)
 - Light theme implementation
