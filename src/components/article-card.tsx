@@ -1,4 +1,4 @@
-import { Heart, Bookmark, ExternalLink, CheckCircle2 } from "lucide-react";
+import { ThumbsUp, Bookmark, ExternalLink, CheckCircle2 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 type Article = {
@@ -154,7 +154,7 @@ export function ArticleCard({ article }: { article: Article }) {
         }}
       >
         <span className="flex items-center gap-1">
-          <Heart size={14} /> {article.like_count}
+          <ThumbsUp size={14} /> {article.like_count}
         </span>
         <Bookmark size={14} />
         <a
