@@ -55,12 +55,13 @@ export default async function Home() {
                   >
                     {sourceName} &middot;{" "}
                     {article.published_at
-                      ? new Date(article.published_at).toLocaleString("uk-UA", {
-                          day: "numeric",
+                      ? new Date(article.published_at).toLocaleString("en-US", {
                           month: "short",
+                          day: "numeric",
                           hour: "2-digit",
                           minute: "2-digit",
-                        })
+                          hour12: false,
+                        }).replace(",", " ·")
                       : "—"}
                   </div>
                   <div
