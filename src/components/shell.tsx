@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Newspaper, Search, Bookmark, Settings, ShieldCheck } from "lucide-react";
 import { dark } from "@/lib/tokens";
@@ -34,8 +35,8 @@ export async function Shell({ children }: { children: React.ReactNode }) {
           SORCE
         </span>
         <div>{/* center — empty for now */}</div>
-        <a
-          href="/sign-in"
+        <Link
+          href="/auth/signin"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             fontSize: 13,
@@ -43,7 +44,7 @@ export async function Shell({ children }: { children: React.ReactNode }) {
           }}
         >
           Sign in
-        </a>
+        </Link>
       </header>
 
       {/* Sidebar */}
