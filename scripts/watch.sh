@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "SORCE fetcher watching..."
+echo "The Source fetcher watching..."
 while true; do
   cd "$(dirname "$0")"
   source venv/bin/activate

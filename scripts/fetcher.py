@@ -1,4 +1,4 @@
-"""RSS fetcher for SORCE — fetches articles from all sources."""
+"""RSS fetcher for The Source — fetches articles from all sources."""
 
 import os
 from datetime import datetime, timezone
