@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { Shell } from "@/components/shell";
 
 export const revalidate = 0;
 
@@ -13,25 +14,18 @@ export default async function Home() {
 
   if (error) {
     return (
-      <main className="max-w-2xl mx-auto p-6">
+      <Shell>
         <p className="text-red-400">Error loading articles: {error.message}</p>
-      </main>
+      </Shell>
     );
   }
 
   return (
-    <main className="max-w-2xl mx-auto p-6">
-      <h1
-        className="text-2xl font-bold mb-6"
-        style={{ fontFamily: "var(--font-geist-mono), monospace" }}
-      >
-        SORCE
-      </h1>
-
+    <Shell>
       <ul className="divide-y divide-white/10">
         {articles?.map((article) => {
           const sourceName =
-            (article.source as { name: string } | null)?.name ?? "Unknown";
+            (article.source as unknown as { name: string } | null)?.name ?? "Unknown";
 
           return (
             <li key={article.url} className="py-4">
@@ -81,6 +75,6 @@ export default async function Home() {
           );
         })}
       </ul>
-    </main>
+    </Shell>
   );
 }
