@@ -11,7 +11,7 @@ export default async function Home() {
     .from("articles")
     .select("id, title, url, published_at, description, image_url, like_count, sources:sources(name, handle)")
     .order("published_at", { ascending: false })
-    .limit(50);
+    .limit(100);
 
   if (error) {
     return (
@@ -21,9 +21,67 @@ export default async function Home() {
     );
   }
 
+  const count = articles?.length ?? 0;
+
   return (
     <Shell>
-      <div className="space-y-4">
+      {/* Feed header */}
+      <div className="mb-4">
+        <h1
+          style={{
+            fontFamily: "'Source Serif 4', Georgia, serif",
+            fontSize: 24,
+            fontWeight: 700,
+            color: "#EEF1F6",
+          }}
+        >
+          Your feed
+        </h1>
+        <p
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 11,
+            color: "#6C727E",
+            marginTop: 4,
+          }}
+        >
+          chronological · no algorithm · {count} articles today
+        </p>
+      </div>
+
+      {/* Filter tabs */}
+      <div
+        className="flex gap-6 mb-5"
+        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+      >
+        <span
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: 14,
+            color: "#EEF1F6",
+            paddingBottom: 10,
+            borderBottom: "2px solid rgb(100,104,240)",
+            cursor: "pointer",
+          }}
+        >
+          All sources
+        </span>
+        <span
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: 14,
+            color: "#6C727E",
+            paddingBottom: 10,
+            cursor: "default",
+          }}
+          title="Sign in to follow sources"
+        >
+          Following
+        </span>
+      </div>
+
+      {/* Article list */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {articles?.map((article) => (
           <ArticleCard
             key={article.id}
@@ -34,6 +92,20 @@ export default async function Home() {
           />
         ))}
       </div>
+
+      {/* Footer message */}
+      <p
+        className="text-center"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 11,
+          color: "#6C727E",
+          marginTop: 32,
+          marginBottom: 16,
+        }}
+      >
+        {"// caught up · SORCE never serves you posts out of order"}
+      </p>
     </Shell>
   );
 }
