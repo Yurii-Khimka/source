@@ -1,6 +1,7 @@
 """Seed the sources table with initial RSS sources."""
 
 import os
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 from supabase import create_client
 
@@ -27,12 +28,18 @@ SOURCES = [
 ]
 
 
+def logo_url_for(site_url: str) -> str:
+    domain = urlparse(site_url).netloc or site_url
+    return f"https://www.google.com/s2/favicons?domain={domain}&sz=64"
+
+
 def main():
     for source in SOURCES:
         row = {
             **source,
             "verification_status": "system_aggregated",
             "is_hidden": False,
+            "logo_url": logo_url_for(source["site_url"]),
         }
 
         existing = (

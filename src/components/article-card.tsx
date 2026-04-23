@@ -9,7 +9,7 @@ type Article = {
   image_url: string | null;
   published_at: string | null;
   like_count: number;
-  sources: { name: string; handle: string } | null;
+  sources: { name: string; handle: string; logo_url: string | null } | null;
 };
 
 const avatarColors: Record<string, string> = {
@@ -54,21 +54,35 @@ export function ArticleCard({ article }: { article: Article }) {
     >
       {/* Row 1 — Source header */}
       <div className="flex items-start gap-3 mb-3">
-        <div
-          className="flex items-center justify-center flex-shrink-0"
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 6,
-            background: avatarBg,
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: 13,
-            fontWeight: 700,
-            color: "#fff",
-          }}
-        >
-          {initial}
-        </div>
+        {source?.logo_url ? (
+          <img
+            src={source.logo_url}
+            alt={name}
+            className="flex-shrink-0"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 6,
+              objectFit: "cover",
+            }}
+          />
+        ) : (
+          <div
+            className="flex items-center justify-center flex-shrink-0"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 6,
+              background: avatarBg,
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 13,
+              fontWeight: 700,
+              color: "#fff",
+            }}
+          >
+            {initial}
+          </div>
+        )}
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
             <span

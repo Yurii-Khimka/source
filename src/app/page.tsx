@@ -9,7 +9,7 @@ export default async function Home() {
 
   const { data: articles, error } = await supabase
     .from("articles")
-    .select("id, title, url, published_at, description, image_url, like_count, sources:sources(name, handle)")
+    .select("id, title, url, published_at, description, image_url, like_count, sources:sources(name, handle, logo_url)")
     .order("published_at", { ascending: false })
     .limit(100);
 
@@ -87,7 +87,7 @@ export default async function Home() {
             key={article.id}
             article={{
               ...article,
-              sources: article.sources as unknown as { name: string; handle: string } | null,
+              sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
             }}
           />
         ))}
