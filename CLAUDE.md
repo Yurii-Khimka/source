@@ -1,4 +1,4 @@
-# SORCE — Claude Code Context
+# The Source — Claude Code Context
 
 ## What this project is
 A chronological news aggregator. Sources are RSS feeds curated by Admin.

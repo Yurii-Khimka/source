@@ -65,7 +65,7 @@ export default function SignInPage() {
               color: "#fff",
             }}
           >
-            SORCE
+            The Source
           </span>
         </div>
 
@@ -79,7 +79,7 @@ export default function SignInPage() {
             color: dark.text,
           }}
         >
-          Sign in to SORCE
+          Sign in to The Source
         </h1>
         <p
           className="text-center mb-6"

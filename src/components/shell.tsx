@@ -44,7 +44,7 @@ export async function Shell({ children }: { children: React.ReactNode }) {
           }}
         >
           <ShieldCheck size={16} style={{ display: "inline", verticalAlign: "middle", marginRight: 4 }} />
-          SORCE
+          The Source
         </span>
         <div>{/* center — empty for now */}</div>
         {user ? (

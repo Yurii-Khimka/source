@@ -65,7 +65,7 @@ export default function SignUpPage() {
               color: "#fff",
             }}
           >
-            SORCE
+            The Source
           </span>
         </div>
 

@@ -146,7 +146,7 @@ export function Feed({ articles, likedIds, bookmarkedIds, followedSourceIds, mut
           marginBottom: 16,
         }}
       >
-        {"// caught up · SORCE never serves you posts out of order"}
+        {"// caught up · The Source never serves you posts out of order"}
       </p>
     </>
   );

@@ -1,4 +1,4 @@
-# SORCE — Session State
+# The Source — Session State
 
 ## Completed
 - [x] Step 1: Scaffold Next.js project
@@ -69,7 +69,7 @@
 ### Donate button
 - Monobank Банка link in sidebar bottom
 - Same link on About / Trust Standards page
-- Text: "Support SORCE"
+- Text: "Support The Source"
 - Wait for Monobank jar link from owner before implementing
 
 ### Other
