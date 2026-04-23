@@ -36,6 +36,8 @@
 - ArticleCard component built matching design system
 - Lucide icons integrated
 - Feed page: header, tabs, 100 articles, footer message
+- Source logos added via Google Favicons
+- logo_url column added to sources table
 - Pending: auth, follow/mute logic, light theme toggle
 
 ## 2026-04-22 Day 1
