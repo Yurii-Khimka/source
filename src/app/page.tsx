@@ -7,7 +7,7 @@ export default async function Home() {
 
   const { data: articles, error } = await supabase
     .from("articles")
-    .select("title, url, published_at, source:sources(name)")
+    .select("title, url, published_at, description, image_url, source:sources(name)")
     .order("published_at", { ascending: false })
     .limit(20);
 
@@ -39,27 +39,41 @@ export default async function Home() {
                 href={article.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block group"
+                className="block group flex gap-4"
               >
-                <div
-                  className="text-xs text-gray-500 mb-1"
-                  style={{ fontFamily: "var(--font-geist-mono), monospace" }}
-                >
-                  {sourceName} &middot;{" "}
-                  {article.published_at
-                    ? new Date(article.published_at).toLocaleString("uk-UA", {
-                        day: "numeric",
-                        month: "short",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                    : "—"}
-                </div>
-                <div
-                  className="text-base text-gray-200 group-hover:text-white transition-colors"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-                >
-                  {article.title}
+                {article.image_url && (
+                  <img
+                    src={article.image_url}
+                    alt=""
+                    className="w-[120px] h-[80px] object-cover rounded flex-shrink-0"
+                  />
+                )}
+                <div className="min-w-0">
+                  <div
+                    className="text-xs text-gray-500 mb-1"
+                    style={{ fontFamily: "var(--font-geist-mono), monospace" }}
+                  >
+                    {sourceName} &middot;{" "}
+                    {article.published_at
+                      ? new Date(article.published_at).toLocaleString("uk-UA", {
+                          day: "numeric",
+                          month: "short",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "—"}
+                  </div>
+                  <div
+                    className="text-base text-gray-200 group-hover:text-white transition-colors"
+                    style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                  >
+                    {article.title}
+                  </div>
+                  {article.description && (
+                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                      {article.description}
+                    </p>
+                  )}
                 </div>
               </a>
             </li>
