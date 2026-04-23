@@ -115,7 +115,7 @@ export async function Shell({ children }: { children: React.ReactNode }) {
             { label: "Feed", icon: <Newspaper size={15} />, href: "/", active: true },
             { label: "Search", icon: <Search size={15} />, href: "/search", active: false },
             { label: "Bookmarks", icon: <Bookmark size={15} />, href: "/bookmarks", active: false },
-            { label: "Settings", icon: <Settings size={15} />, href: "#", active: false },
+            { label: "Settings", icon: <Settings size={15} />, href: "/settings", active: false },
           ].map((item) => (
             <Link
               key={item.label}
