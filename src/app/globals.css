@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: #0A0E14;
+  --foreground: #EEF1F6;
+}
+
 body {
-  background-color: #0a0a0a;
-  color: #e0e0e0;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, sans-serif;
 }

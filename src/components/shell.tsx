@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { dark } from "@/lib/tokens";
 
 export async function Shell({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -10,27 +11,34 @@ export async function Shell({ children }: { children: React.ReactNode }) {
     .order("name");
 
   return (
-    <div className="min-h-screen" style={{ background: "#0a0a0a", color: "#e8e8e8" }}>
+    <div className="min-h-screen" style={{ background: dark.bg, color: dark.text }}>
       {/* Header */}
       <header
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5"
         style={{
           height: 48,
-          background: "#0a0a0a",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          background: dark.bg,
+          borderBottom: `1px solid ${dark.line}`,
         }}
       >
         <span
-          className="text-sm font-bold tracking-tight"
-          style={{ fontFamily: "var(--font-geist-mono), monospace" }}
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: 15,
+            fontWeight: 700,
+            color: "#fff",
+          }}
         >
-          SORCE
+          🛡 SORCE
         </span>
         <div>{/* center — empty for now */}</div>
         <a
           href="/sign-in"
-          className="text-sm"
-          style={{ color: "rgba(255,255,255,0.4)" }}
+          style={{
+            fontFamily: "'Inter', system-ui, sans-serif",
+            fontSize: 13,
+            color: dark.textDim,
+          }}
         >
           Sign in
         </a>
@@ -41,27 +49,33 @@ export async function Shell({ children }: { children: React.ReactNode }) {
         className="fixed top-[48px] left-0 bottom-0 flex flex-col justify-between overflow-y-auto"
         style={{
           width: 220,
-          borderRight: "1px solid rgba(255,255,255,0.08)",
-          background: "#0a0a0a",
+          borderRight: `1px solid ${dark.line}`,
+          background: dark.bgAlt,
         }}
       >
-        <nav className="px-3 py-4 space-y-1">
+        <nav className="px-3 py-4 space-y-0.5">
           {[
-            { label: "Feed", icon: "◉" },
-            { label: "Search", icon: "⌕" },
-            { label: "Bookmarks", icon: "★" },
-            { label: "Settings", icon: "⚙" },
+            { label: "Feed", icon: "◉", active: true },
+            { label: "Search", icon: "⌕", active: false },
+            { label: "Bookmarks", icon: "★", active: false },
+            { label: "Settings", icon: "⚙", active: false },
           ].map((item) => (
             <a
               key={item.label}
               href="#"
-              className="flex items-center gap-2 px-2 py-1.5 rounded text-sm hover:bg-white/5 transition-colors"
+              className="flex items-center gap-2 px-2 py-1.5 rounded transition-colors"
               style={{
-                fontFamily: "var(--font-geist-mono), monospace",
-                color: "#e8e8e8",
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: 13,
+                color: item.active ? "#fff" : dark.textDim,
+                background: item.active ? dark.hover : undefined,
               }}
+              onMouseEnter={undefined}
             >
-              <span className="w-5 text-center text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <span
+                className="w-5 text-center"
+                style={{ fontSize: 12, color: item.active ? "#fff" : dark.textMute }}
+              >
                 {item.icon}
               </span>
               {item.label}
@@ -71,10 +85,11 @@ export async function Shell({ children }: { children: React.ReactNode }) {
 
         <div className="px-3 pb-4">
           <div
-            className="text-[11px] uppercase tracking-wider mb-2 px-2"
+            className="uppercase tracking-wider mb-2 px-2"
             style={{
-              fontFamily: "var(--font-geist-mono), monospace",
-              color: "rgba(255,255,255,0.4)",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11,
+              color: dark.textMute,
             }}
           >
             Sources
@@ -84,8 +99,12 @@ export async function Shell({ children }: { children: React.ReactNode }) {
               <li key={source.id}>
                 <a
                   href="#"
-                  className="block px-2 py-1 rounded text-sm hover:bg-white/5 transition-colors truncate"
-                  style={{ color: "rgba(255,255,255,0.4)" }}
+                  className="block px-2 py-1 rounded transition-colors truncate"
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 11,
+                    color: dark.textMute,
+                  }}
                 >
                   {source.name}
                 </a>
