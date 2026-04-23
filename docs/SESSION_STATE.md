@@ -40,6 +40,15 @@
 - logo_url column added to sources table
 - Pending: auth, follow/mute logic, light theme toggle
 
+## Backlog
+
+### Auth UX improvements (post-MVP polish)
+- Email confirmation flow — better redirect and success message
+- Sign up form — show password strength indicator
+- Sign in — show error message when credentials are wrong
+- After Google sign in — redirect back to the page user was on
+- Add "Sign out" option in settings or header
+
 ## 2026-04-22 Day 1
 - DB schema created and migrated
 - RLS policies applied to all 9 tables
