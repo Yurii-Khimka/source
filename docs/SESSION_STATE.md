@@ -40,6 +40,11 @@
 - logo_url column added to sources table
 - Pending: auth, follow/mute logic, light theme toggle
 
+## Dev workflow
+- Start dev server: npm run dev
+- Start fetcher watcher: cd scripts && ./watch.sh
+- Both run in separate terminal tabs
+
 ## Backlog
 
 ### Auth UX improvements (post-MVP polish)
