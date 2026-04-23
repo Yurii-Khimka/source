@@ -60,6 +60,12 @@
 - Sign in — show error message when credentials are wrong
 - After Google sign in — redirect back to the page user was on
 
+### Feedback form
+- Simple feedback form accessible from Settings page or footer
+- Fields: message (textarea), optional email
+- Submits to a Supabase table or email
+- No auth required — anyone can submit feedback
+
 ### Other
 - OG image extraction in fetcher (articles need real thumbnails)
 - Light theme implementation
