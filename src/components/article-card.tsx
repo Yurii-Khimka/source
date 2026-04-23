@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ThumbsUp, Bookmark, ExternalLink, CheckCircle2 } from "lucide-react";
+import { ThumbsUp, Bookmark, ExternalLink, CheckCircle2, MoreHorizontal } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 type Article = {
@@ -13,6 +13,7 @@ type Article = {
   image_url: string | null;
   published_at: string | null;
   like_count: number;
+  source_id: string;
   sources: { name: string; handle: string; logo_url: string | null } | null;
 };
 
@@ -21,6 +22,9 @@ type Props = {
   initialLiked: boolean;
   initialLikeCount: number;
   initialBookmarked: boolean;
+  initialFollowing: boolean;
+  initialMuted: boolean;
+  sourceId: string;
   isLoggedIn: boolean;
 };
 
@@ -48,10 +52,23 @@ function relativeTime(dateStr: string): string {
   return `${days}d ago`;
 }
 
-export function ArticleCard({ article, initialLiked, initialLikeCount, initialBookmarked, isLoggedIn }: Props) {
+export function ArticleCard({
+  article,
+  initialLiked,
+  initialLikeCount,
+  initialBookmarked,
+  initialFollowing,
+  initialMuted,
+  sourceId,
+  isLoggedIn,
+}: Props) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [bookmarked, setBookmarked] = useState(initialBookmarked);
+  const [following, setFollowing] = useState(initialFollowing);
+  const [muted, setMuted] = useState(initialMuted);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const source = article.sources;
@@ -60,16 +77,21 @@ export function ArticleCard({ article, initialLiked, initialLikeCount, initialBo
   const avatarBg = avatarColors[initial] ?? "#6C727E";
   const timeAgo = article.published_at ? relativeTime(article.published_at) : "—";
 
-  async function handleLike() {
-    if (!isLoggedIn) {
-      router.push("/auth/signin");
-      return;
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
     }
-    // Optimistic update
+    if (menuOpen) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [menuOpen]);
+
+  async function handleLike() {
+    if (!isLoggedIn) { router.push("/auth/signin"); return; }
     const wasLiked = liked;
     setLiked(!wasLiked);
     setLikeCount((c) => wasLiked ? c - 1 : c + 1);
-
     const res = await fetch("/api/like", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -80,20 +102,15 @@ export function ArticleCard({ article, initialLiked, initialLikeCount, initialBo
       setLiked(data.liked);
       setLikeCount(data.like_count);
     } else {
-      // Revert on error
       setLiked(wasLiked);
       setLikeCount((c) => wasLiked ? c + 1 : c - 1);
     }
   }
 
   async function handleBookmark() {
-    if (!isLoggedIn) {
-      router.push("/auth/signin");
-      return;
-    }
+    if (!isLoggedIn) { router.push("/auth/signin"); return; }
     const wasBookmarked = bookmarked;
     setBookmarked(!wasBookmarked);
-
     const res = await fetch("/api/bookmark", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -104,6 +121,42 @@ export function ArticleCard({ article, initialLiked, initialLikeCount, initialBo
       setBookmarked(data.bookmarked);
     } else {
       setBookmarked(wasBookmarked);
+    }
+  }
+
+  async function handleFollow() {
+    if (!isLoggedIn) { router.push("/auth/signin"); return; }
+    setMenuOpen(false);
+    const wasFollowing = following;
+    setFollowing(!wasFollowing);
+    const res = await fetch("/api/follow", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source_id: sourceId }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setFollowing(data.following);
+    } else {
+      setFollowing(wasFollowing);
+    }
+  }
+
+  async function handleMute() {
+    if (!isLoggedIn) { router.push("/auth/signin"); return; }
+    setMenuOpen(false);
+    const wasMuted = muted;
+    setMuted(!wasMuted);
+    const res = await fetch("/api/mute", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source_id: sourceId }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setMuted(data.muted);
+    } else {
+      setMuted(wasMuted);
     }
   }
 
@@ -123,53 +176,90 @@ export function ArticleCard({ article, initialLiked, initialLikeCount, initialBo
             src={source.logo_url}
             alt={name}
             className="flex-shrink-0"
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 6,
-              objectFit: "cover",
-            }}
+            style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover" }}
           />
         ) : (
           <div
             className="flex items-center justify-center flex-shrink-0"
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 6,
-              background: avatarBg,
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: 13,
-              fontWeight: 700,
-              color: "#fff",
+              width: 32, height: 32, borderRadius: 6, background: avatarBg,
+              fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: "#fff",
             }}
           >
             {initial}
           </div>
         )}
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: 13,
-                fontWeight: 700,
-                color: dark.text,
-              }}
-            >
+            <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: dark.text }}>
               {name}
             </span>
             <CheckCircle2 size={12} style={{ color: dark.accent, flexShrink: 0 }} />
           </div>
-          <div
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 11,
-              color: dark.textMute,
-            }}
-          >
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: dark.textMute }}>
             @{source?.handle ?? "unknown"} · {timeAgo}
           </div>
+        </div>
+
+        {/* Source menu */}
+        <div className="relative flex-shrink-0" ref={menuRef}>
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="cursor-pointer"
+            style={{ background: "none", border: "none", padding: 4, color: dark.textMute }}
+          >
+            <MoreHorizontal size={16} />
+          </button>
+          {menuOpen && (
+            <div
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 28,
+                zIndex: 50,
+                background: dark.surface2,
+                border: `1px solid ${dark.line2}`,
+                borderRadius: 6,
+                minWidth: 180,
+                overflow: "hidden",
+              }}
+            >
+              <button
+                onClick={handleFollow}
+                className="w-full text-left cursor-pointer"
+                style={{
+                  display: "block",
+                  background: "none",
+                  border: "none",
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: 13,
+                  color: dark.text,
+                  padding: "8px 12px",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = dark.hover)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
+              >
+                {following ? "Unfollow source" : "Follow source"}
+              </button>
+              <button
+                onClick={handleMute}
+                className="w-full text-left cursor-pointer"
+                style={{
+                  display: "block",
+                  background: "none",
+                  border: "none",
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: 13,
+                  color: dark.danger,
+                  padding: "8px 12px",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = dark.hover)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
+              >
+                {muted ? "Unmute source" : "Mute source"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -179,13 +269,7 @@ export function ArticleCard({ article, initialLiked, initialLikeCount, initialBo
         target="_blank"
         rel="noopener noreferrer"
         className="block mb-2 hover:underline"
-        style={{
-          fontFamily: "'Source Serif 4', Georgia, serif",
-          fontSize: 22,
-          fontWeight: 700,
-          color: dark.text,
-          lineHeight: 1.22,
-        }}
+        style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: 22, fontWeight: 700, color: dark.text, lineHeight: 1.22 }}
       >
         {article.title}
       </a>
@@ -194,12 +278,7 @@ export function ArticleCard({ article, initialLiked, initialLikeCount, initialBo
       {article.description && (
         <p
           className="line-clamp-3 mb-3"
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: 13.5,
-            color: dark.textSub,
-            lineHeight: 1.55,
-          }}
+          style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13.5, color: dark.textSub, lineHeight: 1.55 }}
         >
           {article.description}
         </p>
@@ -211,49 +290,26 @@ export function ArticleCard({ article, initialLiked, initialLikeCount, initialBo
           src={article.image_url}
           alt=""
           className="w-full mb-3"
-          style={{
-            height: 220,
-            objectFit: "cover",
-            borderRadius: 6,
-            border: `1px solid ${dark.line}`,
-          }}
+          style={{ height: 220, objectFit: "cover", borderRadius: 6, border: `1px solid ${dark.line}` }}
         />
       )}
 
       {/* Row 5 — Footer */}
       <div
         className="flex items-center gap-4"
-        style={{
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: 11,
-          color: dark.textMute,
-          borderTop: `1px solid ${dark.line}`,
-          paddingTop: 10,
-        }}
+        style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: dark.textMute, borderTop: `1px solid ${dark.line}`, paddingTop: 10 }}
       >
         <button
           onClick={handleLike}
           className="flex items-center gap-1 cursor-pointer"
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            font: "inherit",
-            color: liked ? dark.accent : dark.textMute,
-          }}
+          style={{ background: "none", border: "none", padding: 0, font: "inherit", color: liked ? dark.accent : dark.textMute }}
         >
           <ThumbsUp size={14} fill={liked ? dark.accent : "none"} /> {likeCount}
         </button>
         <button
           onClick={handleBookmark}
           className="cursor-pointer"
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            font: "inherit",
-            color: bookmarked ? dark.accent : dark.textMute,
-          }}
+          style={{ background: "none", border: "none", padding: 0, font: "inherit", color: bookmarked ? dark.accent : dark.textMute }}
         >
           <Bookmark size={14} fill={bookmarked ? dark.accent : "none"} />
         </button>

@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { Shell } from "@/components/shell";
-import { ArticleCard } from "@/components/article-card";
+import { Feed } from "@/components/feed";
 
 export const revalidate = 0;
 
@@ -9,7 +9,7 @@ export default async function Home() {
 
   const { data: articles, error } = await supabase
     .from("articles")
-    .select("id, title, url, published_at, description, image_url, like_count, sources:sources(name, handle, logo_url)")
+    .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
     .order("published_at", { ascending: false })
     .limit(100);
 
@@ -23,107 +23,39 @@ export default async function Home() {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  let likedIds = new Set<string>();
-  let bookmarkedIds = new Set<string>();
+  let likedIds: string[] = [];
+  let bookmarkedIds: string[] = [];
+  let followedSourceIds: string[] = [];
+  let mutedSourceIds: string[] = [];
 
   if (user) {
-    const [likesRes, bookmarksRes] = await Promise.all([
+    const [likesRes, bookmarksRes, followsRes, mutesRes] = await Promise.all([
       supabase.from("likes").select("article_id").eq("user_id", user.id),
       supabase.from("bookmarks").select("article_id").eq("user_id", user.id),
+      supabase.from("follows").select("source_id").eq("user_id", user.id),
+      supabase.from("mutes").select("source_id").eq("user_id", user.id),
     ]);
-    likedIds = new Set((likesRes.data ?? []).map((r) => r.article_id));
-    bookmarkedIds = new Set((bookmarksRes.data ?? []).map((r) => r.article_id));
+    likedIds = (likesRes.data ?? []).map((r) => r.article_id);
+    bookmarkedIds = (bookmarksRes.data ?? []).map((r) => r.article_id);
+    followedSourceIds = (followsRes.data ?? []).map((r) => r.source_id);
+    mutedSourceIds = (mutesRes.data ?? []).map((r) => r.source_id);
   }
 
-  const count = articles?.length ?? 0;
+  const feedArticles = (articles ?? []).map((article) => ({
+    ...article,
+    sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
+  }));
 
   return (
     <Shell>
-      {/* Feed header */}
-      <div className="mb-4">
-        <h1
-          style={{
-            fontFamily: "'Source Serif 4', Georgia, serif",
-            fontSize: 24,
-            fontWeight: 700,
-            color: "#EEF1F6",
-          }}
-        >
-          Your feed
-        </h1>
-        <p
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 11,
-            color: "#6C727E",
-            marginTop: 4,
-          }}
-        >
-          chronological · no algorithm · {count} articles today
-        </p>
-      </div>
-
-      {/* Filter tabs */}
-      <div
-        className="flex gap-6 mb-5"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-      >
-        <span
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: 14,
-            color: "#EEF1F6",
-            paddingBottom: 10,
-            borderBottom: "2px solid rgb(100,104,240)",
-            cursor: "pointer",
-          }}
-        >
-          All sources
-        </span>
-        <span
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: 14,
-            color: "#6C727E",
-            paddingBottom: 10,
-            cursor: "default",
-          }}
-          title="Sign in to follow sources"
-        >
-          Following
-        </span>
-      </div>
-
-      {/* Article list */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {articles?.map((article) => (
-          <ArticleCard
-            key={article.id}
-            article={{
-              ...article,
-              sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
-            }}
-            initialLiked={likedIds.has(article.id)}
-            initialLikeCount={article.like_count}
-            initialBookmarked={bookmarkedIds.has(article.id)}
-            isLoggedIn={!!user}
-          />
-        ))}
-      </div>
-
-      {/* Footer message */}
-      <p
-        className="text-center"
-        style={{
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: 11,
-          color: "#6C727E",
-          marginTop: 32,
-          marginBottom: 16,
-        }}
-      >
-        {"// caught up · SORCE never serves you posts out of order"}
-      </p>
+      <Feed
+        articles={feedArticles}
+        likedIds={likedIds}
+        bookmarkedIds={bookmarkedIds}
+        followedSourceIds={followedSourceIds}
+        mutedSourceIds={mutedSourceIds}
+        isLoggedIn={!!user}
+      />
     </Shell>
   );
 }
