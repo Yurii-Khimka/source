@@ -12,6 +12,18 @@ export async function Shell({ children }: { children: React.ReactNode }) {
     .eq("is_hidden", false)
     .order("name");
 
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let profile: { avatar_url: string | null; display_name: string | null } | null = null;
+  if (user) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("avatar_url, display_name")
+      .eq("id", user.id)
+      .single();
+    profile = data;
+  }
+
   return (
     <div className="min-h-screen" style={{ background: dark.bg, color: dark.text }}>
       {/* Header */}
@@ -35,16 +47,58 @@ export async function Shell({ children }: { children: React.ReactNode }) {
           SORCE
         </span>
         <div>{/* center — empty for now */}</div>
-        <Link
-          href="/auth/signin"
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: 13,
-            color: dark.textDim,
-          }}
-        >
-          Sign in
-        </Link>
+        {user ? (
+          <div className="flex items-center gap-2">
+            {profile?.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt=""
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <div
+                className="flex items-center justify-center"
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  background: dark.accent,
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#fff",
+                }}
+              >
+                {(profile?.display_name ?? user.email ?? "?").charAt(0).toUpperCase()}
+              </div>
+            )}
+            <span
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: 13,
+                color: dark.textSub,
+              }}
+            >
+              {profile?.display_name ?? user.email?.split("@")[0] ?? "User"}
+            </span>
+          </div>
+        ) : (
+          <Link
+            href="/auth/signin"
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 13,
+              color: dark.textDim,
+            }}
+          >
+            Sign in
+          </Link>
+        )}
       </header>
 
       {/* Sidebar */}
