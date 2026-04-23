@@ -112,14 +112,14 @@ export async function Shell({ children }: { children: React.ReactNode }) {
       >
         <nav className="px-3 py-4 space-y-0.5">
           {[
-            { label: "Feed", icon: <Newspaper size={15} />, active: true },
-            { label: "Search", icon: <Search size={15} />, active: false },
-            { label: "Bookmarks", icon: <Bookmark size={15} />, active: false },
-            { label: "Settings", icon: <Settings size={15} />, active: false },
+            { label: "Feed", icon: <Newspaper size={15} />, href: "/", active: true },
+            { label: "Search", icon: <Search size={15} />, href: "/search", active: false },
+            { label: "Bookmarks", icon: <Bookmark size={15} />, href: "#", active: false },
+            { label: "Settings", icon: <Settings size={15} />, href: "#", active: false },
           ].map((item) => (
-            <a
+            <Link
               key={item.label}
-              href="#"
+              href={item.href}
               className="flex items-center gap-2 px-2 py-1.5 rounded transition-colors"
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
@@ -135,7 +135,7 @@ export async function Shell({ children }: { children: React.ReactNode }) {
                 {item.icon}
               </span>
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
