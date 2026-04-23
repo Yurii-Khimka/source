@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { Newspaper, Search, Bookmark, Settings, ShieldCheck } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 export async function Shell({ children }: { children: React.ReactNode }) {
@@ -29,7 +30,8 @@ export async function Shell({ children }: { children: React.ReactNode }) {
             color: "#fff",
           }}
         >
-          🛡 SORCE
+          <ShieldCheck size={16} style={{ display: "inline", verticalAlign: "middle", marginRight: 4 }} />
+          SORCE
         </span>
         <div>{/* center — empty for now */}</div>
         <a
@@ -55,10 +57,10 @@ export async function Shell({ children }: { children: React.ReactNode }) {
       >
         <nav className="px-3 py-4 space-y-0.5">
           {[
-            { label: "Feed", icon: "◉", active: true },
-            { label: "Search", icon: "⌕", active: false },
-            { label: "Bookmarks", icon: "★", active: false },
-            { label: "Settings", icon: "⚙", active: false },
+            { label: "Feed", icon: <Newspaper size={15} />, active: true },
+            { label: "Search", icon: <Search size={15} />, active: false },
+            { label: "Bookmarks", icon: <Bookmark size={15} />, active: false },
+            { label: "Settings", icon: <Settings size={15} />, active: false },
           ].map((item) => (
             <a
               key={item.label}
@@ -70,11 +72,10 @@ export async function Shell({ children }: { children: React.ReactNode }) {
                 color: item.active ? "#fff" : dark.textDim,
                 background: item.active ? dark.hover : undefined,
               }}
-              onMouseEnter={undefined}
             >
               <span
-                className="w-5 text-center"
-                style={{ fontSize: 12, color: item.active ? "#fff" : dark.textMute }}
+                className="w-5 flex justify-center"
+                style={{ color: item.active ? "#fff" : dark.textMute }}
               >
                 {item.icon}
               </span>

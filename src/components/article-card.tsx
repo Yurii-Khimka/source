@@ -1,3 +1,4 @@
+import { Heart, Bookmark, ExternalLink } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 type Article = {
@@ -114,17 +115,17 @@ export function ArticleCard({ article }: { article: Article }) {
         }}
       >
         <span className="flex items-center gap-1">
-          <span style={{ fontSize: 13 }}>♥</span> 0
+          <Heart size={14} /> 0
         </span>
-        <span style={{ fontSize: 13 }}>⊞</span>
+        <Bookmark size={14} />
         <a
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto hover:underline"
+          className="ml-auto hover:underline flex items-center gap-1"
           style={{ color: dark.textMute }}
         >
-          Read original →
+          Read original <ExternalLink size={12} />
         </a>
       </div>
     </div>
