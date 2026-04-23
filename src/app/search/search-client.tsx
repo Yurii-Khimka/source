@@ -1,137 +1,127 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
-import { ArticleCard } from "@/components/article-card";
-import { dark } from "@/lib/tokens";
-
-type ArticleData = {
-  id: string;
-  title: string;
-  description: string | null;
-  url: string;
-  image_url: string | null;
-  published_at: string | null;
-  like_count: number;
-  source_id: string;
-  sources: { name: string; handle: string; logo_url: string | null } | null;
-};
 
 export function SearchClient() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<ArticleData[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [results, setResults] = useState<Record<string, any>[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  const doSearch = useCallback(async (q: string) => {
-    if (!q.trim()) {
+  async function handleSearch(q: string) {
+    setQuery(q);
+    if (q.length < 2) {
       setResults([]);
-      setSearched(false);
-      setLoading(false);
       return;
     }
     setLoading(true);
-    const res = await fetch(`/api/search?q=${encodeURIComponent(q.trim())}`);
-    if (res.ok) {
-      const data = await res.json();
-      setResults(data);
-    }
+    const res = await fetch("/api/search?q=" + encodeURIComponent(q));
+    const data = await res.json();
+    setResults(data);
     setLoading(false);
-    setSearched(true);
-  }, []);
-
-  function handleChange(value: string) {
-    setQuery(value);
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => doSearch(value), 400);
   }
 
   return (
     <>
-      {/* Search input */}
-      <div className="relative mb-4">
+      <div style={{ position: "relative", marginBottom: 24 }}>
         <Search
           size={16}
-          style={{
-            position: "absolute",
-            left: 16,
-            top: "50%",
-            transform: "translateY(-50%)",
-            color: dark.textMute,
-          }}
+          style={{ position: "absolute", left: 14, top: 14, color: "#6C727E" }}
         />
         <input
-          ref={inputRef}
-          type="text"
-          placeholder="Search articles..."
+          autoFocus
           value={query}
-          onChange={(e) => handleChange(e.target.value)}
-          className="w-full outline-none"
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder="Search articles..."
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 15,
-            background: dark.surface,
-            border: `1px solid ${dark.line2}`,
-            color: dark.text,
+            width: "100%",
             height: 44,
-            borderRadius: 6,
-            paddingLeft: 44,
+            paddingLeft: 40,
             paddingRight: 16,
+            background: "#11151D",
+            border: "1px solid rgba(255,255,255,0.10)",
+            borderRadius: 6,
+            color: "#EEF1F6",
+            fontSize: 15,
+            fontFamily: "'JetBrains Mono', monospace",
+            outline: "none",
+            boxSizing: "border-box" as const,
           }}
         />
       </div>
 
-      {/* Status line */}
-      <p
-        className="mb-4"
-        style={{
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: 11,
-          color: dark.textMute,
-        }}
-      >
-        {loading
-          ? "Searching..."
-          : searched
-            ? `${results.length} result${results.length !== 1 ? "s" : ""} for '${query}'`
-            : "Type to search..."}
-      </p>
-
-      {/* Results — only shown after searching */}
-      {searched && results.length === 0 && !loading ? (
-        <p
-          className="text-center py-12"
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 11,
-            color: dark.textMute,
-          }}
-        >
+      {loading && (
+        <p style={{ fontFamily: "monospace", color: "#6C727E", fontSize: 11 }}>
+          Searching...
+        </p>
+      )}
+      {!loading && query.length >= 2 && results.length === 0 && (
+        <p style={{ fontFamily: "monospace", color: "#6C727E", fontSize: 11 }}>
           {"// no results found"}
         </p>
-      ) : results.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {results.map((article) => (
-            <ArticleCard
-              key={article.id}
-              article={article}
-              initialLiked={false}
-              initialLikeCount={article.like_count}
-              initialBookmarked={false}
-              initialFollowing={false}
-              initialMuted={false}
-              sourceId={article.source_id}
-              isLoggedIn={false}
-            />
-          ))}
-        </div>
-      ) : null}
+      )}
+      {!loading && query.length < 2 && (
+        <p style={{ fontFamily: "monospace", color: "#6C727E", fontSize: 11 }}>
+          {"// type to search articles"}
+        </p>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {results.map((article) => (
+          <div
+            key={article.id}
+            style={{
+              background: "#11151D",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 8,
+              padding: 16,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 11,
+                color: "#6C727E",
+                marginBottom: 6,
+              }}
+            >
+              {article.sources?.name} ·{" "}
+              {new Date(article.published_at).toLocaleDateString("en-US")}
+            </div>
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "#EEF1F6",
+                textDecoration: "none",
+                fontFamily: "'Source Serif 4', Georgia, serif",
+                fontSize: 18,
+                fontWeight: 700,
+                lineHeight: 1.3,
+                display: "block",
+                marginBottom: 8,
+              }}
+            >
+              {article.title}
+            </a>
+            {article.description && (
+              <p
+                style={{
+                  margin: 0,
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 13.5,
+                  color: "#C7CCD6",
+                  lineHeight: 1.55,
+                }}
+              >
+                {article.description}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
     </>
   );
 }
