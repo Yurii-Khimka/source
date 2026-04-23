@@ -21,6 +21,20 @@ export default async function Home() {
     );
   }
 
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let likedIds = new Set<string>();
+  let bookmarkedIds = new Set<string>();
+
+  if (user) {
+    const [likesRes, bookmarksRes] = await Promise.all([
+      supabase.from("likes").select("article_id").eq("user_id", user.id),
+      supabase.from("bookmarks").select("article_id").eq("user_id", user.id),
+    ]);
+    likedIds = new Set((likesRes.data ?? []).map((r) => r.article_id));
+    bookmarkedIds = new Set((bookmarksRes.data ?? []).map((r) => r.article_id));
+  }
+
   const count = articles?.length ?? 0;
 
   return (
@@ -89,6 +103,10 @@ export default async function Home() {
               ...article,
               sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
             }}
+            initialLiked={likedIds.has(article.id)}
+            initialLikeCount={article.like_count}
+            initialBookmarked={bookmarkedIds.has(article.id)}
+            isLoggedIn={!!user}
           />
         ))}
       </div>

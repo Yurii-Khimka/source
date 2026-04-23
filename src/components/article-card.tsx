@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ThumbsUp, Bookmark, ExternalLink, CheckCircle2 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
@@ -10,6 +14,14 @@ type Article = {
   published_at: string | null;
   like_count: number;
   sources: { name: string; handle: string; logo_url: string | null } | null;
+};
+
+type Props = {
+  article: Article;
+  initialLiked: boolean;
+  initialLikeCount: number;
+  initialBookmarked: boolean;
+  isLoggedIn: boolean;
 };
 
 const avatarColors: Record<string, string> = {
@@ -36,12 +48,64 @@ function relativeTime(dateStr: string): string {
   return `${days}d ago`;
 }
 
-export function ArticleCard({ article }: { article: Article }) {
+export function ArticleCard({ article, initialLiked, initialLikeCount, initialBookmarked, isLoggedIn }: Props) {
+  const [liked, setLiked] = useState(initialLiked);
+  const [likeCount, setLikeCount] = useState(initialLikeCount);
+  const [bookmarked, setBookmarked] = useState(initialBookmarked);
+  const router = useRouter();
+
   const source = article.sources;
   const name = source?.name ?? "Unknown";
   const initial = name.charAt(0).toUpperCase();
   const avatarBg = avatarColors[initial] ?? "#6C727E";
   const timeAgo = article.published_at ? relativeTime(article.published_at) : "—";
+
+  async function handleLike() {
+    if (!isLoggedIn) {
+      router.push("/auth/signin");
+      return;
+    }
+    // Optimistic update
+    const wasLiked = liked;
+    setLiked(!wasLiked);
+    setLikeCount((c) => wasLiked ? c - 1 : c + 1);
+
+    const res = await fetch("/api/like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ article_id: article.id }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setLiked(data.liked);
+      setLikeCount(data.like_count);
+    } else {
+      // Revert on error
+      setLiked(wasLiked);
+      setLikeCount((c) => wasLiked ? c + 1 : c - 1);
+    }
+  }
+
+  async function handleBookmark() {
+    if (!isLoggedIn) {
+      router.push("/auth/signin");
+      return;
+    }
+    const wasBookmarked = bookmarked;
+    setBookmarked(!wasBookmarked);
+
+    const res = await fetch("/api/bookmark", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ article_id: article.id }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setBookmarked(data.bookmarked);
+    } else {
+      setBookmarked(wasBookmarked);
+    }
+  }
 
   return (
     <div
@@ -167,10 +231,32 @@ export function ArticleCard({ article }: { article: Article }) {
           paddingTop: 10,
         }}
       >
-        <span className="flex items-center gap-1">
-          <ThumbsUp size={14} /> {article.like_count}
-        </span>
-        <Bookmark size={14} />
+        <button
+          onClick={handleLike}
+          className="flex items-center gap-1 cursor-pointer"
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            font: "inherit",
+            color: liked ? dark.accent : dark.textMute,
+          }}
+        >
+          <ThumbsUp size={14} fill={liked ? dark.accent : "none"} /> {likeCount}
+        </button>
+        <button
+          onClick={handleBookmark}
+          className="cursor-pointer"
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            font: "inherit",
+            color: bookmarked ? dark.accent : dark.textMute,
+          }}
+        >
+          <Bookmark size={14} fill={bookmarked ? dark.accent : "none"} />
+        </button>
         <a
           href={article.url}
           target="_blank"
