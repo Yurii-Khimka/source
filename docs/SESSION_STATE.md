@@ -16,6 +16,11 @@
 - [x] Step 17: Search
 - [x] Step 18: Python RSS fetcher
 - [~] Step 14: Settings page (partial — no light theme yet)
+- [x] Step 19: GitHub Actions cron job
+- [x] Step 20: Deployment (Vercel + custom domain srct.news)
+
+## Production
+- URL: https://srct.news
 
 ## Sources
 - Working: ukrpravda, suspilne, skhemy, slidstvo, euronews, bbc, guardian, dw
@@ -26,7 +31,6 @@
 - [ ] Step 15: Moderation (AI)
 - [ ] Step 16: KYC verification
 - [ ] Step 19: Multi-source RSS fetcher
-- [ ] Step 20: Deployment
 
 ## 2026-04-23 Day 2
 - App shell built with header, sidebar, dynamic sources list
@@ -78,8 +82,6 @@
 - Design polish pass (after Monday Claude Design update)
 - Onboarding flow (pick sources after sign up)
 - About / Trust Standards page
-- GitHub Actions cron job
-- Vercel deployment
 - Mobile responsive layout
 
 ## 2026-04-22 Day 1
