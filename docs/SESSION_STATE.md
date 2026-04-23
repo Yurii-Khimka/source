@@ -4,7 +4,12 @@
 - [x] Step 1: Scaffold Next.js project
 - [x] Step 2: Supabase project setup + migrations
 - [x] Step 3: RLS policies
+- [x] Step 4: Supabase Auth (email + password + Google OAuth)
 - [x] Step 18: Python RSS fetcher
+- [x] Step 6: App shell (header + sidebar)
+- [x] Step 7: Article card component
+- [x] Step 12: Likes (functional)
+- [x] Step 13: Bookmarks (functional)
 
 ## Sources
 - Working: ukrpravda, suspilne, skhemy, slidstvo, euronews, bbc, guardian, dw
@@ -12,17 +17,12 @@
 
 ## In progress
 - [x] Step 5: Design tokens + theme system (partial — dark theme only, no toggle yet)
+- [~] Step 8: Feed page (partial — no auth, no real follow/mute yet)
 
 ## Not started
-- [ ] Step 4: Auth (sign up / sign in)
-- [x] Step 6: App shell (header + sidebar)
-- [x] Step 7: Article card component
-- [~] Step 8: Feed page (partial — no auth, no real follow/mute yet)
 - [ ] Step 9: Tags
 - [ ] Step 10: Follows
 - [ ] Step 11: Mutes
-- [ ] Step 12: Likes
-- [ ] Step 13: Bookmarks
 - [ ] Step 14: Admin panel
 - [ ] Step 15: Moderation (AI)
 - [ ] Step 16: KYC verification
@@ -38,7 +38,12 @@
 - Feed page: header, tabs, 100 articles, footer message
 - Source logos added via Google Favicons
 - logo_url column added to sources table
-- Pending: auth, follow/mute logic, light theme toggle
+- Auth working: Google OAuth + email/password
+- Auto profile creation on signup via DB trigger
+- User avatar shown in header
+- Likes and bookmarks functional for logged in users
+- Fetcher watch script for local dev
+- Pending: follow/mute logic, light theme toggle
 
 ## Dev workflow
 - Start dev server: npm run dev
@@ -53,6 +58,12 @@
 - Sign in — show error message when credentials are wrong
 - After Google sign in — redirect back to the page user was on
 - Add "Sign out" option in settings or header
+
+### Other
+- OG image extraction in fetcher (articles need real thumbnails)
+- Follow/mute logic
+- Light theme toggle
+- Design polish pass (after Monday Claude Design update)
 
 ## 2026-04-22 Day 1
 - DB schema created and migrated
