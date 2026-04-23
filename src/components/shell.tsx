@@ -1,4 +1,14 @@
-export function Shell({ children }: { children: React.ReactNode }) {
+import { createClient } from "@/lib/supabase/server";
+
+export async function Shell({ children }: { children: React.ReactNode }) {
+  const supabase = createClient();
+
+  const { data: sources } = await supabase
+    .from("sources")
+    .select("id, name, handle")
+    .eq("is_hidden", false)
+    .order("name");
+
   return (
     <div className="min-h-screen" style={{ background: "#0a0a0a", color: "#e8e8e8" }}>
       {/* Header */}
@@ -70,14 +80,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
             Sources
           </div>
           <ul className="space-y-0.5">
-            {["Ukrainska Pravda", "Babel", "Hromadske", "Liga.net"].map((name) => (
-              <li key={name}>
+            {sources?.map((source) => (
+              <li key={source.id}>
                 <a
                   href="#"
                   className="block px-2 py-1 rounded text-sm hover:bg-white/5 transition-colors truncate"
                   style={{ color: "rgba(255,255,255,0.4)" }}
                 >
-                  {name}
+                  {source.name}
                 </a>
               </li>
             ))}

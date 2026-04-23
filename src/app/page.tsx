@@ -10,7 +10,7 @@ export default async function Home() {
     .from("articles")
     .select("title, url, published_at, description, image_url, source:sources(name)")
     .order("published_at", { ascending: false })
-    .limit(20);
+    .limit(50);
 
   if (error) {
     return (
