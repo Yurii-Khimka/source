@@ -1,4 +1,4 @@
-import { Heart, Bookmark, ExternalLink } from "lucide-react";
+import { Heart, Bookmark, ExternalLink, CheckCircle2 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 type Article = {
@@ -8,22 +8,40 @@ type Article = {
   url: string;
   image_url: string | null;
   published_at: string | null;
+  like_count: number;
   sources: { name: string; handle: string } | null;
 };
 
+const avatarColors: Record<string, string> = {
+  B: "#3d5a80",
+  D: "#e0b14f",
+  E: "#ee6c4d",
+  G: "#5b8fb9",
+  R: "#9c6ade",
+  S: "#44bd8f",
+  T: "#cf6a87",
+  U: "#3d5a80",
+};
+
+function relativeTime(dateStr: string): string {
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diff = Math.max(0, now - then);
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
 export function ArticleCard({ article }: { article: Article }) {
   const source = article.sources;
-  const timeStr = article.published_at
-    ? new Date(article.published_at)
-        .toLocaleString("en-US", {
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })
-        .replace(",", " ·")
-    : "—";
+  const name = source?.name ?? "Unknown";
+  const initial = name.charAt(0).toUpperCase();
+  const avatarBg = avatarColors[initial] ?? "#6C727E";
+  const timeAgo = article.published_at ? relativeTime(article.published_at) : "—";
 
   return (
     <div
@@ -34,32 +52,50 @@ export function ArticleCard({ article }: { article: Article }) {
         padding: 16,
       }}
     >
-      {/* Row 1 — source + time */}
-      <div className="flex items-center gap-2 mb-2">
-        <span
+      {/* Row 1 — Source header */}
+      <div className="flex items-start gap-3 mb-3">
+        <div
+          className="flex items-center justify-center flex-shrink-0"
           style={{
+            width: 32,
+            height: 32,
+            borderRadius: 6,
+            background: avatarBg,
             fontFamily: "'Inter', system-ui, sans-serif",
             fontSize: 13,
-            fontWeight: 600,
-            color: dark.text,
+            fontWeight: 700,
+            color: "#fff",
           }}
         >
-          {source?.name ?? "Unknown"}
-        </span>
-        <span style={{ color: dark.accent, fontSize: 12 }}>✓</span>
-        <span
-          className="ml-auto"
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 11,
-            color: dark.textMute,
-          }}
-        >
-          {timeStr}
-        </span>
+          {initial}
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: 13,
+                fontWeight: 700,
+                color: dark.text,
+              }}
+            >
+              {name}
+            </span>
+            <CheckCircle2 size={12} style={{ color: dark.accent, flexShrink: 0 }} />
+          </div>
+          <div
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11,
+              color: dark.textMute,
+            }}
+          >
+            @{source?.handle ?? "unknown"} · {timeAgo}
+          </div>
+        </div>
       </div>
 
-      {/* Row 2 — title */}
+      {/* Row 2 — Title */}
       <a
         href={article.url}
         target="_blank"
@@ -67,55 +103,58 @@ export function ArticleCard({ article }: { article: Article }) {
         className="block mb-2 hover:underline"
         style={{
           fontFamily: "'Source Serif 4', Georgia, serif",
-          fontSize: 20,
+          fontSize: 22,
           fontWeight: 700,
           color: dark.text,
-          lineHeight: 1.3,
+          lineHeight: 1.22,
         }}
       >
         {article.title}
       </a>
 
-      {/* Row 3 — description */}
+      {/* Row 3 — Description */}
       {article.description && (
         <p
-          className="line-clamp-2 mb-3"
+          className="line-clamp-3 mb-3"
           style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             fontSize: 13.5,
             color: dark.textSub,
-            lineHeight: 1.5,
+            lineHeight: 1.55,
           }}
         >
           {article.description}
         </p>
       )}
 
-      {/* Row 4 — image */}
+      {/* Row 4 — Image */}
       {article.image_url && (
         <img
           src={article.image_url}
           alt=""
           className="w-full mb-3"
           style={{
-            maxHeight: 220,
+            height: 220,
             objectFit: "cover",
             borderRadius: 6,
+            border: `1px solid ${dark.line}`,
           }}
         />
       )}
 
-      {/* Row 5 — footer */}
+      {/* Row 5 — Footer */}
       <div
         className="flex items-center gap-4"
         style={{
           fontFamily: "'JetBrains Mono', monospace",
           fontSize: 11,
           color: dark.textMute,
+          borderTop: `1px solid ${dark.line}`,
+          paddingTop: 10,
         }}
       >
         <span className="flex items-center gap-1">
-          <Heart size={14} /> 0
+          <Heart size={14} /> {article.like_count}
         </span>
         <Bookmark size={14} />
         <a
@@ -125,7 +164,7 @@ export function ArticleCard({ article }: { article: Article }) {
           className="ml-auto hover:underline flex items-center gap-1"
           style={{ color: dark.textMute }}
         >
-          Read original <ExternalLink size={12} />
+          <ExternalLink size={12} /> source
         </a>
       </div>
     </div>
