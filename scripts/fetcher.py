@@ -1,7 +1,6 @@
 """RSS fetcher for SORCE — fetches articles from Ukrainska Pravda."""
 
 import os
-import re
 from datetime import datetime, timezone
 
 import feedparser
@@ -13,15 +12,6 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env.loca
 SUPABASE_URL = os.environ["NEXT_PUBLIC_SUPABASE_URL"]
 SUPABASE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
 RSS_URL = "https://www.pravda.com.ua/rss/"
-
-
-def slugify(text: str) -> str:
-    """Convert text to a URL-friendly slug."""
-    text = text.lower().strip()
-    text = re.sub(r"[^\w\s-]", "", text)
-    text = re.sub(r"[\s_]+", "-", text)
-    text = re.sub(r"-+", "-", text)
-    return text[:200]
 
 
 def parse_published(entry) -> str | None:
@@ -38,12 +28,13 @@ def main():
     # 1. Find source
     source_resp = (
         supabase.table("sources")
-        .select("id")
+        .select("id, language")
         .eq("handle", "ukrpravda")
         .single()
         .execute()
     )
     source_id = source_resp.data["id"]
+    language = source_resp.data["language"]
 
     # 2. Fetch RSS
     feed = feedparser.parse(RSS_URL)
@@ -77,13 +68,22 @@ def main():
         description = entry.get("summary", "").strip()
         published_at = parse_published(entry)
 
+        # Extract image from media content or enclosures if available
+        image_url = None
+        if hasattr(entry, "media_content") and entry.media_content:
+            image_url = entry.media_content[0].get("url")
+        elif hasattr(entry, "enclosures") and entry.enclosures:
+            enc = entry.enclosures[0]
+            if enc.get("type", "").startswith("image/"):
+                image_url = enc.get("href")
+
         article = {
             "source_id": source_id,
             "title": title,
-            "slug": slugify(title),
             "url": url,
-            "summary": description or None,
-            "status": "published",
+            "description": description or None,
+            "image_url": image_url,
+            "language": language,
             "published_at": published_at,
         }
 

@@ -18,7 +18,7 @@ SOURCE = {
     "site_url": "https://www.pravda.com.ua",
     "language": "uk",
     "verification_status": "system_aggregated",
-    "verified": True,
+    "is_hidden": False,
 }
 
 
