@@ -5,28 +5,26 @@
 - [x] Step 2: Supabase project setup + migrations
 - [x] Step 3: RLS policies
 - [x] Step 4: Supabase Auth (email + password + Google OAuth)
-- [x] Step 18: Python RSS fetcher
+- [x] Step 5: Design tokens + theme system (dark theme)
 - [x] Step 6: App shell (header + sidebar)
 - [x] Step 7: Article card component
+- [x] Step 8: Feed page (with follow/mute + following tab)
+- [x] Step 10: Follows (functional)
+- [x] Step 11: Mutes (functional)
 - [x] Step 12: Likes (functional)
-- [x] Step 13: Bookmarks (functional)
+- [x] Step 13: Bookmarks (functional + page)
+- [x] Step 17: Search
+- [x] Step 18: Python RSS fetcher
+- [~] Step 14: Settings page (partial — no light theme yet)
 
 ## Sources
 - Working: ukrpravda, suspilne, skhemy, slidstvo, euronews, bbc, guardian, dw
 - Pending RSS URL: hromadske, babel, kyivindependent, rferl
 
-## In progress
-- [x] Step 5: Design tokens + theme system (partial — dark theme only, no toggle yet)
-- [~] Step 8: Feed page (partial — no auth, no real follow/mute yet)
-
 ## Not started
 - [ ] Step 9: Tags
-- [ ] Step 10: Follows
-- [ ] Step 11: Mutes
-- [ ] Step 14: Admin panel
 - [ ] Step 15: Moderation (AI)
 - [ ] Step 16: KYC verification
-- [ ] Step 17: Search
 - [ ] Step 19: Multi-source RSS fetcher
 - [ ] Step 20: Deployment
 
@@ -43,7 +41,11 @@
 - User avatar shown in header
 - Likes and bookmarks functional for logged in users
 - Fetcher watch script for local dev
-- Pending: follow/mute logic, light theme toggle
+- Follow/mute sources working
+- Following tab functional
+- Search page working
+- Bookmarks page working
+- Settings page: account, follows, mutes, theme placeholder, sign out
 
 ## Dev workflow
 - Start dev server: npm run dev
@@ -57,13 +59,16 @@
 - Sign up form — show password strength indicator
 - Sign in — show error message when credentials are wrong
 - After Google sign in — redirect back to the page user was on
-- Add "Sign out" option in settings or header
 
 ### Other
 - OG image extraction in fetcher (articles need real thumbnails)
-- Follow/mute logic
-- Light theme toggle
+- Light theme implementation
 - Design polish pass (after Monday Claude Design update)
+- Onboarding flow (pick sources after sign up)
+- About / Trust Standards page
+- GitHub Actions cron job
+- Vercel deployment
+- Mobile responsive layout
 
 ## 2026-04-22 Day 1
 - DB schema created and migrated
