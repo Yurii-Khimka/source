@@ -15,9 +15,9 @@
 
 ## Not started
 - [ ] Step 4: Auth (sign up / sign in)
-- [ ] Step 6: Source pages
-- [ ] Step 7: Article pages
-- [ ] Step 8: Feed (chronological timeline)
+- [x] Step 6: App shell (header + sidebar)
+- [x] Step 7: Article card component
+- [~] Step 8: Feed page (partial — no auth, no real follow/mute yet)
 - [ ] Step 9: Tags
 - [ ] Step 10: Follows
 - [ ] Step 11: Mutes
@@ -30,7 +30,15 @@
 - [ ] Step 19: Multi-source RSS fetcher
 - [ ] Step 20: Deployment
 
-## 10. Today's Progress (2026-04-23)
+## 2026-04-23 Day 2
+- App shell built with header, sidebar, dynamic sources list
+- Design tokens implemented (dark theme)
+- ArticleCard component built matching design system
+- Lucide icons integrated
+- Feed page: header, tabs, 100 articles, footer message
+- Pending: auth, follow/mute logic, light theme toggle
+
+## 2026-04-22 Day 1
 - DB schema created and migrated
 - RLS policies applied to all 9 tables
 - RSS fetcher working for 8 sources: ukrpravda, suspilne, skhemy, slidstvo, euronews, bbc, guardian, dw
