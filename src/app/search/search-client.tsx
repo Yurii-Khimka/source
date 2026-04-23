@@ -17,7 +17,7 @@ type ArticleData = {
   sources: { name: string; handle: string; logo_url: string | null } | null;
 };
 
-export function SearchView() {
+export function SearchClient() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ArticleData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -103,7 +103,7 @@ export function SearchView() {
             : "Type to search..."}
       </p>
 
-      {/* Results */}
+      {/* Results — only shown after searching */}
       {searched && results.length === 0 && !loading ? (
         <p
           className="text-center py-12"
@@ -115,7 +115,7 @@ export function SearchView() {
         >
           {"// no results found"}
         </p>
-      ) : (
+      ) : results.length > 0 ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {results.map((article) => (
             <ArticleCard
@@ -131,7 +131,7 @@ export function SearchView() {
             />
           ))}
         </div>
-      )}
+      ) : null}
     </>
   );
 }

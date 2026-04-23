@@ -1,10 +1,10 @@
 import { Shell } from "@/components/shell";
-import { SearchView } from "@/components/search-view";
+import { SearchClient } from "./search-client";
 
 export default function SearchPage() {
   return (
     <Shell>
-      <SearchView />
+      <SearchClient />
     </Shell>
   );
 }
