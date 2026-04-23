@@ -66,6 +66,12 @@
 - Submits to a Supabase table or email
 - No auth required — anyone can submit feedback
 
+### Donate button
+- Monobank Банка link in sidebar bottom
+- Same link on About / Trust Standards page
+- Text: "Support SORCE"
+- Wait for Monobank jar link from owner before implementing
+
 ### Other
 - OG image extraction in fetcher (articles need real thumbnails)
 - Light theme implementation
