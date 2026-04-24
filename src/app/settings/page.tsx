@@ -32,20 +32,20 @@ export default async function SettingsPage() {
   const [followsRes, mutesRes] = await Promise.all([
     supabase
       .from("follows")
-      .select("source_id, sources:sources(id, name, logo_url)")
+      .select("source_id, sources:sources(id, name, handle, logo_url)")
       .eq("user_id", user.id),
     supabase
       .from("mutes")
-      .select("source_id, sources:sources(id, name, logo_url)")
+      .select("source_id, sources:sources(id, name, handle, logo_url)")
       .eq("user_id", user.id),
   ]);
 
   const followedSources = (followsRes.data ?? []).map(
-    (r) => r.sources as unknown as { id: string; name: string; logo_url: string | null }
+    (r) => r.sources as unknown as { id: string; name: string; handle: string; logo_url: string | null }
   ).filter(Boolean);
 
   const mutedSources = (mutesRes.data ?? []).map(
-    (r) => r.sources as unknown as { id: string; name: string; logo_url: string | null }
+    (r) => r.sources as unknown as { id: string; name: string; handle: string; logo_url: string | null }
   ).filter(Boolean);
 
   return (

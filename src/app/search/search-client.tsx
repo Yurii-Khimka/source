@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Search } from "lucide-react";
 
 export function SearchClient() {
@@ -86,8 +87,17 @@ export function SearchClient() {
                 marginBottom: 6,
               }}
             >
-              {article.sources?.name} ·{" "}
-              {new Date(article.published_at).toLocaleDateString("en-US")}
+              {article.sources?.handle ? (
+                <Link
+                  href={`/source/${article.sources.handle}`}
+                  style={{ color: "#6C727E", textDecoration: "none" }}
+                >
+                  {article.sources.name}
+                </Link>
+              ) : (
+                article.sources?.name
+              )}{" "}
+              · {new Date(article.published_at).toLocaleDateString("en-US")}
             </div>
             <a
               href={article.url}

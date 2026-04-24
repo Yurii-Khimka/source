@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
 import { dark } from "@/lib/tokens";
 
 type Source = {
   id: string;
   name: string;
+  handle: string;
   logo_url: string | null;
 };
 
@@ -104,16 +106,18 @@ export function SourceList({
               {source.name.charAt(0).toUpperCase()}
             </div>
           )}
-          <span
+          <Link
+            href={`/source/${source.handle}`}
             className="flex-1"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 13,
               color: dark.text,
+              textDecoration: "none",
             }}
           >
             {source.name}
-          </span>
+          </Link>
           <button
             onClick={() => handleRemove(source.id)}
             className="cursor-pointer"

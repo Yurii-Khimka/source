@@ -180,29 +180,30 @@ export function ArticleCard({
     >
       {/* Row 1 — Source header */}
       <div className="flex items-start gap-3 mb-3">
-        {source?.logo_url ? (
-          <img
-            src={source.logo_url}
-            alt={name}
-            className="flex-shrink-0"
-            style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover" }}
-          />
-        ) : (
-          <div
-            className="flex items-center justify-center flex-shrink-0"
-            style={{
-              width: 32, height: 32, borderRadius: 6, background: avatarBg,
-              fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: "#fff",
-            }}
-          >
-            {initial}
-          </div>
-        )}
+        <Link href={`/source/${source?.handle ?? "unknown"}`} className="flex-shrink-0" style={{ textDecoration: "none" }}>
+          {source?.logo_url ? (
+            <img
+              src={source.logo_url}
+              alt={name}
+              style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover" }}
+            />
+          ) : (
+            <div
+              className="flex items-center justify-center"
+              style={{
+                width: 32, height: 32, borderRadius: 6, background: avatarBg,
+                fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: "#fff",
+              }}
+            >
+              {initial}
+            </div>
+          )}
+        </Link>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: dark.text }}>
+            <Link href={`/source/${source?.handle ?? "unknown"}`} style={{ textDecoration: "none", fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: dark.text }}>
               {name}
-            </span>
+            </Link>
             <CheckCircle2 size={12} style={{ color: dark.accent, flexShrink: 0 }} />
           </div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: dark.textMute }}>
