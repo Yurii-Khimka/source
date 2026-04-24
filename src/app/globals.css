@@ -16,3 +16,7 @@ body {
 .header-icon-btn:hover {
   background: rgba(255, 255, 255, 0.04) !important;
 }
+
+.sidebar-nav-item:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}

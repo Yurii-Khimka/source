@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
-  Newspaper, Search, Bookmark, Settings, ShieldCheck,
+  Search, Settings, ShieldCheck,
   Sun, Bell, User,
 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
+import { SidebarNav } from "@/components/sidebar-nav";
 
 export async function Shell({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -28,6 +29,37 @@ export async function Shell({ children }: { children: React.ReactNode }) {
     profile = data;
   }
 
+  // Sidebar data
+  let bookmarkCount = 0;
+  let followedSources: { id: string; name: string; handle: string }[] = [];
+
+  if (user) {
+    const [{ count }, { data: followedIds }] = await Promise.all([
+      supabase
+        .from("bookmarks")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id),
+      supabase
+        .from("follows")
+        .select("source_id")
+        .eq("user_id", user.id),
+    ]);
+    bookmarkCount = count ?? 0;
+
+    if (followedIds && followedIds.length > 0) {
+      const { data } = await supabase
+        .from("sources")
+        .select("id, name, handle")
+        .in("id", followedIds.map((f) => f.source_id))
+        .eq("is_hidden", false)
+        .order("name");
+      followedSources = (data ?? []) as { id: string; name: string; handle: string }[];
+    }
+  } else {
+    // Not logged in — show all sources
+    followedSources = (sources ?? []) as { id: string; name: string; handle: string }[];
+  }
+
   const iconBtnStyle: React.CSSProperties = {
     width: 34,
     height: 34,
@@ -44,7 +76,7 @@ export async function Shell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: dark.bg, color: dark.text }}>
+    <div className="min-h-screen flex flex-col" style={{ background: dark.bg, color: dark.text }}>
       {/* Header */}
       <header
         className="sticky top-0 z-30"
@@ -154,86 +186,33 @@ export async function Shell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Sidebar */}
-      <aside
-        className="fixed top-[64px] left-0 bottom-0 flex flex-col justify-between overflow-y-auto"
-        style={{
-          width: 220,
-          borderRight: `1px solid ${dark.line}`,
-          background: dark.bgAlt,
-        }}
-      >
-        <nav className="px-3 py-4 space-y-0.5">
-          {[
-            { label: "Feed", icon: <Newspaper size={15} />, href: "/", active: true },
-            { label: "Search", icon: <Search size={15} />, href: "/search", active: false },
-            { label: "Bookmarks", icon: <Bookmark size={15} />, href: "/bookmarks", active: false },
-            { label: "Settings", icon: <Settings size={15} />, href: "/settings", active: false },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="flex items-center gap-2 px-2 py-1.5 rounded transition-colors"
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: 13,
-                color: item.active ? "#fff" : dark.textDim,
-                background: item.active ? dark.hover : undefined,
-              }}
-            >
-              <span
-                className="w-5 flex justify-center"
-                style={{ color: item.active ? "#fff" : dark.textMute }}
-              >
-                {item.icon}
-              </span>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <aside
+          className="sticky top-[64px] overflow-auto"
+          style={{
+            width: 260,
+            minWidth: 260,
+            height: "calc(100vh - 64px)",
+            padding: "24px 14px 40px",
+            borderRight: `1px solid ${dark.line}`,
+            background: dark.bg,
+          }}
+        >
+          <SidebarNav
+            bookmarkCount={bookmarkCount}
+            followedSources={followedSources}
+          />
+        </aside>
 
-        <div className="px-3 pb-4">
-          <div
-            className="uppercase tracking-wider mb-2 px-2"
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 11,
-              color: dark.textMute,
-            }}
-          >
-            Sources
-          </div>
-          <ul className="space-y-0.5">
-            {sources?.map((source) => (
-              <li key={source.id}>
-                <a
-                  href="#"
-                  className="block px-2 py-1 rounded transition-colors truncate"
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 11,
-                    color: dark.textMute,
-                  }}
-                >
-                  {source.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <main
-        className="mx-auto"
-        style={{
-          marginLeft: 220,
-          paddingTop: 64,
-          maxWidth: 740,
-        }}
-      >
-        <div className="p-6">{children}</div>
-      </main>
+        {/* Main content */}
+        <main
+          className="mx-auto"
+          style={{ maxWidth: 740, flex: 1 }}
+        >
+          <div className="p-6">{children}</div>
+        </main>
+      </div>
     </div>
   );
 }
