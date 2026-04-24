@@ -9,7 +9,7 @@ import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { RightRail } from "@/components/right-rail";
 
-export async function Shell({ children }: { children: React.ReactNode }) {
+export async function Shell({ children, rightRailTop }: { children: React.ReactNode; rightRailTop?: React.ReactNode }) {
   const supabase = createClient();
 
   const { data: sources } = await supabase
@@ -210,6 +210,7 @@ export async function Shell({ children }: { children: React.ReactNode }) {
             background: dark.bg,
           }}
         >
+          {rightRailTop}
           <RightRail />
         </aside>
       </div>

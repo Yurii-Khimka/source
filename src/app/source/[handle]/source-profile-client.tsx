@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ShieldCheck, Globe, UserPlus, VolumeX } from "lucide-react";
+import { ShieldCheck, Globe } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { ArticleCard } from "@/components/article-card";
 
@@ -81,15 +80,10 @@ export function SourceProfileClient({
   initialFollowing,
   initialMuted,
   isLoggedIn,
-  followerCount: initialFollowerCount,
+  followerCount,
   postCount,
   tags: initialTags,
 }: Props) {
-  const router = useRouter();
-  const [following, setFollowing] = useState(initialFollowing);
-  const [muted, setMuted] = useState(initialMuted);
-  const [followerCount, setFollowerCount] = useState(initialFollowerCount);
-
   const [articles, setArticles] = useState(initialArticles);
   const [likedIds, setLikedIds] = useState(initialLikedIds);
   const [bookmarkedIds, setBookmarkedIds] = useState(initialBookmarkedIds);
@@ -104,48 +98,10 @@ export function SourceProfileClient({
 
   const createdYear = new Date(source.created_at).getFullYear();
 
-  // Tag filtering
   const activeTag = activeTagSlug ? tags.find((t) => t.slug === activeTagSlug) : null;
   const displayedArticles = activeTag
     ? articles.filter((a) => activeTag.articleIds.includes(a.id))
     : articles;
-
-  async function handleFollow() {
-    if (!isLoggedIn) { router.push("/auth/signin"); return; }
-    const wasFollowing = following;
-    setFollowing(!wasFollowing);
-    setFollowerCount((c) => c + (wasFollowing ? -1 : 1));
-    const res = await fetch("/api/follow", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ source_id: source.id }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setFollowing(data.following);
-      window.dispatchEvent(new CustomEvent("followChanged"));
-    } else {
-      setFollowing(wasFollowing);
-      setFollowerCount((c) => c + (wasFollowing ? 1 : -1));
-    }
-  }
-
-  async function handleMute() {
-    if (!isLoggedIn) { router.push("/auth/signin"); return; }
-    const wasMuted = muted;
-    setMuted(!wasMuted);
-    const res = await fetch("/api/mute", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ source_id: source.id }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setMuted(data.muted);
-    } else {
-      setMuted(wasMuted);
-    }
-  }
 
   // Infinite scroll
   const loadMore = useCallback(async () => {
@@ -289,97 +245,7 @@ export function SourceProfileClient({
         </div>
       </div>
 
-      {/* ─── ACTION BLOCK ─── */}
-      <div
-        style={{
-          background: dark.surface,
-          border: `1px solid ${dark.line}`,
-          borderRadius: 6,
-          padding: 16,
-          marginBottom: 28,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: mono,
-            fontSize: 10,
-            textTransform: "uppercase",
-            letterSpacing: 1.2,
-            color: dark.textMute,
-            marginBottom: 12,
-          }}
-        >
-          THIS SOURCE
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <button
-            onClick={handleFollow}
-            className="cursor-pointer"
-            style={{
-              width: "100%",
-              padding: "10px 0",
-              borderRadius: 6,
-              fontFamily: inter,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              transition: "all 0.12s",
-              background: following ? "transparent" : dark.accent,
-              color: following ? dark.accent : "#fff",
-              border: following ? `1px solid ${dark.accentLine}` : `1px solid ${dark.accent}`,
-            }}
-          >
-            <UserPlus size={15} />
-            {following ? "Following" : "Follow source"}
-          </button>
-
-          <button
-            onClick={handleMute}
-            className="cursor-pointer"
-            style={{
-              width: "100%",
-              padding: "10px 0",
-              borderRadius: 6,
-              fontFamily: inter,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              transition: "all 0.12s",
-              background: dark.surface2,
-              color: muted ? dark.textMute : dark.textDim,
-              border: `1px solid ${dark.line2}`,
-            }}
-          >
-            <VolumeX size={15} />
-            {muted ? "Muted" : "Mute notifications"}
-          </button>
-        </div>
-
-        <div style={{ borderTop: `1px solid ${dark.line}`, marginTop: 14, paddingTop: 12 }}>
-          <p
-            style={{
-              fontFamily: inter,
-              fontSize: 12,
-              color: dark.textDim,
-              lineHeight: 1.5,
-              margin: 0,
-            }}
-          >
-            Following puts this source on your home feed and enables alerts for corrections and breaking posts.
-          </p>
-        </div>
-      </div>
-
-      {/* ─── CATEGORY PILLS + SHOWING COUNT (same pattern as home feed) ─── */}
+      {/* ─── CATEGORY PILLS + SHOWING COUNT ─── */}
       <div
         style={{
           position: "sticky",
@@ -454,8 +320,8 @@ export function SourceProfileClient({
               initialLiked={likedSet.has(article.id)}
               initialLikeCount={article.like_count}
               initialBookmarked={bookmarkedSet.has(article.id)}
-              initialFollowing={following}
-              initialMuted={muted}
+              initialFollowing={initialFollowing}
+              initialMuted={initialMuted}
               sourceId={source.id}
               isLoggedIn={isLoggedIn}
             />

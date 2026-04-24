@@ -79,6 +79,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Fix source profile 404
 - [2026-04-24] Replace Official Source pill with source link
 - [2026-04-24] Source profile page MVP rebuild
+- [2026-04-24] Move action block to right rail
 
 ## In Progress
 - Article card design polish
@@ -108,6 +109,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Removed non-existent description column from sources query that caused Supabase error and 404 on /source/[handle]
 - [2026-04-24] Replaced Official Source pill with site_url link pill in source profile header
 - [2026-04-24] Removed tabs, dashboard, crypto. Added Follow/Mute action block. Reused feed category pills and post counter.
+- [2026-04-24] Moved Follow/Mute action block to right rail via Shell rightRailTop slot. Created SourceActionBlock client component. Cleaned source-profile-client of follow/mute handlers.
 
 ## Backlog (priority order)
 1. Discovery page

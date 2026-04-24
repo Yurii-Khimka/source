@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Shell } from "@/components/shell";
 import { SourceProfileClient } from "./source-profile-client";
+import { SourceActionBlock } from "./source-action-block";
 import { inferTags } from "@/lib/tag-keywords";
 import { notFound } from "next/navigation";
 
@@ -140,8 +141,17 @@ export default async function SourceProfilePage({
     .slice(0, 8)
     .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }));
 
+  const actionBlock = (
+    <SourceActionBlock
+      sourceId={source.id}
+      initialFollowing={isFollowing}
+      initialMuted={isMuted}
+      isLoggedIn={!!user}
+    />
+  );
+
   return (
-    <Shell>
+    <Shell rightRailTop={actionBlock}>
       <SourceProfileClient
         source={{
           id: source.id,
