@@ -107,7 +107,8 @@ def get_tags_from_text(text: str) -> list[str]:
 
 def infer_tags(title: str, description: str | None) -> list[str]:
     """Return list of tag slugs matched by keyword search on title + description."""
-    return get_tags_from_text(f"{title} {description or ''}")
+    tags = get_tags_from_text(f"{title} {description or ''}")
+    return tags if tags else ["general"]
 
 
 def assign_tags(supabase, article_id: str, tag_slugs: list[str], url: str):
