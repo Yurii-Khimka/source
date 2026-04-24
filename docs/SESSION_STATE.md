@@ -84,6 +84,14 @@
 - Header simplified on mobile
 - Do after design polish pass on Monday
 
+### Analytics & Tracking
+- Google Analytics 4 — page views, user behaviour
+- Google Tag Manager — manage all tracking in one place
+- Consider privacy-friendly alternative: Plausible or Umami
+  (no cookies, GDPR compliant, open source)
+- Decision needed: GA4 vs privacy-first analytics
+- Implement after launch when real users are on the site
+
 ### Other
 - OG image extraction in fetcher (articles need real thumbnails)
 - Light theme implementation
