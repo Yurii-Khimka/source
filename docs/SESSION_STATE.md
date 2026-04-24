@@ -36,6 +36,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Hashtags widget in right rail (list style with counts)
 - [2026-04-24] Hashtag display fix — keyword fallback for empty article_tags
 - [2026-04-24] Fixed: Hashtags widget missing from right rail
+- [2026-04-24] Hashtags widget — pill grid layout in right rail
 
 ## In Progress
 - Article card design polish
