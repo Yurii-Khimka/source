@@ -6,6 +6,8 @@ import { dark } from "@/lib/tokens";
 
 const mono = "'JetBrains Mono', monospace";
 
+const inter = "'Inter', system-ui, sans-serif";
+
 export type RankedTableItem = {
   id: string;
   name: string;
@@ -13,6 +15,7 @@ export type RankedTableItem = {
   count: number;
   delta?: number | null;
   prefix?: string;
+  logoUrl?: string | null;
 };
 
 type Props = {
@@ -21,9 +24,11 @@ type Props = {
 };
 
 export function RankedTable({ items, showDelta = true }: Props) {
+  const hasLogos = items.some((item) => item.logoUrl !== undefined);
+  const logoCols = hasLogos ? "40px 28px 1fr" : "40px 1fr";
   const gridCols = showDelta
-    ? "40px 1fr 100px 80px 80px"
-    : "40px 1fr 100px 80px";
+    ? `${logoCols} 100px 80px 80px`
+    : `${logoCols} 100px 80px`;
 
   return (
     <div
@@ -60,6 +65,40 @@ export function RankedTable({ items, showDelta = true }: Props) {
             >
               {String(i + 1).padStart(2, "0")}
             </span>
+            {hasLogos && (
+              <Link href={item.href} style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+                {item.logoUrl ? (
+                  <img
+                    src={item.logoUrl}
+                    alt={item.name}
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: 4,
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: 4,
+                      background: dark.surface2,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontFamily: inter,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      color: dark.textDim,
+                    }}
+                  >
+                    {item.name.slice(0, 2).toUpperCase()}
+                  </div>
+                )}
+              </Link>
+            )}
             <Link
               href={item.href}
               style={{

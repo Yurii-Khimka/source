@@ -163,6 +163,7 @@ export function TagProfileClient({
               name: src.name,
               href: `/source/${src.handle}`,
               count: src.postCount,
+              logoUrl: src.logo_url,
             }))}
           />
         </div>
