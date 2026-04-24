@@ -39,7 +39,7 @@ const criteria = [
 
 export default function TrustPage() {
   return (
-    <div style={{ padding: "32px 32px 64px", maxWidth: 680 }}>
+    <div style={{ maxWidth: 680, margin: "0 auto", padding: "32px 24px" }}>
       {/* Title */}
       <h1
         style={{

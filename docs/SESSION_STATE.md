@@ -99,6 +99,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Source logos in Top Sources table on tag page
 - [2026-04-24] Fix untagged articles
 - [2026-04-24] Trust Standards page
+- [2026-04-24] Trust page content centred
 
 ## In Progress
 - Article card design polish
@@ -148,6 +149,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Added logoUrl support to RankedTable component. Tag page Top Sources now shows source logos with initials fallback.
 - [2026-04-24] Added general fallback to TypeScript inferTags. Fixed articles API tag filter to use inner join instead of .in() with 1000-row limit.
 - [2026-04-24] Built /trust with intro, 4 criteria cards, dynamic standards and community sections. Added Standards link to right rail footer.
+- [2026-04-24] Wrapped trust page content in max-width 680px centred container.
 
 ## Backlog (priority order)
 1. Discovery page
