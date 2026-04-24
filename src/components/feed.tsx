@@ -272,7 +272,7 @@ export function Feed({
           marginBottom: 16,
         }}
       >
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        <div className="category-pills-row" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {[{ slug: null, name: "ALL" }, ...tags.map((t) => ({ slug: t.slug, name: t.name }))].map((pill) => {
             const active = pill.slug === activeTagSlug;
             return (
@@ -301,7 +301,7 @@ export function Feed({
             );
           })}
         </div>
-        <span style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", flexShrink: 0 }}>
+        <span className="showing-counter" style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", flexShrink: 0 }}>
           showing {displayedArticles.length} of {totalCount}
         </span>
       </div>

@@ -391,3 +391,26 @@ body {
     padding-top: 20px !important;
   }
 }
+
+/* ══════════════════════════════════════════
+   TABLET + MOBILE — max-width: 1024px
+   ══════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  /* Category pills: single scrollable row */
+  .category-pills-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding: 0 16px !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  .category-pills-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide showing counter */
+  .showing-counter {
+    display: none !important;
+  }
+}

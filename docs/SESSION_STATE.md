@@ -109,6 +109,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Fix onboarding button text wrap
 - [2026-04-24] Mobile responsive layout
 - [2026-04-24] Remove notification bell from mobile header
+- [2026-04-24] Tablet feed — swipeable category bar, hidden counter
 
 ## In Progress
 - Article card design polish
@@ -168,6 +169,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Added white-space nowrap to all onboarding footer buttons.
 - [2026-04-24] Added mobile layout at 768px breakpoint. Bottom tab bar (4 icons), mobile header, hidden sidebars, mobile profile page, adapted article card and all pages.
 - [2026-04-24] Bell icon removed from mobile header for MVP.
+- [2026-04-24] Extended mobile category bar fix to 1024px tablet breakpoint.
 
 ## Backlog (priority order)
 1. Discovery page
