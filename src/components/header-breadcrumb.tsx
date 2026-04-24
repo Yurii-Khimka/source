@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 
 const routes: Record<string, { parent?: string; label: string }> = {
-  "/": { parent: "Home", label: "Your feed" },
+  "/": { parent: "Home", label: "Your timeline" },
   "/search": { parent: "Home", label: "Search" },
   "/bookmarks": { parent: "Home", label: "Bookmarks" },
   "/settings": { parent: "Home", label: "Settings" },
