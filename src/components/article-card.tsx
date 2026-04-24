@@ -71,7 +71,7 @@ export function ArticleCard({
   const [muted, setMuted] = useState(initialMuted);
   const [likeLoading, setLikeLoading] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
-  const [showImage, setShowImage] = useState(true);
+  const [showImage, setShowImage] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -318,7 +318,18 @@ export function ArticleCard({
         </div>
       )}
 
-      {/* Row 5 — Image */}
+      {/* Row 5 — Image (hidden probe + visible container) */}
+      {article.image_url && !showImage && (
+        <img
+          src={article.image_url}
+          alt=""
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            if (img.naturalWidth >= 400 && img.naturalHeight >= 200) setShowImage(true);
+          }}
+          style={{ display: "none" }}
+        />
+      )}
       {article.image_url && showImage && (
         <div
           className="mb-3"
@@ -328,13 +339,11 @@ export function ArticleCard({
             background: dark.surface,
             borderRadius: 4,
             height: 420,
-            display: showImage ? "block" : "none",
           }}
         >
           <img
             src={article.image_url}
             alt=""
-            onError={() => setShowImage(false)}
             style={{
               position: "absolute",
               inset: 0,
@@ -349,11 +358,6 @@ export function ArticleCard({
           <img
             src={article.image_url}
             alt=""
-            onError={() => setShowImage(false)}
-            onLoad={(e) => {
-              const img = e.currentTarget;
-              if (img.naturalWidth < 400 || img.naturalHeight < 200) setShowImage(false);
-            }}
             style={{
               position: "relative",
               zIndex: 1,
