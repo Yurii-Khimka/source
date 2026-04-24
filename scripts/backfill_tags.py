@@ -32,14 +32,37 @@ def main():
     tag_map: dict[str, str] = {t["slug"]: t["id"] for t in (tags_resp.data or [])}
     print(f"Tags in DB: {list(tag_map.keys())}")
 
-    # Get all article IDs that already have tags
-    tagged_resp = supabase.table("article_tags").select("article_id").execute()
-    tagged_ids = {r["article_id"] for r in (tagged_resp.data or [])}
+    # Get all article IDs that already have tags (paginate past 1000-row limit)
+    tagged_ids: set[str] = set()
+    offset = 0
+    while True:
+        resp = supabase.table("article_tags").select("article_id").range(offset, offset + 999).execute()
+        if not resp.data:
+            break
+        for r in resp.data:
+            tagged_ids.add(r["article_id"])
+        if len(resp.data) < 1000:
+            break
+        offset += 1000
     print(f"Articles already tagged: {len(tagged_ids)}")
 
-    # Get all articles
-    all_resp = supabase.table("articles").select("id, title, description, url").eq("is_hidden", False).execute()
-    all_articles = all_resp.data or []
+    # Get all articles (paginate past 1000-row limit)
+    all_articles: list[dict] = []
+    offset = 0
+    while True:
+        resp = (
+            supabase.table("articles")
+            .select("id, title, description, url")
+            .eq("is_hidden", False)
+            .range(offset, offset + 999)
+            .execute()
+        )
+        if not resp.data:
+            break
+        all_articles.extend(resp.data)
+        if len(resp.data) < 1000:
+            break
+        offset += 1000
     untagged = [a for a in all_articles if a["id"] not in tagged_ids]
     print(f"Articles with no tags: {len(untagged)}\n")
 

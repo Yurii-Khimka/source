@@ -67,6 +67,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Backfill tags on existing articles
 - [2026-04-24] Fix Discovery placeholder + tags counter
 - [2026-04-24] Add posts sections to Discovery tabs, fix All tab order
+- [2026-04-24] Expand Ukrainian keyword matching, re-backfill untagged articles
 
 ## In Progress
 - Article card design polish
@@ -84,6 +85,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Created backfill_tags.py, seeded 9 tags, tagged 605/1000 articles (1048 assignments). Fixed tags table column name→label across frontend queries and fetcher.
 - [2026-04-24] Fixed unicode escape in search placeholder, tags now show total article count (not just 24h), sorted by 24h trending then total
 - [2026-04-24] Added ALL POSTS section to All tab (after sources+tags), POSTS FROM THESE SOURCES to Sources tab, RECENT POSTS to Tags tab. Fetches recent 20 articles with tags and user interactions. Reuses ArticleCard component.
+- [2026-04-24] Added 40+ Ukrainian keywords across conflict/politics/ukraine/world/economy tags. Fixed backfill pagination bug (1000-row limit). Re-ran backfill: 1037/1355 articles now tagged (76.5%), up from 577.
 
 ## Backlog (priority order)
 1. Discovery page
