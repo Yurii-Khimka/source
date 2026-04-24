@@ -48,16 +48,19 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: deleteError.message }, { status: 500 });
       }
 
-      // Decrement like_count safely
-      const { data: article } = await supabase
-        .from("articles")
-        .select("like_count")
-        .eq("id", article_id)
-        .single();
-      const newCount = Math.max(0, (article?.like_count ?? 1) - 1);
-      await supabase.from("articles").update({ like_count: newCount }).eq("id", article_id);
+      // Decrement via SECURITY DEFINER function
+      const { data: newCount, error: rpcError } = await supabase
+        .rpc("increment_like_count", { p_article_id: article_id, delta: -1 });
 
-      return NextResponse.json({ liked: false, like_count: newCount });
+      if (rpcError) {
+        console.error("Like decrement RPC error:", rpcError);
+        // Fetch count as fallback
+        const { data: article } = await supabase
+          .from("articles").select("like_count").eq("id", article_id).single();
+        return NextResponse.json({ liked: false, like_count: article?.like_count ?? 0 });
+      }
+
+      return NextResponse.json({ liked: false, like_count: newCount ?? 0 });
     } else {
       // Add like
       const { error: insertError } = await supabase
@@ -69,16 +72,18 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: insertError.message }, { status: 500 });
       }
 
-      // Increment like_count
-      const { data: article } = await supabase
-        .from("articles")
-        .select("like_count")
-        .eq("id", article_id)
-        .single();
-      const newCount = (article?.like_count ?? 0) + 1;
-      await supabase.from("articles").update({ like_count: newCount }).eq("id", article_id);
+      // Increment via SECURITY DEFINER function
+      const { data: newCount, error: rpcError } = await supabase
+        .rpc("increment_like_count", { p_article_id: article_id, delta: 1 });
 
-      return NextResponse.json({ liked: true, like_count: newCount });
+      if (rpcError) {
+        console.error("Like increment RPC error:", rpcError);
+        const { data: article } = await supabase
+          .from("articles").select("like_count").eq("id", article_id).single();
+        return NextResponse.json({ liked: true, like_count: article?.like_count ?? 0 });
+      }
+
+      return NextResponse.json({ liked: true, like_count: newCount ?? 0 });
     }
   } catch (error) {
     console.error("Like API error:", error);

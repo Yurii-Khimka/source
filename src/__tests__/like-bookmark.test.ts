@@ -56,6 +56,10 @@ jest.mock("@supabase/ssr", () => ({
       }
       return createChainableMock(() => ({ data: null, error: null }));
     }),
+    rpc: jest.fn((_fn: string, params: { p_article_id: string; delta: number }) => {
+      mockArticleLikeCount = Math.max(0, mockArticleLikeCount + params.delta);
+      return Promise.resolve({ data: mockArticleLikeCount, error: null });
+    }),
   })),
 }));
 
