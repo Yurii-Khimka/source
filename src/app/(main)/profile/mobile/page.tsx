@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ChevronRight,
-  Bookmark,
   Users,
+  Rss,
+  Hash,
   Compass,
   Info,
   ShieldCheck,
@@ -205,7 +206,8 @@ export default function MobileProfilePage() {
       {/* Your content */}
       <SectionLabel>Your content</SectionLabel>
       <MenuRow href="/following" icon={Users} label="Following" />
-      <MenuRow href="/bookmarks" icon={Bookmark} label="Bookmarks" />
+      <MenuRow href="/following" icon={Rss} label="Followed Sources" />
+      <MenuRow href="/following?tab=tags" icon={Hash} label="Followed Tags" />
 
       <div style={dividerStyle} />
 

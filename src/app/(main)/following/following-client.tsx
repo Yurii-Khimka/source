@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -46,6 +47,7 @@ function handleToColor(handle: string): string {
 }
 
 export function FollowingClient({ sources: initialSources, tags: initialTags }: Props) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("sources");
   const [sources, setSources] = useState(initialSources);
   const [tags, setTags] = useState(initialTags);
@@ -110,6 +112,28 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
 
   return (
     <div className="page-content" style={{ padding: "32px 36px 60px" }}>
+      {/* Mobile back button */}
+      <button
+        onClick={() => router.back()}
+        className="mobile-back-btn text-link cursor-pointer"
+        style={{
+          display: "none",
+          alignItems: "center",
+          gap: 4,
+          background: "none",
+          border: "none",
+          fontFamily: inter,
+          fontSize: 14,
+          color: dark.textDim,
+          cursor: "pointer",
+          padding: 0,
+          marginBottom: 12,
+        }}
+      >
+        <ArrowLeft size={16} />
+        Back
+      </button>
+
       {/* Header */}
       <h1
         style={{

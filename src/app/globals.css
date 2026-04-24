@@ -390,6 +390,39 @@ body {
     padding-right: 0 !important;
     padding-top: 20px !important;
   }
+
+  /* ─── Discovery header: stack title + description ─── */
+  .discovery-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .discovery-subtitle {
+    text-align: left !important;
+    margin-top: 4px !important;
+  }
+
+  /* ─── Ranked table: hide delta and count columns, fix grid ─── */
+  .ranked-col-delta,
+  .ranked-col-count {
+    display: none !important;
+  }
+  .ranked-row-logos.ranked-row-delta {
+    grid-template-columns: 40px 28px 1fr 80px !important;
+  }
+  .ranked-row-logos.ranked-row-no-delta {
+    grid-template-columns: 40px 28px 1fr 80px !important;
+  }
+  .ranked-row-no-logos.ranked-row-delta {
+    grid-template-columns: 40px 1fr 80px !important;
+  }
+  .ranked-row-no-logos.ranked-row-no-delta {
+    grid-template-columns: 40px 1fr 80px !important;
+  }
+
+  /* ─── Following: show mobile back button ─── */
+  .mobile-back-btn {
+    display: flex !important;
+  }
 }
 
 /* ══════════════════════════════════════════

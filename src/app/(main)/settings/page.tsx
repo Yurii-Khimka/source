@@ -28,22 +28,12 @@ export default async function SettingsPage() {
     redirect("/auth/signin");
   }
 
-  const [followsRes, mutesRes] = await Promise.all([
-    supabase
-      .from("follows")
-      .select("source_id, sources:sources(id, name, handle, logo_url)")
-      .eq("user_id", user.id),
-    supabase
-      .from("mutes")
-      .select("source_id, sources:sources(id, name, handle, logo_url)")
-      .eq("user_id", user.id),
-  ]);
+  const { data: mutesData } = await supabase
+    .from("mutes")
+    .select("source_id, sources:sources(id, name, handle, logo_url)")
+    .eq("user_id", user.id);
 
-  const followedSources = (followsRes.data ?? []).map(
-    (r) => r.sources as unknown as { id: string; name: string; handle: string; logo_url: string | null }
-  ).filter(Boolean);
-
-  const mutedSources = (mutesRes.data ?? []).map(
+  const mutedSources = (mutesData ?? []).map(
     (r) => r.sources as unknown as { id: string; name: string; handle: string; logo_url: string | null }
   ).filter(Boolean);
 
@@ -70,12 +60,6 @@ export default async function SettingsPage() {
           </span>
           <SignOutButton />
         </div>
-      </div>
-
-      {/* Following */}
-      <div style={sectionSeparator}>
-        <h2 style={sectionHeading}>Following ({followedSources.length})</h2>
-        <SourceList sources={followedSources} type="follow" />
       </div>
 
       {/* Muted */}

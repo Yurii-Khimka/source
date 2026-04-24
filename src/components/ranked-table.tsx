@@ -52,7 +52,7 @@ export function RankedTable({ items, showDelta = true }: Props) {
         return (
           <div
             key={item.id}
-            className="ranked-row"
+            className={`ranked-row ${hasLogos ? "ranked-row-logos" : "ranked-row-no-logos"} ${showDelta ? "ranked-row-delta" : "ranked-row-no-delta"}`}
             style={{
               display: "grid",
               gridTemplateColumns: gridCols,
@@ -115,12 +115,14 @@ export function RankedTable({ items, showDelta = true }: Props) {
               {item.name}
             </Link>
             <span
+              className="ranked-col-count"
               style={{ fontFamily: mono, fontSize: 12, color: dark.textDim }}
             >
               {item.count} posts
             </span>
             {showDelta && (
               <span
+                className="ranked-col-delta"
                 style={{
                   fontFamily: mono,
                   fontSize: 12,

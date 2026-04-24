@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { ArticleCard } from "@/components/article-card";
+import { dark } from "@/lib/tokens";
 
 export const revalidate = 0;
 
@@ -9,10 +10,10 @@ export default async function BookmarksPage() {
 
   if (!user) {
     return (
-      <div className="p-6">
+      <div className="page-content" style={{ padding: "32px 36px 60px" }}>
         <p
           className="text-center py-16"
-          style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
+          style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: dark.textMute }}
         >
           Sign in to save bookmarks
         </p>
@@ -48,14 +49,16 @@ export default async function BookmarksPage() {
   const count = articles.length;
 
   return (
-    <div className="p-6">
-      <div className="mb-4">
+    <div className="page-content" style={{ padding: "32px 36px 60px" }}>
+      <div style={{ marginBottom: 16 }}>
         <h1
           style={{
             fontFamily: "'Source Serif 4', Georgia, serif",
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: 700,
-            color: "#EEF1F6",
+            letterSpacing: -0.5,
+            color: dark.text,
+            margin: 0,
           }}
         >
           Bookmarks
@@ -64,8 +67,8 @@ export default async function BookmarksPage() {
           style={{
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 11,
-            color: "#6C727E",
-            marginTop: 4,
+            color: dark.textMute,
+            marginTop: 6,
           }}
         >
           {count} saved article{count !== 1 ? "s" : ""}
@@ -78,13 +81,13 @@ export default async function BookmarksPage() {
           style={{
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 11,
-            color: "#6C727E",
+            color: dark.textMute,
           }}
         >
           {"// nothing saved yet"}
         </p>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {articles.map((article) => (
             <ArticleCard
               key={article.id}

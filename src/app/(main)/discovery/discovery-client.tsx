@@ -182,6 +182,7 @@ export function DiscoveryClient({
     <div className="page-content" style={{ padding: "32px 36px 60px" }}>
       {/* Header */}
       <div
+        className="discovery-header"
         style={{
           display: "flex",
           alignItems: "flex-start",
@@ -201,6 +202,7 @@ export function DiscoveryClient({
           Discovery
         </h1>
         <span
+          className="discovery-subtitle"
           style={{
             fontFamily: mono,
             fontSize: 11,
