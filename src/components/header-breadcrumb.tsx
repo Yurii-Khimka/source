@@ -9,11 +9,26 @@ const routes: Record<string, { parent?: string; label: string }> = {
   "/settings": { parent: "Home", label: "Settings" },
   "/auth/signin": { parent: "Home", label: "Sign in" },
   "/auth/signup": { parent: "Home", label: "Sign up" },
+  "/tags": { parent: "Home", label: "Tags" },
+  "/following": { parent: "Home", label: "Following" },
 };
+
+function resolveRoute(pathname: string): { parent?: string; label: string } {
+  if (routes[pathname]) return routes[pathname];
+  if (pathname.startsWith("/tag/")) {
+    const slug = pathname.slice(5);
+    return { parent: "Tags", label: `#${slug}` };
+  }
+  if (pathname.startsWith("/source/")) {
+    const handle = pathname.slice(8);
+    return { parent: "Sources", label: `@${handle}` };
+  }
+  return { parent: "Home", label: pathname.slice(1) };
+}
 
 export function HeaderBreadcrumb() {
   const pathname = usePathname();
-  const route = routes[pathname] ?? { parent: "Home", label: pathname.slice(1) };
+  const route = resolveRoute(pathname);
 
   return (
     <div

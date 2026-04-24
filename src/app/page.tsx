@@ -41,9 +41,39 @@ export default async function Home() {
     mutedSourceIds = (mutesRes.data ?? []).map((r) => r.source_id);
   }
 
+  // Fetch all article_tags with tag info (used for both per-article tags and feed filter pills)
+  const { data: tagRows } = await supabase
+    .from("article_tags")
+    .select("article_id, tag_id, tags!inner(id, slug, name)");
+
+  // Build article→tags map and tag→articles map in one pass
+  const articleTagsMap = new Map<string, { slug: string; name: string }[]>();
+  const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
+  for (const row of tagRows ?? []) {
+    const tag = row.tags as unknown as { id: string; slug: string; name: string };
+
+    // Per-article tags
+    const existing = articleTagsMap.get(row.article_id);
+    if (existing) {
+      existing.push({ slug: tag.slug, name: tag.name });
+    } else {
+      articleTagsMap.set(row.article_id, [{ slug: tag.slug, name: tag.name }]);
+    }
+
+    // Tag filter pills
+    const tagEntry = tagMap.get(tag.id);
+    if (tagEntry) {
+      tagEntry.articleIds.push(row.article_id);
+      tagEntry.count++;
+    } else {
+      tagMap.set(tag.id, { id: tag.id, slug: tag.slug, name: tag.name, articleIds: [row.article_id], count: 1 });
+    }
+  }
+
   const feedArticles = (articles ?? []).map((article) => ({
     ...article,
     sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
+    tags: articleTagsMap.get(article.id) ?? [],
   }));
 
   // Count articles published today
@@ -53,22 +83,6 @@ export default async function Home() {
     (a) => a.published_at && new Date(a.published_at) >= todayStart
   ).length;
 
-  // Fetch top 8 tags by article count with their article IDs
-  const { data: tagRows } = await supabase
-    .from("article_tags")
-    .select("article_id, tag_id, tags!inner(id, slug, name)");
-
-  const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
-  for (const row of tagRows ?? []) {
-    const tag = row.tags as unknown as { id: string; slug: string; name: string };
-    const existing = tagMap.get(tag.id);
-    if (existing) {
-      existing.articleIds.push(row.article_id);
-      existing.count++;
-    } else {
-      tagMap.set(tag.id, { id: tag.id, slug: tag.slug, name: tag.name, articleIds: [row.article_id], count: 1 });
-    }
-  }
   const feedTags = Array.from(tagMap.values())
     .sort((a, b) => b.count - a.count)
     .slice(0, 8)

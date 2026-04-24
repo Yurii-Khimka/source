@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ThumbsUp, Bookmark, ExternalLink, CheckCircle2, MoreHorizontal } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
@@ -15,6 +16,7 @@ type Article = {
   like_count: number;
   source_id: string;
   sources: { name: string; handle: string; logo_url: string | null } | null;
+  tags?: { slug: string; name: string }[];
 };
 
 type Props = {
@@ -289,7 +291,33 @@ export function ArticleCard({
         </p>
       )}
 
-      {/* Row 4 — Image */}
+      {/* Row 4 — Tags */}
+      {article.tags && article.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-3">
+          {article.tags.map((tag) => (
+            <Link
+              key={tag.slug}
+              href={`/tag/${tag.slug}`}
+              className="right-rail-tag"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 11,
+                color: dark.textSub,
+                padding: "3px 7px",
+                borderRadius: 3,
+                border: `1px solid ${dark.line2}`,
+                background: dark.surface,
+                textDecoration: "none",
+                transition: "border-color 0.12s",
+              }}
+            >
+              #{tag.name}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Row 5 — Image */}
       {article.image_url && (
         <img
           src={article.image_url}
