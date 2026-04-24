@@ -4,7 +4,11 @@ import os
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
+import io
+
 import feedparser
+import httpx
+from PIL import Image
 
 
 class HTMLStripper(HTMLParser):
@@ -24,6 +28,26 @@ def strip_html(html):
     s = HTMLStripper()
     s.feed(html)
     return s.get_data()
+MIN_IMAGE_WIDTH = 400
+MIN_IMAGE_HEIGHT = 200
+
+
+def check_image(url: str) -> str | None:
+    """Return url if image meets minimum dimensions, else None."""
+    try:
+        resp = httpx.get(url, timeout=5, follow_redirects=True)
+        resp.raise_for_status()
+        img = Image.open(io.BytesIO(resp.content))
+        w, h = img.size
+        if w < MIN_IMAGE_WIDTH or h < MIN_IMAGE_HEIGHT:
+            print(f"  [skip image] {url} — {w}x{h}")
+            return None
+        return url
+    except Exception:
+        print(f"  [skip image] {url} — fetch failed")
+        return None
+
+
 from dotenv import load_dotenv
 from supabase import create_client
 
@@ -86,6 +110,9 @@ def fetch_source(supabase, source):
             enc = entry.enclosures[0]
             if enc.get("type", "").startswith("image/"):
                 image_url = enc.get("href")
+
+        if image_url:
+            image_url = check_image(image_url)
 
         article = {
             "source_id": source_id,

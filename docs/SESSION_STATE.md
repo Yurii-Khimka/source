@@ -43,6 +43,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Breadcrumb renamed from Your feed to Your timeline
 - [2026-04-24] Infinite scroll on feed with live showing X of Y counter
 - [2026-04-24] Sticky category bar with live showing counter
+- [2026-04-24] Filter low-res images in RSS fetcher (min 400x200)
 
 ## In Progress
 - Article card design polish
