@@ -92,6 +92,23 @@ export function ArticleCard({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [menuOpen]);
 
+  useEffect(() => {
+    function onFollowChanged(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.sourceId === sourceId) setFollowing(detail.following);
+    }
+    function onMuteChanged(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.sourceId === sourceId) setMuted(detail.muted);
+    }
+    window.addEventListener("sourceFollowChanged", onFollowChanged);
+    window.addEventListener("sourceMuteChanged", onMuteChanged);
+    return () => {
+      window.removeEventListener("sourceFollowChanged", onFollowChanged);
+      window.removeEventListener("sourceMuteChanged", onMuteChanged);
+    };
+  }, [sourceId]);
+
   async function handleLike() {
     if (!isLoggedIn) { router.push("/auth/signin"); return; }
     if (likeLoading) return;
@@ -146,6 +163,7 @@ export function ArticleCard({
       const data = await res.json();
       setFollowing(data.following);
       window.dispatchEvent(new CustomEvent("followChanged"));
+      window.dispatchEvent(new CustomEvent("sourceFollowChanged", { detail: { sourceId, following: data.following } }));
     } else {
       setFollowing(wasFollowing);
     }
@@ -164,6 +182,7 @@ export function ArticleCard({
     if (res.ok) {
       const data = await res.json();
       setMuted(data.muted);
+      window.dispatchEvent(new CustomEvent("sourceMuteChanged", { detail: { sourceId, muted: data.muted } }));
     } else {
       setMuted(wasMuted);
     }

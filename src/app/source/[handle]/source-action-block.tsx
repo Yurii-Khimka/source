@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserPlus, VolumeX } from "lucide-react";
 import { dark } from "@/lib/tokens";
@@ -20,6 +20,23 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
   const [following, setFollowing] = useState(initialFollowing);
   const [muted, setMuted] = useState(initialMuted);
 
+  useEffect(() => {
+    function onFollowChanged(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.sourceId === sourceId) setFollowing(detail.following);
+    }
+    function onMuteChanged(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.sourceId === sourceId) setMuted(detail.muted);
+    }
+    window.addEventListener("sourceFollowChanged", onFollowChanged);
+    window.addEventListener("sourceMuteChanged", onMuteChanged);
+    return () => {
+      window.removeEventListener("sourceFollowChanged", onFollowChanged);
+      window.removeEventListener("sourceMuteChanged", onMuteChanged);
+    };
+  }, [sourceId]);
+
   async function handleFollow() {
     if (!isLoggedIn) { router.push("/auth/signin"); return; }
     const was = following;
@@ -33,6 +50,7 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
       const data = await res.json();
       setFollowing(data.following);
       window.dispatchEvent(new CustomEvent("followChanged"));
+      window.dispatchEvent(new CustomEvent("sourceFollowChanged", { detail: { sourceId, following: data.following } }));
     } else {
       setFollowing(was);
     }
@@ -50,6 +68,7 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
     if (res.ok) {
       const data = await res.json();
       setMuted(data.muted);
+      window.dispatchEvent(new CustomEvent("sourceMuteChanged", { detail: { sourceId, muted: data.muted } }));
     } else {
       setMuted(was);
     }
