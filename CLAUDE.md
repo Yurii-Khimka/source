@@ -29,3 +29,16 @@ No user-generated content. No algorithms.
 - scripts/fetcher.py — working
 - scripts/seed_sources.py — working
 - ukrpravda seeded, 20 articles fetched
+
+## Auto-update rule (MANDATORY)
+After completing ANY task, Claude Code MUST run:
+  python scripts/update_session.py --completed "[task name]" --note "[brief summary]"
+
+This is not optional. Every single task ends with this command.
+If the script fails, fix it before committing.
+Always run this BEFORE the git commit.
+
+So the end of every task looks like:
+  python scripts/update_session.py --completed "X" --note "Y"
+  git add .
+  git commit -m "..."
