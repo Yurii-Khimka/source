@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Compass, Users, Hash, Bookmark } from "lucide-react";
@@ -20,8 +21,21 @@ interface SidebarNavProps {
   followedSources: { id: string; name: string; handle: string }[];
 }
 
-export function SidebarNav({ bookmarkCount, followedSources }: SidebarNavProps) {
+export function SidebarNav({ bookmarkCount: initialBookmarkCount, followedSources }: SidebarNavProps) {
   const pathname = usePathname();
+  const [bookmarkCount, setBookmarkCount] = useState(initialBookmarkCount);
+
+  useEffect(() => {
+    async function refresh() {
+      const res = await fetch("/api/bookmark-count");
+      if (res.ok) {
+        const data = await res.json();
+        setBookmarkCount(data.count);
+      }
+    }
+    window.addEventListener("bookmarkChanged", refresh);
+    return () => window.removeEventListener("bookmarkChanged", refresh);
+  }, []);
 
   return (
     <>

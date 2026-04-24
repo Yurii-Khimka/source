@@ -122,6 +122,7 @@ export function ArticleCard({
       if (res.ok) {
         const data = await res.json();
         setBookmarked(data.bookmarked);
+        window.dispatchEvent(new CustomEvent("bookmarkChanged"));
       }
     } finally {
       setBookmarkLoading(false);
