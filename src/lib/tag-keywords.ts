@@ -47,5 +47,7 @@ export function inferTags(
     }
   }
 
-  return matched;
+  return matched.length > 0
+    ? matched
+    : [{ slug: "general", name: "General" }];
 }

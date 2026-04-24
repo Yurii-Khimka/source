@@ -27,26 +27,28 @@ export async function GET(request: Request) {
       }
     );
 
-    // If filtering by tag, first resolve article IDs
-    let tagArticleIds: string[] | null = null;
+    // Resolve tag_id if filtering by tag
+    let tagId: string | null = null;
     if (tagSlug) {
       const { data: tagRow } = await supabase
         .from("tags")
         .select("id")
         .eq("slug", tagSlug)
         .maybeSingle();
-      if (tagRow) {
-        const { data: atRows } = await supabase
-          .from("article_tags")
-          .select("article_id")
-          .eq("tag_id", tagRow.id);
-        tagArticleIds = (atRows ?? []).map((r) => r.article_id);
+      if (!tagRow) {
+        return NextResponse.json({ articles: [], likedIds: [], bookmarkedIds: [] });
       }
+      tagId = tagRow.id;
     }
+
+    // Use inner join for tag filter to avoid row-limit issues
+    const selectCols = tagId
+      ? "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url), article_tags!inner(tag_id)"
+      : "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)";
 
     let query = supabase
       .from("articles")
-      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
+      .select(selectCols)
       .eq("is_hidden", false)
       .order("published_at", { ascending: false });
 
@@ -54,23 +56,28 @@ export async function GET(request: Request) {
       query = query.eq("source_id", sourceId);
     }
 
-    if (tagArticleIds !== null) {
-      if (tagArticleIds.length === 0) {
-        return NextResponse.json({ articles: [], likedIds: [], bookmarkedIds: [] });
-      }
-      query = query.in("id", tagArticleIds);
+    if (tagId) {
+      query = query.eq("article_tags.tag_id", tagId);
     }
 
     query = query.range(offset, offset + limit - 1);
 
-    const { data: articles, error } = await query;
+    const { data: articlesRaw, error } = await query;
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // Strip join fields from results
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const articles = (articlesRaw ?? []).map((row: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { article_tags, ...rest } = row;
+      return rest;
+    });
+
     // Fetch article_tags for these articles
-    const articleIds = (articles ?? []).map((a) => a.id);
+    const articleIds = articles.map((a: { id: string }) => a.id);
     const articleTagsMap: Record<string, { slug: string; name: string }[]> = {};
 
     if (articleIds.length > 0) {
