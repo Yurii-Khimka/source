@@ -8,11 +8,18 @@ export const revalidate = 0;
 export default async function Home() {
   const supabase = createClient();
 
-  const { data: articles, error } = await supabase
-    .from("articles")
-    .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
-    .order("published_at", { ascending: false })
-    .limit(100);
+  const [{ data: articles, error }, { count: totalArticleCount }] = await Promise.all([
+    supabase
+      .from("articles")
+      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false })
+      .range(0, 19),
+    supabase
+      .from("articles")
+      .select("*", { count: "exact", head: true })
+      .eq("is_hidden", false),
+  ]);
 
   if (error) {
     return (
@@ -120,6 +127,7 @@ export default async function Home() {
         followedSourceCount={followedSourceIds.length}
         todayArticleCount={todayArticles}
         tags={feedTags}
+        totalCount={totalArticleCount ?? 0}
       />
     </Shell>
   );

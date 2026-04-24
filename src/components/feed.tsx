@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ArticleCard } from "@/components/article-card";
 
 const inter = "'Inter', system-ui, sans-serif";
@@ -37,23 +37,36 @@ type Props = {
   followedSourceCount: number;
   todayArticleCount: number;
   tags: TagData[];
+  totalCount: number;
 };
 
+const PAGE_SIZE = 20;
+
 export function Feed({
-  articles,
-  likedIds,
-  bookmarkedIds,
+  articles: initialArticles,
+  likedIds: initialLikedIds,
+  bookmarkedIds: initialBookmarkedIds,
   followedSourceIds,
   mutedSourceIds,
   isLoggedIn,
   followedSourceCount,
   todayArticleCount,
-  tags,
+  tags: initialTags,
+  totalCount,
 }: Props) {
+  const [articles, setArticles] = useState(initialArticles);
+  const [likedIds, setLikedIds] = useState(initialLikedIds);
+  const [bookmarkedIds, setBookmarkedIds] = useState(initialBookmarkedIds);
+  const [tags, setTags] = useState(initialTags);
+
   const [activeTab, setActiveTab] = useState<"all" | "following">(
     isLoggedIn ? "following" : "all"
   );
   const [activeTagSlug, setActiveTagSlug] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(initialArticles.length < totalCount);
+
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const counterBadge: React.CSSProperties = {
     fontFamily: mono,
@@ -86,6 +99,81 @@ export function Feed({
   const displayedArticles = activeTag
     ? tabFiltered.filter((a) => activeTag.articleIds.includes(a.id))
     : tabFiltered;
+
+  // Load more articles
+  const loadMore = useCallback(async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/articles?offset=${articles.length}&limit=${PAGE_SIZE}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const newArticles: ArticleData[] = data.articles ?? [];
+
+      if (newArticles.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      // Dedupe by id
+      const existingIds = new Set(articles.map((a) => a.id));
+      const unique = newArticles.filter((a) => !existingIds.has(a.id));
+
+      if (unique.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      setArticles((prev) => [...prev, ...unique]);
+      setLikedIds((prev) => [...prev, ...(data.likedIds ?? [])]);
+      setBookmarkedIds((prev) => [...prev, ...(data.bookmarkedIds ?? [])]);
+
+      // Rebuild tags from all articles
+      const allArticles = [...articles, ...unique];
+      const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
+      for (const article of allArticles) {
+        for (const tag of article.tags) {
+          const existing = tagMap.get(tag.slug);
+          if (existing) {
+            existing.articleIds.push(article.id);
+            existing.count++;
+          } else {
+            tagMap.set(tag.slug, { id: tag.slug, slug: tag.slug, name: tag.name, articleIds: [article.id], count: 1 });
+          }
+        }
+      }
+      setTags(
+        Array.from(tagMap.values())
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 8)
+          .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }))
+      );
+
+      if (articles.length + unique.length >= totalCount) {
+        setHasMore(false);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [articles, loading, hasMore, totalCount]);
+
+  // IntersectionObserver
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   return (
     <div style={{ padding: "22px 36px 80px" }}>
@@ -255,8 +343,8 @@ export function Feed({
             );
           })}
         </div>
-        <span style={{ fontFamily: mono, fontSize: 11, color: "#6C727E" }}>
-          showing {displayedArticles.length} of {visibleArticles.length}
+        <span style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", flexShrink: 0 }}>
+          showing {displayedArticles.length} of {totalCount}
         </span>
       </div>
 
@@ -293,19 +381,24 @@ export function Feed({
         </div>
       )}
 
-      {/* Footer message */}
-      <p
-        className="text-center"
-        style={{
-          fontFamily: mono,
-          fontSize: 11,
-          color: "#6C727E",
-          marginTop: 32,
-          marginBottom: 16,
-        }}
-      >
-        {"// caught up · The Source never serves you posts out of order"}
-      </p>
+      {/* Scroll sentinel + loading/end state */}
+      <div ref={sentinelRef} style={{ minHeight: 1 }} />
+      {loading && (
+        <p
+          className="text-center"
+          style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", marginTop: 24 }}
+        >
+          Loading...
+        </p>
+      )}
+      {!hasMore && displayedArticles.length > 0 && (
+        <p
+          className="text-center"
+          style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", marginTop: 32, marginBottom: 16 }}
+        >
+          {"// caught up · The Source never serves you posts out of order"}
+        </p>
+      )}
     </div>
   );
 }
