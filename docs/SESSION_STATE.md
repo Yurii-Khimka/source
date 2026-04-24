@@ -115,6 +115,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Fix source logos — use real logos everywhere
 - [2026-04-25] Back button on all internal pages
 - [2026-04-25] Consistent mobile margins across all pages
+- [2026-04-25] Mobile typography and bottom bar safe area fix
 
 ## In Progress
 - Article card design polish
@@ -180,6 +181,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Fixed logo_url usage with favicon fallback across all source logo render locations. Initials now last resort only.
 - [2026-04-25] Created shared BackButton component at src/components/ui/back-button.tsx. Added to about, trust, privacy, terms, settings, following, bookmarks, search, source profile, tag profile. Hidden above 1024px. Removed old MobileBackButton component.
 - [2026-04-25] Applied uniform horizontal padding matching feed page to all internal pages at mobile/tablet breakpoint.
+- [2026-04-25] Article title and description +2px on mobile. Body text +2px globally on mobile. Bottom tab bar uses env(safe-area-inset-bottom) with viewport-fit=cover.
 
 ## Backlog (priority order)
 1. Discovery page

@@ -311,10 +311,10 @@ body {
     min-height: calc(100vh - 56px) !important;
   }
 
-  /* Main content: full width + padding for tab bar */
+  /* Main content: full width + padding for tab bar + safe area */
   .main-content {
     padding: 0 16px !important;
-    padding-bottom: 80px !important;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   /* ─── Article card mobile ─── */
@@ -323,7 +323,7 @@ body {
   }
 
   .article-card .article-title {
-    font-size: 15px !important;
+    font-size: 17px !important;
   }
 
   .article-card .icon-btn,
@@ -430,6 +430,19 @@ body {
    ══════════════════════════════════════════ */
 
 @media (max-width: 1024px) {
+  /* Body text: +2px on mobile/tablet */
+  body {
+    font-size: 18px !important;
+  }
+
+  /* Article card: +2px title and description on mobile/tablet */
+  .article-card .article-title {
+    font-size: 24px !important;
+  }
+  .article-card .line-clamp-3 {
+    font-size: 15.5px !important;
+  }
+
   /* Category pills: single scrollable row */
   .category-pills-row {
     flex-wrap: nowrap !important;
