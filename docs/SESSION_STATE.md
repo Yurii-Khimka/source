@@ -93,6 +93,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Loading states — skeletons and micro-spinners
 - [2026-04-24] Fix full page reload on navigation
 - [2026-04-24] Fix Vercel build failure
+- [2026-04-24] Fix followed tags left rail update
 
 ## In Progress
 - Article card design polish
@@ -136,6 +137,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Skeleton primitive + composite skeletons applied to all pages. Micro-spinner on like, bookmark, follow, mute, unfollow buttons.
 - [2026-04-24] Replaced all internal anchor tags with Link. Verified shell in layout.tsx. Converted sidebars to client components with SWR cache. Right rail no longer remounts on navigation.
 - [2026-04-24] Removed unused bookmarkCount and followedSources variables in shell.tsx.
+- [2026-04-24] Fixed follow tag write, left rail query, and live update event so followed tags appear immediately without page reload.
 
 ## Backlog (priority order)
 1. Discovery page

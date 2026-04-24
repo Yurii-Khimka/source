@@ -38,6 +38,7 @@ export function TagActionBlock({ tagId, initialFollowing, initialMuted, isLogged
       if (res.ok) {
         const data = await res.json();
         setFollowing(data.following);
+        window.dispatchEvent(new CustomEvent("tagFollowChanged"));
       } else {
         setFollowing(was);
       }

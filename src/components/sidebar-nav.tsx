@@ -31,20 +31,29 @@ export function SidebarNav() {
     fetcher,
     { revalidateOnFocus: false, dedupingInterval: 30000 }
   );
+  const { data: tagFollowData, mutate: mutateTagFollows } = useSWR<{ tags: { id: string; slug: string; label: string }[] }>(
+    "/api/followed-tags",
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 30000 }
+  );
 
   const bookmarkCount = bookmarkData?.count ?? 0;
   const followedSources = followData?.sources ?? [];
+  const followedTags = tagFollowData?.tags ?? [];
 
   useEffect(() => {
     function refreshBookmarks() { mutateBookmarks(); }
     function refreshFollows() { mutateFollows(); }
+    function refreshTagFollows() { mutateTagFollows(); }
     window.addEventListener("bookmarkChanged", refreshBookmarks);
     window.addEventListener("followChanged", refreshFollows);
+    window.addEventListener("tagFollowChanged", refreshTagFollows);
     return () => {
       window.removeEventListener("bookmarkChanged", refreshBookmarks);
       window.removeEventListener("followChanged", refreshFollows);
+      window.removeEventListener("tagFollowChanged", refreshTagFollows);
     };
-  }, [mutateBookmarks, mutateFollows]);
+  }, [mutateBookmarks, mutateFollows, mutateTagFollows]);
 
   return (
     <>
@@ -138,6 +147,52 @@ export function SidebarNav() {
                 >
                   <span style={{ color: "#A3ACBD", flexShrink: 0 }}>#</span>
                   <span className="truncate">{source.name}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Followed Tags */}
+      {followedTags.length > 0 && (
+        <div style={{ marginTop: 24 }}>
+          <div
+            style={{
+              fontFamily: mono,
+              fontSize: 10,
+              textTransform: "uppercase",
+              letterSpacing: 1.2,
+              color: "#6C727E",
+              padding: "6px 10px",
+            }}
+          >
+            Followed tags
+          </div>
+          <div className="space-y-0.5">
+            {followedTags.map((tag) => {
+              const href = `/tag/${tag.slug}`;
+              const active = pathname === href;
+
+              return (
+                <Link
+                  key={tag.id}
+                  href={href}
+                  className="sidebar-nav-item flex items-center gap-2.5 truncate"
+                  style={{
+                    height: 36,
+                    padding: "8px 10px",
+                    borderRadius: 6,
+                    fontFamily: inter,
+                    fontSize: 13.5,
+                    color: active ? "#EEF1F6" : "#C7CCD6",
+                    background: active ? "#161B26" : undefined,
+                    textDecoration: "none",
+                    transition: "background 0.12s",
+                  }}
+                >
+                  <span style={{ color: "#A3ACBD", flexShrink: 0 }}>#</span>
+                  <span className="truncate">{tag.label}</span>
                 </Link>
               );
             })}

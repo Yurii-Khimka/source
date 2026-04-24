@@ -83,11 +83,14 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
     setTags((prev) => prev.filter((t) => t.id !== tagId));
 
     try {
-      await fetch("/api/follow-tag", {
+      const res = await fetch("/api/follow-tag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tag_id: tagId }),
       });
+      if (res.ok) {
+        window.dispatchEvent(new CustomEvent("tagFollowChanged"));
+      }
     } catch {
       const original = initialTags.find((t) => t.id === tagId);
       if (original) setTags((prev) => [...prev, original].sort((a, b) => b.postCount - a.postCount));

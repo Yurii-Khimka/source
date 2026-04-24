@@ -22,29 +22,28 @@ export async function GET() {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return NextResponse.json({ sources: [] });
+      return NextResponse.json({ tags: [] });
     }
 
     const { data: follows } = await supabase
       .from("follows")
-      .select("source_id")
+      .select("tag_id")
       .eq("user_id", user.id)
-      .not("source_id", "is", null);
+      .not("tag_id", "is", null);
 
     if (!follows || follows.length === 0) {
-      return NextResponse.json({ sources: [] });
+      return NextResponse.json({ tags: [] });
     }
 
-    const { data: sources } = await supabase
-      .from("sources")
-      .select("id, name, handle")
-      .in("id", follows.map((f) => f.source_id))
-      .eq("is_hidden", false)
-      .order("name");
+    const { data: tags } = await supabase
+      .from("tags")
+      .select("id, slug, label")
+      .in("id", follows.map((f) => f.tag_id))
+      .order("label");
 
-    return NextResponse.json({ sources: sources ?? [] });
+    return NextResponse.json({ tags: tags ?? [] });
   } catch (error) {
-    console.error("Followed sources error:", error);
-    return NextResponse.json({ sources: [] });
+    console.error("Followed tags error:", error);
+    return NextResponse.json({ tags: [] });
   }
 }
