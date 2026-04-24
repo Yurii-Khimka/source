@@ -1,6 +1,7 @@
 """RSS fetcher for The Source — fetches articles from all sources."""
 
 import os
+import re
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
@@ -46,6 +47,18 @@ def check_image(url: str) -> str | None:
     except Exception:
         print(f"  [skip image] {url} — fetch failed")
         return None
+
+
+def upgrade_guardian_image(url: str) -> str:
+    """Upgrade Guardian/guim.co.uk image URLs to high resolution."""
+    if "guardian.com" not in url and "guim.co.uk" not in url:
+        return url
+    if re.search(r"[?&]width=\d+", url):
+        url = re.sub(r"(width=)\d+", r"\g<1>1200", url)
+    else:
+        url += "&width=1200" if "?" in url else "?width=1200"
+    url = re.sub(r"(quality=)\d+", r"\g<1>85", url)
+    return url
 
 
 from dotenv import load_dotenv
@@ -112,6 +125,7 @@ def fetch_source(supabase, source):
                 image_url = enc.get("href")
 
         if image_url:
+            image_url = upgrade_guardian_image(image_url)
             image_url = check_image(image_url)
 
         article = {

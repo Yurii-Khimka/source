@@ -50,6 +50,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Article image object-fit cover — fill full card width
 - [2026-04-24] Hide low-quality images in article card (min 400x200 natural)
 - [2026-04-24] Restore blur background on article images
+- [2026-04-24] Upgrade Guardian image URLs to high resolution in fetcher
 
 ## In Progress
 - Article card design polish
