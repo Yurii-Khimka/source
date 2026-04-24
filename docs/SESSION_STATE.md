@@ -66,6 +66,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Post-run validation checks in fetcher
 - [2026-04-24] Backfill tags on existing articles
 - [2026-04-24] Fix Discovery placeholder + tags counter
+- [2026-04-24] Add posts sections to Discovery tabs, fix All tab order
 
 ## In Progress
 - Article card design polish
@@ -82,6 +83,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Added validate() — checks untagged articles, missing source_id, inactive sources (24h), total tags count, logs WARN or OK
 - [2026-04-24] Created backfill_tags.py, seeded 9 tags, tagged 605/1000 articles (1048 assignments). Fixed tags table column name→label across frontend queries and fetcher.
 - [2026-04-24] Fixed unicode escape in search placeholder, tags now show total article count (not just 24h), sorted by 24h trending then total
+- [2026-04-24] Added ALL POSTS section to All tab (after sources+tags), POSTS FROM THESE SOURCES to Sources tab, RECENT POSTS to Tags tab. Fetches recent 20 articles with tags and user interactions. Reuses ArticleCard component.
 
 ## Backlog (priority order)
 1. Discovery page

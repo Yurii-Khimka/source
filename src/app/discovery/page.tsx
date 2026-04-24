@@ -18,6 +18,7 @@ export default async function DiscoveryPage() {
     { data: tagRows24h },
     { data: tagRows48h },
     { data: userData },
+    { data: recentArticles },
   ] = await Promise.all([
     supabase
       .from("sources")
@@ -44,19 +45,39 @@ export default async function DiscoveryPage() {
       .gte("articles.published_at", twoDaysAgo)
       .lt("articles.published_at", yesterday),
     supabase.auth.getUser(),
+    // Recent articles for posts sections
+    supabase
+      .from("articles")
+      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false })
+      .limit(20),
   ]);
 
   const user = userData?.user ?? null;
 
   let followedSourceIds: string[] = [];
+  let likedIds: string[] = [];
+  let bookmarkedIds: string[] = [];
+  let mutedSourceIds: string[] = [];
   const followerCounts: Record<string, number> = {};
 
   if (user) {
-    const { data: follows } = await supabase
-      .from("follows")
-      .select("source_id")
-      .eq("user_id", user.id);
+    const [
+      { data: follows },
+      { data: likes },
+      { data: bookmarks },
+      { data: mutes },
+    ] = await Promise.all([
+      supabase.from("follows").select("source_id").eq("user_id", user.id),
+      supabase.from("likes").select("article_id").eq("user_id", user.id),
+      supabase.from("bookmarks").select("article_id").eq("user_id", user.id),
+      supabase.from("muted_sources").select("source_id").eq("user_id", user.id),
+    ]);
     followedSourceIds = (follows ?? []).map((f) => f.source_id);
+    likedIds = (likes ?? []).map((l) => l.article_id);
+    bookmarkedIds = (bookmarks ?? []).map((b) => b.article_id);
+    mutedSourceIds = (mutes ?? []).map((m) => m.source_id);
   }
 
   // Get follower counts for each source
@@ -110,6 +131,48 @@ export default async function DiscoveryPage() {
     followers_count: followerCounts[s.id] ?? 0,
   }));
 
+  // Attach tags to articles
+  const articleIds = (recentArticles ?? []).map((a) => a.id);
+  let articleTagsMap: Record<string, { slug: string; name: string }[]> = {};
+  if (articleIds.length > 0) {
+    const { data: atRows } = await supabase
+      .from("article_tags")
+      .select("article_id, tags:tags(slug, label)")
+      .in("article_id", articleIds);
+    for (const row of atRows ?? []) {
+      const tag = row.tags as unknown as { slug: string; label: string } | null;
+      if (!tag) continue;
+      if (!articleTagsMap[row.article_id]) articleTagsMap[row.article_id] = [];
+      articleTagsMap[row.article_id].push({ slug: tag.slug, name: tag.label });
+    }
+  }
+
+  const likedSet = new Set(likedIds);
+  const bookmarkedSet = new Set(bookmarkedIds);
+  const followedSet = new Set(followedSourceIds);
+  const mutedSet = new Set(mutedSourceIds);
+
+  const articlesData = (recentArticles ?? []).map((a) => ({
+    article: {
+      id: a.id,
+      title: a.title,
+      url: a.url,
+      description: a.description,
+      image_url: a.image_url,
+      published_at: a.published_at,
+      like_count: a.like_count,
+      source_id: a.source_id,
+      sources: a.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
+      tags: articleTagsMap[a.id] ?? [],
+    },
+    initialLiked: likedSet.has(a.id),
+    initialLikeCount: a.like_count,
+    initialBookmarked: bookmarkedSet.has(a.id),
+    initialFollowing: followedSet.has(a.source_id),
+    initialMuted: mutedSet.has(a.source_id),
+    sourceId: a.source_id,
+  }));
+
   return (
     <Shell>
       <DiscoveryClient
@@ -117,6 +180,7 @@ export default async function DiscoveryPage() {
         tags={tags}
         followedSourceIds={followedSourceIds}
         isLoggedIn={!!user}
+        articles={articlesData}
       />
     </Shell>
   );

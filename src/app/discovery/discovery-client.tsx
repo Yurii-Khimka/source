@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Search, ShieldCheck, X, ArrowUp, ArrowDown } from "lucide-react";
 import { dark } from "@/lib/tokens";
+import { ArticleCard } from "@/components/article-card";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -26,6 +27,27 @@ type Tag = {
   delta: number | null; // null = "new"
 };
 
+type ArticleData = {
+  article: {
+    id: string;
+    title: string;
+    description: string | null;
+    url: string;
+    image_url: string | null;
+    published_at: string | null;
+    like_count: number;
+    source_id: string;
+    sources: { name: string; handle: string; logo_url: string | null } | null;
+    tags?: { slug: string; name: string }[];
+  };
+  initialLiked: boolean;
+  initialLikeCount: number;
+  initialBookmarked: boolean;
+  initialFollowing: boolean;
+  initialMuted: boolean;
+  sourceId: string;
+};
+
 type Tab = "all" | "sources" | "tags";
 
 type Props = {
@@ -33,6 +55,7 @@ type Props = {
   tags: Tag[];
   followedSourceIds: string[];
   isLoggedIn: boolean;
+  articles: ArticleData[];
 };
 
 function handleToColor(handle: string): string {
@@ -59,6 +82,7 @@ export function DiscoveryClient({
   tags,
   followedSourceIds,
   isLoggedIn,
+  articles,
 }: Props) {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("all");
@@ -89,6 +113,26 @@ export function DiscoveryClient({
 
   const showSources = activeTab === "all" || activeTab === "sources";
   const showTags = activeTab === "all" || activeTab === "tags";
+
+  // Sources tab: filter posts to sources visible in grid (+ search if active)
+  const sourcePostArticles = useMemo(() => {
+    const sourceIds = new Set(filteredSources.map((s) => s.id));
+    let filtered = articles.filter((a) => sourceIds.has(a.article.source_id));
+    if (query) {
+      filtered = filtered.filter(
+        (a) =>
+          a.article.title.toLowerCase().includes(query) ||
+          (a.article.description ?? "").toLowerCase().includes(query)
+      );
+    }
+    return filtered;
+  }, [articles, filteredSources, query]);
+
+  // Tags tab: articles that have at least one tag
+  const taggedArticles = useMemo(
+    () => articles.filter((a) => a.article.tags && a.article.tags.length > 0),
+    [articles]
+  );
 
   async function toggleFollow(sourceId: string) {
     if (!isLoggedIn) return;
@@ -515,6 +559,105 @@ export function DiscoveryClient({
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* All tab — ALL POSTS section */}
+      {activeTab === "all" && articles.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div
+            style={{
+              fontFamily: mono,
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: 1.2,
+              color: dark.textMute,
+              marginBottom: 14,
+            }}
+          >
+            ALL POSTS
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {articles.map((a) => (
+              <ArticleCard
+                key={a.article.id}
+                article={a.article}
+                initialLiked={a.initialLiked}
+                initialLikeCount={a.initialLikeCount}
+                initialBookmarked={a.initialBookmarked}
+                initialFollowing={a.initialFollowing}
+                initialMuted={a.initialMuted}
+                sourceId={a.sourceId}
+                isLoggedIn={isLoggedIn}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Sources tab — POSTS FROM THESE SOURCES */}
+      {activeTab === "sources" && sourcePostArticles.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div
+            style={{
+              fontFamily: mono,
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: 1.2,
+              color: dark.textMute,
+              marginBottom: 14,
+            }}
+          >
+            POSTS FROM THESE SOURCES
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {sourcePostArticles.map((a) => (
+              <ArticleCard
+                key={a.article.id}
+                article={a.article}
+                initialLiked={a.initialLiked}
+                initialLikeCount={a.initialLikeCount}
+                initialBookmarked={a.initialBookmarked}
+                initialFollowing={a.initialFollowing}
+                initialMuted={a.initialMuted}
+                sourceId={a.sourceId}
+                isLoggedIn={isLoggedIn}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tags tab — RECENT POSTS */}
+      {activeTab === "tags" && taggedArticles.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div
+            style={{
+              fontFamily: mono,
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: 1.2,
+              color: dark.textMute,
+              marginBottom: 14,
+            }}
+          >
+            RECENT POSTS
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {taggedArticles.map((a) => (
+              <ArticleCard
+                key={a.article.id}
+                article={a.article}
+                initialLiked={a.initialLiked}
+                initialLikeCount={a.initialLikeCount}
+                initialBookmarked={a.initialBookmarked}
+                initialFollowing={a.initialFollowing}
+                initialMuted={a.initialMuted}
+                sourceId={a.sourceId}
+                isLoggedIn={isLoggedIn}
+              />
+            ))}
           </div>
         </div>
       )}
