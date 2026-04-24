@@ -39,7 +39,7 @@ export default async function SettingsPage() {
   ).filter(Boolean);
 
   return (
-    <div className="p-6">
+    <div className="page-content p-6">
       <BackButton />
       <h1
         style={{

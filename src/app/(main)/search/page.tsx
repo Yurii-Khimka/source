@@ -3,7 +3,7 @@ import { BackButton } from "@/components/ui/back-button";
 
 export default function SearchPage() {
   return (
-    <div className="p-6">
+    <div className="page-content p-6">
       <BackButton />
       <SearchClient />
     </div>

@@ -36,7 +36,7 @@ const collectCards = [
 
 export default function PrivacyPage() {
   return (
-    <div style={{ maxWidth: 680, margin: "0 auto", padding: "32px 24px" }}>
+    <div className="page-content" style={{ maxWidth: 680, margin: "0 auto", padding: "32px 24px" }}>
       <BackButton />
       {/* Title */}
       <h1
