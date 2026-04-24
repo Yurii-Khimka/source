@@ -8,6 +8,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const offset = parseInt(searchParams.get("offset") ?? "0", 10);
     const limit = parseInt(searchParams.get("limit") ?? "20", 10);
+    const sourceId = searchParams.get("source_id");
 
     const cookieStore = await cookies();
     const supabase = createServerClient(
@@ -25,12 +26,18 @@ export async function GET(request: Request) {
       }
     );
 
-    const { data: articles, error } = await supabase
+    let query = supabase
       .from("articles")
       .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
       .eq("is_hidden", false)
       .order("published_at", { ascending: false })
       .range(offset, offset + limit - 1);
+
+    if (sourceId) {
+      query = query.eq("source_id", sourceId);
+    }
+
+    const { data: articles, error } = await query;
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

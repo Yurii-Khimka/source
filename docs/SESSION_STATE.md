@@ -74,6 +74,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Remove divider below tags in post card
 - [2026-04-24] Full-width divider in post card
 - [2026-04-24] Fix Vercel build failure
+- [2026-04-24] Build Source profile page
 
 ## In Progress
 - Article card design polish
@@ -98,6 +99,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Removed borderTop and paddingTop from footer row in article-card.tsx.
 - [2026-04-24] Added full-width divider using negative margins to span past card padding.
 - [2026-04-24] ESLint prefer-const error: articleTagsMap in discovery/page.tsx was declared with let but never reassigned. Changed to const.
+- [2026-04-24] Created /source/[handle] with identity header, stats strip, transparency record, 3 tabs (Posts with infinite scroll, Audit Log empty state, About cards), actions dropdown, and source_id filter on articles API
 
 ## Backlog (priority order)
 1. Discovery page
