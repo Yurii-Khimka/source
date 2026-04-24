@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Bell, ShieldCheck } from "lucide-react";
+import { Search, ShieldCheck } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 export function MobileHeader() {
@@ -78,23 +78,7 @@ export function MobileHeader() {
         >
           <Search size={20} />
         </Link>
-        <button
-          className="header-icon-btn"
-          style={{
-            width: 44,
-            height: 44,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: dark.textDim,
-            background: "transparent",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer",
-          }}
-        >
-          <Bell size={20} />
-        </button>
+
       </div>
     </header>
   );
