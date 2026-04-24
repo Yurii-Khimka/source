@@ -33,24 +33,32 @@
 - [ ] Step 19: Multi-source RSS fetcher
 
 ## 2026-04-24 Day 3
-- Header rebuilt matching design system (3-col grid, logo, breadcrumbs, icon buttons)
-- Left sidebar rebuilt — nav group (Home, Discovery, Following, Tags, Bookmarks), followed sources, bookmark counter
-- Right rail added — integrity widget, trending sources, recent hashtags, footer
-- Feed redesign — markets ticker, tabs with counts, category pills from real tags
-- Real tags from DB in feed filter pills (top 8 by article count)
+- Header rebuilt — logo, breadcrumbs, icon buttons, lighter background
+- Left sidebar rebuilt — correct nav items, followed sources, bookmark counter
+- Right rail added — integrity widget, trending sources, footer
+- Feed redesign — markets ticker, tabs with counts, category pills with real tags
 - Following tab active by default when logged in
-- Like/bookmark active states redesigned (accent container when active)
-- Like/bookmark toggle bug fixed (delete by user_id+article_id, error handling)
-- Tab counter badges styled to match sidebar badge pattern
-- Markets ticker border spans full card width
+- Like/bookmark active states matching design
+- Like counter RLS bug fixed — SECURITY DEFINER function (migration 003)
+- Bookmark counter real-time updates via custom event + /api/bookmark-count
+- Like/bookmark toggle bug fixed — server response drives state, no optimistic updates
 - Bell (notifications) icon removed from header (post-MVP)
 - Analytics tracking added to backlog
+- Jest test suite added (6 tests for like/bookmark API)
 
-### In progress / known issues
-- Hashtags widget data depends on article_tags being populated
-- Category pill filtering is UI-only (no article categories in DB yet)
-- Markets ticker data is static placeholder
-- Light theme still not implemented
+### In progress / next
+- Hashtags widget in right rail
+- Article card design polish
+- Discovery page
+- Tag page
+- Source page (article list)
+- About page
+- Onboarding
+
+### Pending fixes (small)
+- Markets ticker border full width
+- Tab counter badge style
+- Markets card missing top section on scroll
 
 ## 2026-04-23 Day 2
 - App shell built with header, sidebar, dynamic sources list
