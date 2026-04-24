@@ -94,6 +94,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Fix full page reload on navigation
 - [2026-04-24] Fix Vercel build failure
 - [2026-04-24] Fix followed tags left rail update
+- [2026-04-24] Fix tag page articles and skeleton
 
 ## In Progress
 - Article card design polish
@@ -138,6 +139,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Replaced all internal anchor tags with Link. Verified shell in layout.tsx. Converted sidebars to client components with SWR cache. Right rail no longer remounts on navigation.
 - [2026-04-24] Removed unused bookmarkCount and followedSources variables in shell.tsx.
 - [2026-04-24] Fixed follow tag write, left rail query, and live update event so followed tags appear immediately without page reload.
+- [2026-04-24] Fixed articles query join path (article_tags → tags), fixed skeleton/empty state mutual exclusion.
 
 ## Backlog (priority order)
 1. Discovery page

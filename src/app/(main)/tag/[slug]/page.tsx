@@ -22,55 +22,41 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
     notFound();
   }
 
-  // Fetch article IDs for this tag + total count
-  const { data: articleTagRows } = await supabase
+  // Count articles for this tag
+  const { count: postCount } = await supabase
     .from("article_tags")
-    .select("article_id")
+    .select("*", { count: "exact", head: true })
     .eq("tag_id", tag.id);
 
-  const tagArticleIds = (articleTagRows ?? []).map((r) => r.article_id);
-  const postCount = tagArticleIds.length;
-
-  if (postCount === 0) {
+  if (!postCount || postCount === 0) {
     notFound();
   }
 
-  // Fetch first page of articles
-  const { data: articles } = await supabase
+  // Fetch first page of articles via inner join (avoids .in() URL length limit)
+  const { data: articlesRaw } = await supabase
     .from("articles")
     .select(
-      "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)"
+      "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url), article_tags!inner(tag_id)"
     )
-    .in("id", tagArticleIds)
+    .eq("article_tags.tag_id", tag.id)
     .eq("is_hidden", false)
     .order("published_at", { ascending: false })
     .range(0, 19);
 
-  // Top sources — count articles per source for this tag
-  const sourceCountMap = new Map<string, number>();
-  const sourceIdSet = new Set<string>();
-  for (const a of articles ?? []) {
-    sourceIdSet.add(a.source_id);
-    sourceCountMap.set(a.source_id, (sourceCountMap.get(a.source_id) ?? 0) + 1);
-  }
+  // Strip the article_tags join field from results
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const articles = (articlesRaw ?? []).map(({ article_tags, ...rest }) => rest);
 
-  // For accurate counts, count from all tagArticleIds
-  // Fetch source_id for all tagged articles
-  if (tagArticleIds.length > 0) {
-    // Clear and rebuild from full dataset
-    sourceCountMap.clear();
-    const batchSize = 500;
-    for (let i = 0; i < tagArticleIds.length; i += batchSize) {
-      const batch = tagArticleIds.slice(i, i + batchSize);
-      const { data: sourceRows } = await supabase
-        .from("articles")
-        .select("source_id")
-        .in("id", batch)
-        .eq("is_hidden", false);
-      for (const row of sourceRows ?? []) {
-        sourceCountMap.set(row.source_id, (sourceCountMap.get(row.source_id) ?? 0) + 1);
-      }
-    }
+  // Top sources — count articles per source for this tag via inner join
+  const { data: sourceCountRows } = await supabase
+    .from("articles")
+    .select("source_id, article_tags!inner(tag_id)")
+    .eq("article_tags.tag_id", tag.id)
+    .eq("is_hidden", false);
+
+  const sourceCountMap = new Map<string, number>();
+  for (const row of sourceCountRows ?? []) {
+    sourceCountMap.set(row.source_id, (sourceCountMap.get(row.source_id) ?? 0) + 1);
   }
 
   // Fetch source details for top 5

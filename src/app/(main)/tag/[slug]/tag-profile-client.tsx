@@ -385,13 +385,17 @@ export function TagProfileClient({
         </div>
       )}
 
-      <div ref={sentinelRef} style={{ minHeight: 1 }} />
-      {loading && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 14 }}>
-          {Array.from({ length: 3 }).map((_, i) => (
-            <ArticleCardSkeleton key={i} />
-          ))}
-        </div>
+      {displayedArticles.length > 0 && (
+        <>
+          <div ref={sentinelRef} style={{ minHeight: 1 }} />
+          {loading && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 14 }}>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <ArticleCardSkeleton key={i} />
+              ))}
+            </div>
+          )}
+        </>
       )}
       {!hasMore && displayedArticles.length > 0 && (
         <p
