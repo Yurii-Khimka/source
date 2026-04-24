@@ -3,75 +3,85 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const { article_id } = await request.json();
-
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return cookieStore.getAll(); },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
+  try {
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          },
         },
-      },
+      }
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-  );
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+    const { article_id } = await request.json();
 
-  const { data: existing } = await supabase
-    .from("likes")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("article_id", article_id)
-    .maybeSingle();
-
-  if (existing) {
-    const { error: deleteError } = await supabase
+    // Check if like exists
+    const { data: existing } = await supabase
       .from("likes")
-      .delete()
+      .select("*")
       .eq("user_id", user.id)
-      .eq("article_id", article_id);
+      .eq("article_id", article_id)
+      .maybeSingle();
 
-    if (deleteError) {
-      return NextResponse.json({ error: deleteError.message }, { status: 500 });
+    if (existing) {
+      // Remove like
+      const { error: deleteError } = await supabase
+        .from("likes")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("article_id", article_id);
+
+      if (deleteError) {
+        console.error("Like delete error:", deleteError);
+        return NextResponse.json({ error: deleteError.message }, { status: 500 });
+      }
+
+      // Decrement like_count safely
+      const { data: article } = await supabase
+        .from("articles")
+        .select("like_count")
+        .eq("id", article_id)
+        .single();
+      const newCount = Math.max(0, (article?.like_count ?? 1) - 1);
+      await supabase.from("articles").update({ like_count: newCount }).eq("id", article_id);
+
+      return NextResponse.json({ liked: false, like_count: newCount });
+    } else {
+      // Add like
+      const { error: insertError } = await supabase
+        .from("likes")
+        .insert({ user_id: user.id, article_id });
+
+      if (insertError) {
+        console.error("Like insert error:", insertError);
+        return NextResponse.json({ error: insertError.message }, { status: 500 });
+      }
+
+      // Increment like_count
+      const { data: article } = await supabase
+        .from("articles")
+        .select("like_count")
+        .eq("id", article_id)
+        .single();
+      const newCount = (article?.like_count ?? 0) + 1;
+      await supabase.from("articles").update({ like_count: newCount }).eq("id", article_id);
+
+      return NextResponse.json({ liked: true, like_count: newCount });
     }
-
-    // Decrement like_count
-    const { data: current } = await supabase
-      .from("articles")
-      .select("like_count")
-      .eq("id", article_id)
-      .single();
-    const newCount = Math.max(0, (current?.like_count ?? 1) - 1);
-    await supabase.from("articles").update({ like_count: newCount }).eq("id", article_id);
-
-    return NextResponse.json({ liked: false, like_count: newCount });
+  } catch (error) {
+    console.error("Like API error:", error);
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
-
-  const { error: insertError } = await supabase
-    .from("likes")
-    .insert({ user_id: user.id, article_id });
-
-  if (insertError) {
-    return NextResponse.json({ error: insertError.message }, { status: 500 });
-  }
-
-  // Increment like_count
-  const { data: current } = await supabase
-    .from("articles")
-    .select("like_count")
-    .eq("id", article_id)
-    .single();
-  const newCount = (current?.like_count ?? 0) + 1;
-  await supabase.from("articles").update({ like_count: newCount }).eq("id", article_id);
-
-  return NextResponse.json({ liked: true, like_count: newCount });
 }
