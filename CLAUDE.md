@@ -23,6 +23,24 @@ No user-generated content. No algorithms.
 - Python 3.14 + supabase==2.10.0 + feedparser==6.0.11
 - Virtual env in scripts/venv/
 
+## Component Consistency Rules
+
+These rules are MANDATORY. Violations will be rejected.
+
+1. **Never duplicate styles.** If a UI element (pill, badge, avatar, card) already exists as a component, reuse it. Do not write inline styles that recreate it.
+
+2. **Hashtag pills** — one canonical style, defined in `article-card.tsx`:
+   - fontMono, fontSize 11, color textSub
+   - padding 2px 7px, border 1px solid line2, borderRadius 3
+   - NO background fill
+   Use this exact style everywhere: article cards, right rail, tag pages, search results.
+
+3. **Before creating any styled element**, search the codebase for an existing component that does the same thing.
+
+4. **Token enforcement** — never use hardcoded hex values or pixel sizes that are not in `src/lib/tokens.ts`.
+
+5. **After every task** — check that the changed component matches every other place the same element is used.
+
 ## What is done
 - DB schema created in Supabase (9 tables)
 - RLS policies applied

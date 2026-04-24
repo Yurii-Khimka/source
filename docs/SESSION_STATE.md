@@ -38,6 +38,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Fixed: Hashtags widget missing from right rail
 - [2026-04-24] Hashtags widget — pill grid layout in right rail
 - [2026-04-24] Sync hashtag pill style across article card and right rail
+- [2026-04-24] Component consistency rules added to CLAUDE.md
 
 ## In Progress
 - Article card design polish
