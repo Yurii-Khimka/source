@@ -12,12 +12,6 @@ import { RightRail } from "@/components/right-rail";
 export async function Shell({ children, rightRailTop }: { children: React.ReactNode; rightRailTop?: React.ReactNode }) {
   const supabase = createClient();
 
-  const { data: sources } = await supabase
-    .from("sources")
-    .select("id, name, handle")
-    .eq("is_hidden", false)
-    .order("name");
-
   const { data: { user } } = await supabase.auth.getUser();
 
   let profile: { avatar_url: string | null; display_name: string | null } | null = null;
@@ -28,37 +22,6 @@ export async function Shell({ children, rightRailTop }: { children: React.ReactN
       .eq("id", user.id)
       .single();
     profile = data;
-  }
-
-  // Sidebar data
-  let bookmarkCount = 0;
-  let followedSources: { id: string; name: string; handle: string }[] = [];
-
-  if (user) {
-    const [{ count }, { data: followedIds }] = await Promise.all([
-      supabase
-        .from("bookmarks")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id),
-      supabase
-        .from("follows")
-        .select("source_id")
-        .eq("user_id", user.id),
-    ]);
-    bookmarkCount = count ?? 0;
-
-    if (followedIds && followedIds.length > 0) {
-      const { data } = await supabase
-        .from("sources")
-        .select("id, name, handle")
-        .in("id", followedIds.map((f) => f.source_id))
-        .eq("is_hidden", false)
-        .order("name");
-      followedSources = (data ?? []) as { id: string; name: string; handle: string }[];
-    }
-  } else {
-    // Not logged in — show all sources
-    followedSources = (sources ?? []) as { id: string; name: string; handle: string }[];
   }
 
   const iconBtnStyle: React.CSSProperties = {
