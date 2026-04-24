@@ -44,6 +44,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Infinite scroll on feed with live showing X of Y counter
 - [2026-04-24] Sticky category bar with live showing counter
 - [2026-04-24] Filter low-res images in RSS fetcher (min 400x200)
+- [2026-04-24] Sticky category bar bottom spacing (16px)
 
 ## In Progress
 - Article card design polish

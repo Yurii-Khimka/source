@@ -272,7 +272,7 @@ export function Feed({
           paddingLeft: 36,
           paddingRight: 36,
           paddingTop: 4,
-          paddingBottom: 0,
+          paddingBottom: 16,
         }}
       >
       {/* Tabs */}
