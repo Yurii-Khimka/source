@@ -71,6 +71,7 @@ export function ArticleCard({
   const [muted, setMuted] = useState(initialMuted);
   const [likeLoading, setLikeLoading] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
+  const [showImage, setShowImage] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -318,7 +319,7 @@ export function ArticleCard({
       )}
 
       {/* Row 5 — Image */}
-      {article.image_url && (
+      {article.image_url && showImage && (
         <div
           className="mb-3"
           style={{
@@ -332,6 +333,7 @@ export function ArticleCard({
           <img
             src={article.image_url}
             alt=""
+            onError={() => setShowImage(false)}
             style={{
               position: "absolute",
               inset: 0,
@@ -346,6 +348,7 @@ export function ArticleCard({
           <img
             src={article.image_url}
             alt=""
+            onError={() => setShowImage(false)}
             style={{
               position: "relative",
               zIndex: 1,

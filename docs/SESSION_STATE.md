@@ -52,6 +52,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Restore blur background on article images
 - [2026-04-24] Upgrade Guardian image URLs to high resolution in fetcher
 - [2026-04-24] One-time script to backfill Guardian image URLs to high resolution
+- [2026-04-24] Hide image container on load error in article card
 
 ## In Progress
 - Article card design polish
