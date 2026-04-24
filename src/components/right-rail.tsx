@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { dark } from "@/lib/tokens";
+import { inferTags } from "@/lib/tag-keywords";
 
 const inter = "'Inter', system-ui, sans-serif";
 const mono = "'JetBrains Mono', monospace";
@@ -17,49 +18,58 @@ const sectionTitle: React.CSSProperties = {
 async function getRecentTags(supabase: ReturnType<typeof createClient>) {
   const yesterday = new Date(Date.now() - 86400000).toISOString();
 
-  // Try tags from articles published in last 24h
+  // Try tags from article_tags (24h, then all)
   const { data: recentTagRows } = await supabase
     .from("article_tags")
     .select("tag_id, tags!inner(slug, name), articles!inner(published_at)")
     .gte("articles.published_at", yesterday);
 
   if (recentTagRows && recentTagRows.length > 0) {
-    // Count usage per tag client-side
     const counts = new Map<string, { slug: string; name: string; count: number }>();
     for (const row of recentTagRows) {
       const tag = row.tags as unknown as { slug: string; name: string };
       const existing = counts.get(tag.slug);
-      if (existing) {
-        existing.count++;
-      } else {
-        counts.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
-      }
+      if (existing) existing.count++;
+      else counts.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
     }
-    return Array.from(counts.values())
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 9);
+    return Array.from(counts.values()).sort((a, b) => b.count - a.count).slice(0, 9);
   }
 
-  // Fallback: all tags without time filter
   const { data: allTagRows } = await supabase
     .from("article_tags")
     .select("tag_id, tags!inner(slug, name)");
 
-  if (!allTagRows || allTagRows.length === 0) return [];
+  if (allTagRows && allTagRows.length > 0) {
+    const counts = new Map<string, { slug: string; name: string; count: number }>();
+    for (const row of allTagRows) {
+      const tag = row.tags as unknown as { slug: string; name: string };
+      const existing = counts.get(tag.slug);
+      if (existing) existing.count++;
+      else counts.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
+    }
+    return Array.from(counts.values()).sort((a, b) => b.count - a.count).slice(0, 9);
+  }
+
+  // Fallback: infer tags from recent articles via keyword matching
+  const { data: recentArticles } = await supabase
+    .from("articles")
+    .select("title, description")
+    .eq("is_hidden", false)
+    .order("published_at", { ascending: false })
+    .limit(100);
+
+  if (!recentArticles || recentArticles.length === 0) return [];
 
   const counts = new Map<string, { slug: string; name: string; count: number }>();
-  for (const row of allTagRows) {
-    const tag = row.tags as unknown as { slug: string; name: string };
-    const existing = counts.get(tag.slug);
-    if (existing) {
-      existing.count++;
-    } else {
-      counts.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
+  for (const article of recentArticles) {
+    const tags = inferTags(article.title, article.description);
+    for (const tag of tags) {
+      const existing = counts.get(tag.slug);
+      if (existing) existing.count++;
+      else counts.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
     }
   }
-  return Array.from(counts.values())
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 9);
+  return Array.from(counts.values()).sort((a, b) => b.count - a.count).slice(0, 8);
 }
 
 export async function RightRail() {

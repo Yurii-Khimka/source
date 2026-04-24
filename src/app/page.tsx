@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Shell } from "@/components/shell";
 import { Feed } from "@/components/feed";
+import { inferTags } from "@/lib/tag-keywords";
 
 export const revalidate = 0;
 
@@ -70,11 +71,30 @@ export default async function Home() {
     }
   }
 
-  const feedArticles = (articles ?? []).map((article) => ({
-    ...article,
-    sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
-    tags: articleTagsMap.get(article.id) ?? [],
-  }));
+  const feedArticles = (articles ?? []).map((article) => {
+    const dbTags = articleTagsMap.get(article.id) ?? [];
+    // Fallback: infer tags from title/description if no DB tags
+    const tags = dbTags.length > 0 ? dbTags : inferTags(article.title, article.description);
+    return {
+      ...article,
+      sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
+      tags,
+    };
+  });
+
+  // Rebuild tag maps from enriched articles (covers both DB and inferred tags)
+  const enrichedTagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
+  for (const article of feedArticles) {
+    for (const tag of article.tags) {
+      const existing = enrichedTagMap.get(tag.slug);
+      if (existing) {
+        existing.articleIds.push(article.id);
+        existing.count++;
+      } else {
+        enrichedTagMap.set(tag.slug, { id: tag.slug, slug: tag.slug, name: tag.name, articleIds: [article.id], count: 1 });
+      }
+    }
+  }
 
   // Count articles published today
   const todayStart = new Date();
@@ -83,7 +103,7 @@ export default async function Home() {
     (a) => a.published_at && new Date(a.published_at) >= todayStart
   ).length;
 
-  const feedTags = Array.from(tagMap.values())
+  const feedTags = Array.from(enrichedTagMap.values())
     .sort((a, b) => b.count - a.count)
     .slice(0, 8)
     .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }));

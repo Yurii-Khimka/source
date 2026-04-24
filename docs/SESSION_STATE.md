@@ -34,6 +34,8 @@ Phase 1 — MVP in progress
 - [2026-04-24] Hashtag support — tags on articles, tag page, tag filter pills
 - [2026-04-24] Auto session state update script
 - [2026-04-24] Hashtags widget in right rail (list style with counts)
+- [2026-04-24] Hashtag display fix — keyword fallback for empty article_tags
+- [2026-04-24] Fixed: Hashtags widget missing from right rail
 
 ## In Progress
 - Article card design polish

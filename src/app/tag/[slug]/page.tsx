@@ -3,6 +3,7 @@ import { Shell } from "@/components/shell";
 import { ArticleCard } from "@/components/article-card";
 import Link from "next/link";
 import { dark } from "@/lib/tokens";
+import { inferTags } from "@/lib/tag-keywords";
 
 export const revalidate = 0;
 
@@ -12,96 +13,91 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
   const supabase = createClient();
   const { slug } = params;
 
-  // Fetch the tag
+  // Try fetching the tag from DB
   const { data: tag } = await supabase
     .from("tags")
     .select("id, name, slug")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (!tag) {
-    return (
-      <Shell>
-        <div className="p-6">
-          <p
-            className="text-center py-16"
-            style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
-          >
-            Tag not found
-          </p>
-        </div>
-      </Shell>
-    );
+  // Fetch articles for this tag from article_tags (if tag exists in DB)
+  let articleIds: string[] = [];
+  if (tag) {
+    const { data: articleTagRows } = await supabase
+      .from("article_tags")
+      .select("article_id")
+      .eq("tag_id", tag.id);
+    articleIds = (articleTagRows ?? []).map((r) => r.article_id);
   }
 
-  // Fetch article IDs for this tag
-  const { data: articleTagRows } = await supabase
-    .from("article_tags")
-    .select("article_id")
-    .eq("tag_id", tag.id);
+  // Tag display name
+  const tagName = tag?.name ?? slug.charAt(0).toUpperCase() + slug.slice(1);
 
-  const articleIds = (articleTagRows ?? []).map((r) => r.article_id);
+  // If no DB results, try keyword-based matching
+  let articles: {
+    id: string; title: string; url: string; published_at: string | null;
+    description: string | null; image_url: string | null; like_count: number;
+    source_id: string; sources: unknown;
+  }[] = [];
 
-  if (articleIds.length === 0) {
-    return (
-      <Shell>
-        <div className="p-6">
-          <div className="mb-6">
-            <h1
-              style={{
-                fontFamily: "'Source Serif 4', Georgia, serif",
-                fontSize: 24,
-                fontWeight: 700,
-                color: "#EEF1F6",
-              }}
+  if (articleIds.length > 0) {
+    const { data } = await supabase
+      .from("articles")
+      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
+      .in("id", articleIds)
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false });
+    articles = data ?? [];
+  } else {
+    // Keyword fallback: fetch recent articles and filter by inferred tag
+    const { data } = await supabase
+      .from("articles")
+      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false })
+      .limit(200);
+
+    articles = (data ?? []).filter((a) => {
+      const inferred = inferTags(a.title, a.description as string | null);
+      return inferred.some((t) => t.slug === slug);
+    });
+
+    if (articles.length === 0) {
+      return (
+        <Shell>
+          <div className="p-6">
+            <p
+              className="text-center py-16"
+              style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
             >
-              #{tag.name}
-            </h1>
-            <p style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", marginTop: 4 }}>
-              0 articles
+              Tag not found
             </p>
           </div>
-          <p
-            className="text-center py-12"
-            style={{ fontFamily: mono, fontSize: 11, color: "#6C727E" }}
-          >
-            {"// no articles with this tag yet"}
-          </p>
-        </div>
-      </Shell>
-    );
-  }
-
-  // Fetch articles
-  const { data: articles } = await supabase
-    .from("articles")
-    .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
-    .in("id", articleIds)
-    .eq("is_hidden", false)
-    .order("published_at", { ascending: false });
-
-  // Fetch all tags for these articles
-  const { data: allTagRows } = await supabase
-    .from("article_tags")
-    .select("article_id, tags!inner(slug, name)")
-    .in("article_id", articleIds);
-
-  const articleTagsMap = new Map<string, { slug: string; name: string }[]>();
-  for (const row of allTagRows ?? []) {
-    const t = row.tags as unknown as { slug: string; name: string };
-    const existing = articleTagsMap.get(row.article_id);
-    if (existing) {
-      existing.push({ slug: t.slug, name: t.name });
-    } else {
-      articleTagsMap.set(row.article_id, [{ slug: t.slug, name: t.name }]);
+        </Shell>
+      );
     }
   }
 
-  const feedArticles = (articles ?? []).map((article) => ({
+  // Enrich with tags (DB + keyword fallback)
+  const feedArticles = articles.map((article) => ({
     ...article,
     sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
-    tags: articleTagsMap.get(article.id) ?? [],
+    tags: inferTags(article.title, article.description as string | null),
   }));
+
+  // Collect related tags from these articles
+  const relatedTags = new Map<string, { slug: string; name: string; count: number }>();
+  for (const article of feedArticles) {
+    for (const t of article.tags) {
+      if (t.slug === slug) continue;
+      const existing = relatedTags.get(t.slug);
+      if (existing) existing.count++;
+      else relatedTags.set(t.slug, { slug: t.slug, name: t.name, count: 1 });
+    }
+  }
+  const topRelated = Array.from(relatedTags.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 6);
 
   // Fetch user state
   const { data: { user } } = await supabase.auth.getUser();
@@ -124,22 +120,6 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
     mutedIds = new Set((mutesRes.data ?? []).map((r) => r.source_id));
   }
 
-  // Fetch related tags (other tags on these articles)
-  const relatedTags = new Map<string, { slug: string; name: string; count: number }>();
-  for (const row of allTagRows ?? []) {
-    const t = row.tags as unknown as { slug: string; name: string };
-    if (t.slug === slug) continue;
-    const existing = relatedTags.get(t.slug);
-    if (existing) {
-      existing.count++;
-    } else {
-      relatedTags.set(t.slug, { slug: t.slug, name: t.name, count: 1 });
-    }
-  }
-  const topRelated = Array.from(relatedTags.values())
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 6);
-
   const count = feedArticles.length;
 
   return (
@@ -155,7 +135,7 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
               color: "#EEF1F6",
             }}
           >
-            #{tag.name}
+            #{tagName}
           </h1>
           <p style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", marginTop: 4 }}>
             {count} article{count !== 1 ? "s" : ""} · chronological
