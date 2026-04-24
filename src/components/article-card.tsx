@@ -327,7 +327,7 @@ export function ArticleCard({
             background: dark.surface,
             borderRadius: 6,
             border: `1px solid ${dark.line}`,
-            height: 220,
+            height: 420,
           }}
         >
           <img
@@ -352,9 +352,8 @@ export function ArticleCard({
               zIndex: 1,
               display: "block",
               width: "100%",
-              maxHeight: 420,
-              height: "100%",
-              objectFit: "contain",
+              height: 420,
+              objectFit: "cover",
             }}
           />
         </div>

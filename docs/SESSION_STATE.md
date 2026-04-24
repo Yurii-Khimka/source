@@ -47,6 +47,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Sticky category bar bottom spacing (16px)
 - [2026-04-24] Sticky bar bottom spacing adjusted to 8px
 - [2026-04-24] Blur background behind article images in card
+- [2026-04-24] Article image object-fit cover — fill full card width
 
 ## In Progress
 - Article card design polish
