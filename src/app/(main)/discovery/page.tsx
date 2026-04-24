@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { Shell } from "@/components/shell";
 import { DiscoveryClient } from "./discovery-client";
 
 export const revalidate = 0;
@@ -174,14 +173,12 @@ export default async function DiscoveryPage() {
   }));
 
   return (
-    <Shell>
-      <DiscoveryClient
-        sources={sourcesData}
-        tags={tags}
-        followedSourceIds={followedSourceIds}
-        isLoggedIn={!!user}
-        articles={articlesData}
-      />
-    </Shell>
+    <DiscoveryClient
+      sources={sourcesData}
+      tags={tags}
+      followedSourceIds={followedSourceIds}
+      isLoggedIn={!!user}
+      articles={articlesData}
+    />
   );
 }

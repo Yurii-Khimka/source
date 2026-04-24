@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
@@ -100,7 +101,7 @@ export default function SignUpPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-lg outline-none"
+            className="w-full rounded-lg outline-none input-field"
             style={{
               background: dark.surface2,
               border: `1px solid ${dark.line2}`,
@@ -116,7 +117,7 @@ export default function SignUpPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full rounded-lg outline-none"
+            className="w-full rounded-lg outline-none input-field"
             style={{
               background: dark.surface2,
               border: `1px solid ${dark.line2}`,
@@ -132,7 +133,7 @@ export default function SignUpPage() {
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             required
-            className="w-full rounded-lg outline-none"
+            className="w-full rounded-lg outline-none input-field"
             style={{
               background: dark.surface2,
               border: `1px solid ${dark.line2}`,
@@ -178,9 +179,9 @@ export default function SignUpPage() {
           }}
         >
           Already have an account?{" "}
-          <a href="/auth/signin" style={{ color: dark.accent }}>
+          <Link href="/auth/signin" style={{ color: dark.accent }}>
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>

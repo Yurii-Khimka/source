@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { Shell } from "@/components/shell";
 import { ArticleCard } from "@/components/article-card";
 
 export const revalidate = 0;
@@ -10,16 +9,14 @@ export default async function BookmarksPage() {
 
   if (!user) {
     return (
-      <Shell>
-        <div className="p-6">
-          <p
-            className="text-center py-16"
-            style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
-          >
-            Sign in to save bookmarks
-          </p>
-        </div>
-      </Shell>
+      <div className="p-6">
+        <p
+          className="text-center py-16"
+          style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
+        >
+          Sign in to save bookmarks
+        </p>
+      </div>
     );
   }
 
@@ -51,8 +48,7 @@ export default async function BookmarksPage() {
   const count = articles.length;
 
   return (
-    <Shell>
-      <div className="p-6">
+    <div className="p-6">
       <div className="mb-4">
         <h1
           style={{
@@ -104,7 +100,6 @@ export default async function BookmarksPage() {
           ))}
         </div>
       )}
-      </div>
-    </Shell>
+    </div>
   );
 }

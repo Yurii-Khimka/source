@@ -9,6 +9,7 @@ export async function GET(request: Request) {
     const offset = parseInt(searchParams.get("offset") ?? "0", 10);
     const limit = parseInt(searchParams.get("limit") ?? "20", 10);
     const sourceId = searchParams.get("source_id");
+    const tagSlug = searchParams.get("tag_slug");
 
     const cookieStore = await cookies();
     const supabase = createServerClient(
@@ -26,16 +27,41 @@ export async function GET(request: Request) {
       }
     );
 
+    // If filtering by tag, first resolve article IDs
+    let tagArticleIds: string[] | null = null;
+    if (tagSlug) {
+      const { data: tagRow } = await supabase
+        .from("tags")
+        .select("id")
+        .eq("slug", tagSlug)
+        .maybeSingle();
+      if (tagRow) {
+        const { data: atRows } = await supabase
+          .from("article_tags")
+          .select("article_id")
+          .eq("tag_id", tagRow.id);
+        tagArticleIds = (atRows ?? []).map((r) => r.article_id);
+      }
+    }
+
     let query = supabase
       .from("articles")
       .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
       .eq("is_hidden", false)
-      .order("published_at", { ascending: false })
-      .range(offset, offset + limit - 1);
+      .order("published_at", { ascending: false });
 
     if (sourceId) {
       query = query.eq("source_id", sourceId);
     }
+
+    if (tagArticleIds !== null) {
+      if (tagArticleIds.length === 0) {
+        return NextResponse.json({ articles: [], likedIds: [], bookmarkedIds: [] });
+      }
+      query = query.in("id", tagArticleIds);
+    }
+
+    query = query.range(offset, offset + limit - 1);
 
     const { data: articles, error } = await query;
 

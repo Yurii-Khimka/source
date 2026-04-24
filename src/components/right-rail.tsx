@@ -1,7 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import useSWR from "swr";
 import { dark } from "@/lib/tokens";
-import { inferTags } from "@/lib/tag-keywords";
 
 const inter = "'Inter', system-ui, sans-serif";
 const mono = "'JetBrains Mono', monospace";
@@ -15,99 +16,30 @@ const sectionTitle: React.CSSProperties = {
   marginBottom: 10,
 };
 
-async function getRecentTags(supabase: ReturnType<typeof createClient>) {
-  const yesterday = new Date(Date.now() - 86400000).toISOString();
+type RightRailData = {
+  stats: { activeUsers: number; totalSources: number; totalArticles: number };
+  trendingSources: { id: string; handle: string; name: string }[];
+  recentTags: { slug: string; name: string; count: number }[];
+};
 
-  // Try tags from article_tags (24h, then all)
-  const { data: recentTagRows } = await supabase
-    .from("article_tags")
-    .select("tag_id, tags!inner(slug, name:label), articles!inner(published_at)")
-    .gte("articles.published_at", yesterday);
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-  if (recentTagRows && recentTagRows.length > 0) {
-    const counts = new Map<string, { slug: string; name: string; count: number }>();
-    for (const row of recentTagRows) {
-      const tag = row.tags as unknown as { slug: string; name: string };
-      const existing = counts.get(tag.slug);
-      if (existing) existing.count++;
-      else counts.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
-    }
-    return Array.from(counts.values()).sort((a, b) => b.count - a.count).slice(0, 9);
-  }
+export function RightRail() {
+  const { data } = useSWR<RightRailData>("/api/right-rail", fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 60000,
+  });
 
-  const { data: allTagRows } = await supabase
-    .from("article_tags")
-    .select("tag_id, tags!inner(slug, name:label)");
+  const stats = data
+    ? [
+        { label: "Active users (24h)", value: data.stats.activeUsers },
+        { label: "Total sources", value: data.stats.totalSources },
+        { label: "Total articles", value: data.stats.totalArticles },
+      ]
+    : [];
 
-  if (allTagRows && allTagRows.length > 0) {
-    const counts = new Map<string, { slug: string; name: string; count: number }>();
-    for (const row of allTagRows) {
-      const tag = row.tags as unknown as { slug: string; name: string };
-      const existing = counts.get(tag.slug);
-      if (existing) existing.count++;
-      else counts.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
-    }
-    return Array.from(counts.values()).sort((a, b) => b.count - a.count).slice(0, 9);
-  }
-
-  // Fallback: infer tags from recent articles via keyword matching
-  const { data: recentArticles } = await supabase
-    .from("articles")
-    .select("title, description")
-    .eq("is_hidden", false)
-    .order("published_at", { ascending: false })
-    .limit(100);
-
-  if (!recentArticles || recentArticles.length === 0) return [];
-
-  const counts = new Map<string, { slug: string; name: string; count: number }>();
-  for (const article of recentArticles) {
-    const tags = inferTags(article.title, article.description);
-    for (const tag of tags) {
-      const existing = counts.get(tag.slug);
-      if (existing) existing.count++;
-      else counts.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
-    }
-  }
-  return Array.from(counts.values()).sort((a, b) => b.count - a.count).slice(0, 8);
-}
-
-export async function RightRail() {
-  const supabase = createClient();
-
-  const [
-    { count: totalSources },
-    { count: totalArticles },
-    { count: recentUsers },
-    { data: trendingSources },
-    recentTags,
-  ] = await Promise.all([
-    supabase
-      .from("sources")
-      .select("*", { count: "exact", head: true })
-      .eq("is_hidden", false),
-    supabase
-      .from("articles")
-      .select("*", { count: "exact", head: true })
-      .eq("is_hidden", false),
-    supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .gte("created_at", new Date(Date.now() - 86400000).toISOString()),
-    supabase
-      .from("sources")
-      .select("id, handle, name")
-      .eq("is_hidden", false)
-      .order("name")
-      .limit(5),
-    getRecentTags(supabase),
-  ]);
-
-  const stats = [
-    { label: "Active users (24h)", value: recentUsers ?? 0 },
-    { label: "Total sources", value: totalSources ?? 0 },
-    { label: "Total articles", value: totalArticles ?? 0 },
-  ];
+  const trendingSources = data?.trendingSources ?? [];
+  const recentTags = data?.recentTags ?? [];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -150,30 +82,32 @@ export async function RightRail() {
       </div>
 
       {/* Widget 2 — Trending sources */}
-      <div>
-        <div style={sectionTitle}>Trending sources</div>
-        <div className="space-y-0.5">
-          {trendingSources?.map((source) => (
-            <Link
-              key={source.id}
-              href={`/source/${source.handle}`}
-              className="sidebar-nav-item block truncate"
-              style={{
-                fontFamily: inter,
-                fontSize: 13,
-                color: dark.textSub,
-                padding: "6px 8px",
-                borderRadius: 4,
-                textDecoration: "none",
-                transition: "background 0.12s",
-              }}
-            >
-              <span style={{ color: dark.textDim }}>@</span>
-              {source.handle}
-            </Link>
-          ))}
+      {trendingSources.length > 0 && (
+        <div>
+          <div style={sectionTitle}>Trending sources</div>
+          <div className="space-y-0.5">
+            {trendingSources.map((source) => (
+              <Link
+                key={source.id}
+                href={`/source/${source.handle}`}
+                className="sidebar-nav-item block truncate"
+                style={{
+                  fontFamily: inter,
+                  fontSize: 13,
+                  color: dark.textSub,
+                  padding: "6px 8px",
+                  borderRadius: 4,
+                  textDecoration: "none",
+                  transition: "background 0.12s",
+                }}
+              >
+                <span style={{ color: dark.textDim }}>@</span>
+                {source.handle}
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Widget 3 — Recent hashtags */}
       {recentTags.length > 0 && (

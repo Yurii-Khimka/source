@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Shell } from "@/components/shell";
 import { SignOutButton, SourceList } from "@/components/settings-actions";
 import { dark } from "@/lib/tokens";
 
@@ -49,8 +48,7 @@ export default async function SettingsPage() {
   ).filter(Boolean);
 
   return (
-    <Shell>
-      <div className="p-6">
+    <div className="p-6">
       <h1
         style={{
           fontFamily: "'Source Serif 4', Georgia, serif",
@@ -121,7 +119,6 @@ export default async function SettingsPage() {
           </button>
         </div>
       </div>
-      </div>
-    </Shell>
+    </div>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, Users, Hash, Bookmark } from "lucide-react";
+import useSWR from "swr";
+import { Home, Compass, Users, Bookmark } from "lucide-react";
 
 const inter = "'Inter', system-ui, sans-serif";
 const mono = "'JetBrains Mono', monospace";
@@ -12,43 +13,38 @@ const navItems = [
   { label: "Home", icon: Home, href: "/" },
   { label: "Discovery", icon: Compass, href: "/discovery" },
   { label: "Following", icon: Users, href: "/following" },
-  { label: "Tags", icon: Hash, href: "/tags" },
   { label: "Bookmarks", icon: Bookmark, href: "/bookmarks" },
 ] as const;
 
-interface SidebarNavProps {
-  bookmarkCount: number;
-  followedSources: { id: string; name: string; handle: string }[];
-}
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-export function SidebarNav({ bookmarkCount: initialBookmarkCount, followedSources: initialFollowedSources }: SidebarNavProps) {
+export function SidebarNav() {
   const pathname = usePathname();
-  const [bookmarkCount, setBookmarkCount] = useState(initialBookmarkCount);
-  const [followedSources, setFollowedSources] = useState(initialFollowedSources);
+
+  const { data: bookmarkData, mutate: mutateBookmarks } = useSWR<{ count: number }>(
+    "/api/bookmark-count",
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 30000 }
+  );
+  const { data: followData, mutate: mutateFollows } = useSWR<{ sources: { id: string; name: string; handle: string }[] }>(
+    "/api/followed-sources",
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 30000 }
+  );
+
+  const bookmarkCount = bookmarkData?.count ?? 0;
+  const followedSources = followData?.sources ?? [];
 
   useEffect(() => {
-    async function refreshBookmarks() {
-      const res = await fetch("/api/bookmark-count");
-      if (res.ok) {
-        const data = await res.json();
-        setBookmarkCount(data.count);
-      }
-    }
+    function refreshBookmarks() { mutateBookmarks(); }
+    function refreshFollows() { mutateFollows(); }
     window.addEventListener("bookmarkChanged", refreshBookmarks);
-    return () => window.removeEventListener("bookmarkChanged", refreshBookmarks);
-  }, []);
-
-  useEffect(() => {
-    async function refreshFollows() {
-      const res = await fetch("/api/followed-sources");
-      if (res.ok) {
-        const data = await res.json();
-        setFollowedSources(data.sources);
-      }
-    }
     window.addEventListener("followChanged", refreshFollows);
-    return () => window.removeEventListener("followChanged", refreshFollows);
-  }, []);
+    return () => {
+      window.removeEventListener("bookmarkChanged", refreshBookmarks);
+      window.removeEventListener("followChanged", refreshFollows);
+    };
+  }, [mutateBookmarks, mutateFollows]);
 
   return (
     <>

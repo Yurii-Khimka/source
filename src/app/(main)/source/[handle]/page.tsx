@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
-import { Shell } from "@/components/shell";
 import { SourceProfileClient } from "./source-profile-client";
 import { SourceActionBlock } from "./source-action-block";
+import { RightRailInjector } from "@/components/right-rail-injector";
 import { inferTags } from "@/lib/tag-keywords";
 import { notFound } from "next/navigation";
 
@@ -17,7 +17,7 @@ export default async function SourceProfilePage({
 
   const { data: source } = await supabase
     .from("sources")
-    .select("id, handle, name, site_url, created_at, verification_status")
+    .select("id, handle, name, site_url, created_at, verification_status, logo_url")
     .eq("handle", handle)
     .eq("is_hidden", false)
     .maybeSingle();
@@ -141,17 +141,16 @@ export default async function SourceProfilePage({
     .slice(0, 8)
     .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }));
 
-  const actionBlock = (
-    <SourceActionBlock
-      sourceId={source.id}
-      initialFollowing={isFollowing}
-      initialMuted={isMuted}
-      isLoggedIn={!!user}
-    />
-  );
-
   return (
-    <Shell rightRailTop={actionBlock}>
+    <>
+      <RightRailInjector>
+        <SourceActionBlock
+          sourceId={source.id}
+          initialFollowing={isFollowing}
+          initialMuted={isMuted}
+          isLoggedIn={!!user}
+        />
+      </RightRailInjector>
       <SourceProfileClient
         source={{
           id: source.id,
@@ -160,6 +159,7 @@ export default async function SourceProfilePage({
           site_url: source.site_url,
           created_at: source.created_at,
           verification_status: source.verification_status,
+          logo_url: source.logo_url,
         }}
         articles={feedArticles}
         likedIds={likedIds}
@@ -171,6 +171,6 @@ export default async function SourceProfilePage({
         postCount={postCount ?? 0}
         tags={feedTags}
       />
-    </Shell>
+    </>
   );
 }

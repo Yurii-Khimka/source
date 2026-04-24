@@ -91,6 +91,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Input hover and focus states
 - [2026-04-24] Following page
 - [2026-04-24] Loading states — skeletons and micro-spinners
+- [2026-04-24] Fix full page reload on navigation
 
 ## In Progress
 - Article card design polish
@@ -132,6 +133,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Added .input-field CSS class with hover (brighter border) and focus (accent border + subtle accent bg). Applied to all 7 inputs: discovery search, article search, signin email/password, signup email/password/confirm.
 - [2026-04-24] Built /following with Sources and Tags tabs, unfollow actions, empty states.
 - [2026-04-24] Skeleton primitive + composite skeletons applied to all pages. Micro-spinner on like, bookmark, follow, mute, unfollow buttons.
+- [2026-04-24] Replaced all internal anchor tags with Link. Verified shell in layout.tsx. Converted sidebars to client components with SWR cache. Right rail no longer remounts on navigation.
 
 ## Backlog (priority order)
 1. Discovery page

@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { Shell } from "@/components/shell";
 import { Feed } from "@/components/feed";
 import { inferTags } from "@/lib/tag-keywords";
 
@@ -23,9 +22,7 @@ export default async function Home() {
 
   if (error) {
     return (
-      <Shell>
-        <p className="text-red-400">Error loading articles: {error.message}</p>
-      </Shell>
+      <p className="text-red-400">Error loading articles: {error.message}</p>
     );
   }
 
@@ -35,18 +32,21 @@ export default async function Home() {
   let bookmarkedIds: string[] = [];
   let followedSourceIds: string[] = [];
   let mutedSourceIds: string[] = [];
+  let mutedTagIds: string[] = [];
 
   if (user) {
-    const [likesRes, bookmarksRes, followsRes, mutesRes] = await Promise.all([
+    const [likesRes, bookmarksRes, followsRes, mutesRes, tagMutesRes] = await Promise.all([
       supabase.from("likes").select("article_id").eq("user_id", user.id),
       supabase.from("bookmarks").select("article_id").eq("user_id", user.id),
-      supabase.from("follows").select("source_id").eq("user_id", user.id),
-      supabase.from("mutes").select("source_id").eq("user_id", user.id),
+      supabase.from("follows").select("source_id").eq("user_id", user.id).not("source_id", "is", null),
+      supabase.from("mutes").select("source_id").eq("user_id", user.id).not("source_id", "is", null),
+      supabase.from("mutes").select("tag_id").eq("user_id", user.id).not("tag_id", "is", null),
     ]);
     likedIds = (likesRes.data ?? []).map((r) => r.article_id);
     bookmarkedIds = (bookmarksRes.data ?? []).map((r) => r.article_id);
-    followedSourceIds = (followsRes.data ?? []).map((r) => r.source_id);
-    mutedSourceIds = (mutesRes.data ?? []).map((r) => r.source_id);
+    followedSourceIds = (followsRes.data ?? []).filter((r): r is { source_id: string } => r.source_id != null).map((r) => r.source_id);
+    mutedSourceIds = (mutesRes.data ?? []).filter((r): r is { source_id: string } => r.source_id != null).map((r) => r.source_id);
+    mutedTagIds = (tagMutesRes.data ?? []).filter((r): r is { tag_id: string } => r.tag_id != null).map((r) => r.tag_id);
   }
 
   // Fetch all article_tags with tag info (used for both per-article tags and feed filter pills)
@@ -115,20 +115,29 @@ export default async function Home() {
     .slice(0, 8)
     .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }));
 
+  // Resolve muted tag IDs to article IDs for filtering
+  let mutedTagArticleIds: string[] = [];
+  if (mutedTagIds.length > 0) {
+    const { data: mutedTagArticles } = await supabase
+      .from("article_tags")
+      .select("article_id")
+      .in("tag_id", mutedTagIds);
+    mutedTagArticleIds = (mutedTagArticles ?? []).map((r) => r.article_id);
+  }
+
   return (
-    <Shell>
-      <Feed
-        articles={feedArticles}
-        likedIds={likedIds}
-        bookmarkedIds={bookmarkedIds}
-        followedSourceIds={followedSourceIds}
-        mutedSourceIds={mutedSourceIds}
-        isLoggedIn={!!user}
-        followedSourceCount={followedSourceIds.length}
-        todayArticleCount={todayArticles}
-        tags={feedTags}
-        totalCount={totalArticleCount ?? 0}
-      />
-    </Shell>
+    <Feed
+      articles={feedArticles}
+      likedIds={likedIds}
+      bookmarkedIds={bookmarkedIds}
+      followedSourceIds={followedSourceIds}
+      mutedSourceIds={mutedSourceIds}
+      mutedTagArticleIds={mutedTagArticleIds}
+      isLoggedIn={!!user}
+      followedSourceCount={followedSourceIds.length}
+      todayArticleCount={todayArticles}
+      tags={feedTags}
+      totalCount={totalArticleCount ?? 0}
+    />
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
@@ -132,7 +133,7 @@ export default function SignInPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-lg outline-none"
+            className="w-full rounded-lg outline-none input-field"
             style={{
               background: dark.surface2,
               border: `1px solid ${dark.line2}`,
@@ -148,7 +149,7 @@ export default function SignInPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full rounded-lg outline-none"
+            className="w-full rounded-lg outline-none input-field"
             style={{
               background: dark.surface2,
               border: `1px solid ${dark.line2}`,
@@ -194,9 +195,9 @@ export default function SignInPage() {
           }}
         >
           Don&apos;t have an account?{" "}
-          <a href="/auth/signup" style={{ color: dark.accent }}>
+          <Link href="/auth/signup" style={{ color: dark.accent }}>
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

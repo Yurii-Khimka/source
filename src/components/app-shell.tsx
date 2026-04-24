@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import useSWR from "swr";
 import {
   Search, Settings, ShieldCheck,
   Sun, User,
@@ -8,58 +10,25 @@ import { dark } from "@/lib/tokens";
 import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { RightRail } from "@/components/right-rail";
+import { useRightRailTop } from "@/components/right-rail-context";
 
-export async function Shell({ children, rightRailTop }: { children: React.ReactNode; rightRailTop?: React.ReactNode }) {
-  const supabase = createClient();
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-  const { data: sources } = await supabase
-    .from("sources")
-    .select("id, name, handle")
-    .eq("is_hidden", false)
-    .order("name");
+type UserProfileData = {
+  user: { id: string; email: string } | null;
+  profile: { avatar_url: string | null; display_name: string | null } | null;
+};
 
-  const { data: { user } } = await supabase.auth.getUser();
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const { topContent } = useRightRailTop();
 
-  let profile: { avatar_url: string | null; display_name: string | null } | null = null;
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("avatar_url, display_name")
-      .eq("id", user.id)
-      .single();
-    profile = data;
-  }
+  const { data } = useSWR<UserProfileData>("/api/user-profile", fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 60000,
+  });
 
-  // Sidebar data
-  let bookmarkCount = 0;
-  let followedSources: { id: string; name: string; handle: string }[] = [];
-
-  if (user) {
-    const [{ count }, { data: followedIds }] = await Promise.all([
-      supabase
-        .from("bookmarks")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id),
-      supabase
-        .from("follows")
-        .select("source_id")
-        .eq("user_id", user.id),
-    ]);
-    bookmarkCount = count ?? 0;
-
-    if (followedIds && followedIds.length > 0) {
-      const { data } = await supabase
-        .from("sources")
-        .select("id, name, handle")
-        .in("id", followedIds.map((f) => f.source_id))
-        .eq("is_hidden", false)
-        .order("name");
-      followedSources = (data ?? []) as { id: string; name: string; handle: string }[];
-    }
-  } else {
-    // Not logged in — show all sources
-    followedSources = (sources ?? []) as { id: string; name: string; handle: string }[];
-  }
+  const user = data?.user ?? null;
+  const profile = data?.profile ?? null;
 
   const iconBtnStyle: React.CSSProperties = {
     width: 34,
@@ -207,7 +176,7 @@ export async function Shell({ children, rightRailTop }: { children: React.ReactN
             background: dark.bg,
           }}
         >
-          {rightRailTop}
+          {topContent}
           <RightRail />
         </aside>
       </div>
