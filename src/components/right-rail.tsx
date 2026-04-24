@@ -150,7 +150,7 @@ export function RightRail() {
           lineHeight: 1.8,
         }}
       >
-        <div>Feedback · Privacy · Terms · <Link href="/trust" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link></div>
+        <div><Link href="/about" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · Feedback · Privacy · Terms · <Link href="/trust" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link></div>
         <div>GitHub</div>
         <div>© 2026 The Source</div>
       </div>
