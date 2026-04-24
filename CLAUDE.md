@@ -32,7 +32,7 @@ These rules are MANDATORY. Violations will be rejected.
 2. **Hashtag pills** — one canonical style, defined in `article-card.tsx`:
    - fontMono, fontSize 11, color textSub
    - padding 2px 7px, border 1px solid line2, borderRadius 3
-   - NO background fill
+   - background: tokens.surface
    Use this exact style everywhere: article cards, right rail, tag pages, search results.
 
 3. **Before creating any styled element**, search the codebase for an existing component that does the same thing.
