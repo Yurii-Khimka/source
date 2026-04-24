@@ -14,6 +14,7 @@ export default async function DiscoveryPage() {
   const [
     { data: sources },
     { data: allTags },
+    { data: allTagRows },
     { data: tagRows24h },
     { data: tagRows48h },
     { data: userData },
@@ -27,7 +28,11 @@ export default async function DiscoveryPage() {
     supabase
       .from("tags")
       .select("id, slug, name:label"),
-    // article_tags from last 24h
+    // All article_tags (total count per tag, no time filter)
+    supabase
+      .from("article_tags")
+      .select("tag_id"),
+    // article_tags from last 24h (for trending sort + delta)
     supabase
       .from("article_tags")
       .select("tag_id, articles!inner(published_at)")
@@ -60,7 +65,13 @@ export default async function DiscoveryPage() {
     followerCounts[f.source_id] = (followerCounts[f.source_id] ?? 0) + 1;
   }
 
-  // Build 24h counts per tag_id
+  // Build total counts per tag_id (all time)
+  const countsTotal = new Map<string, number>();
+  for (const row of allTagRows ?? []) {
+    countsTotal.set(row.tag_id, (countsTotal.get(row.tag_id) ?? 0) + 1);
+  }
+
+  // Build 24h counts per tag_id (for trending sort)
   const counts24h = new Map<string, number>();
   for (const row of tagRows24h ?? []) {
     counts24h.set(row.tag_id, (counts24h.get(row.tag_id) ?? 0) + 1);
@@ -75,15 +86,17 @@ export default async function DiscoveryPage() {
   let tags: { id: string; slug: string; name: string; count: number; delta: number | null }[];
 
   if (allTags && allTags.length > 0) {
-    // Use all DB tags, attach counts (even if 0)
     tags = allTags
       .map((t) => {
-        const count = counts24h.get(t.id) ?? 0;
+        const count = countsTotal.get(t.id) ?? 0;
+        const recent = counts24h.get(t.id) ?? 0;
         const prev = counts48h.get(t.id) ?? 0;
-        const delta = prev === 0 ? null : Math.round(((count - prev) / prev) * 100);
-        return { id: t.id, slug: t.slug, name: t.name, count, delta };
+        const delta = prev === 0 ? null : Math.round(((recent - prev) / prev) * 100);
+        return { id: t.id, slug: t.slug, name: t.name, count, delta, _recent: recent };
       })
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => (b._recent - a._recent) || (b.count - a.count))
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .map(({ _recent, ...rest }) => rest);
   } else {
     tags = [];
   }

@@ -182,7 +182,7 @@ export function DiscoveryClient({
         />
         <input
           type="text"
-          placeholder="Search verified sources, tags, or headlines\u2026"
+          placeholder="Search verified sources, tags, or headlines…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
