@@ -133,7 +133,7 @@ export default async function DiscoveryPage() {
 
   // Attach tags to articles
   const articleIds = (recentArticles ?? []).map((a) => a.id);
-  let articleTagsMap: Record<string, { slug: string; name: string }[]> = {};
+  const articleTagsMap: Record<string, { slug: string; name: string }[]> = {};
   if (articleIds.length > 0) {
     const { data: atRows } = await supabase
       .from("article_tags")

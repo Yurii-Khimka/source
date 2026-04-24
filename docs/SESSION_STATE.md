@@ -73,6 +73,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Move hashtags below post image in article card
 - [2026-04-24] Remove divider below tags in post card
 - [2026-04-24] Full-width divider in post card
+- [2026-04-24] Fix Vercel build failure
 
 ## In Progress
 - Article card design polish
@@ -96,6 +97,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Swapped Tags and Image sections in article-card.tsx. New order: Title → Description → Image → Tags → Footer.
 - [2026-04-24] Removed borderTop and paddingTop from footer row in article-card.tsx.
 - [2026-04-24] Added full-width divider using negative margins to span past card padding.
+- [2026-04-24] ESLint prefer-const error: articleTagsMap in discovery/page.tsx was declared with let but never reassigned. Changed to const.
 
 ## Backlog (priority order)
 1. Discovery page
