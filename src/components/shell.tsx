@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Newspaper, Search, Bookmark, Settings, ShieldCheck } from "lucide-react";
+import {
+  Newspaper, Search, Bookmark, Settings, ShieldCheck,
+  Sun, Bell, User,
+} from "lucide-react";
 import { dark } from "@/lib/tokens";
+import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
 
 export async function Shell({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -24,86 +28,135 @@ export async function Shell({ children }: { children: React.ReactNode }) {
     profile = data;
   }
 
+  const iconBtnStyle: React.CSSProperties = {
+    width: 34,
+    height: 34,
+    borderRadius: 6,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: dark.textDim,
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    position: "relative",
+    transition: "background 0.15s",
+  };
+
   return (
     <div className="min-h-screen" style={{ background: dark.bg, color: dark.text }}>
       {/* Header */}
       <header
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5"
+        className="sticky top-0 z-30"
         style={{
-          height: 48,
-          background: dark.bg,
+          display: "grid",
+          gridTemplateColumns: "260px 1fr 360px",
+          alignItems: "center",
+          height: 64,
+          padding: "0 24px 0 20px",
+          background: dark.surface,
           borderBottom: `1px solid ${dark.line}`,
         }}
       >
-        <span
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: 15,
-            fontWeight: 700,
-            color: "#fff",
-          }}
-        >
-          <ShieldCheck size={16} style={{ display: "inline", verticalAlign: "middle", marginRight: 4 }} />
-          The Source
-        </span>
-        <div>{/* center — empty for now */}</div>
-        {user ? (
-          <div className="flex items-center gap-2">
-            {profile?.avatar_url ? (
+        {/* Left — Logo */}
+        <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
+          <div
+            className="flex items-center justify-center"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 6,
+              background: dark.text,
+              flexShrink: 0,
+            }}
+          >
+            <ShieldCheck size={20} color={dark.bg} />
+          </div>
+          <div style={{ lineHeight: 1.3 }}>
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                color: dark.text,
+                letterSpacing: 0.8,
+              }}
+            >
+              The Source
+            </div>
+            <div
+              style={{
+                fontFamily: "'Inter', system-ui, sans-serif",
+                fontSize: 11,
+                color: dark.textDim,
+              }}
+            >
+              Source of Truth
+            </div>
+          </div>
+        </Link>
+
+        {/* Center — Breadcrumbs */}
+        <div className="flex items-center justify-center">
+          <HeaderBreadcrumb />
+        </div>
+
+        {/* Right — Icon buttons */}
+        <div className="flex items-center justify-end gap-1">
+          <Link href="/search" title="Search" className="header-icon-btn" style={iconBtnStyle}>
+            <Search size={18} />
+          </Link>
+
+          <button title="Toggle theme" className="header-icon-btn" style={iconBtnStyle}>
+            <Sun size={18} />
+          </button>
+
+          <button title="Notifications" className="header-icon-btn" style={iconBtnStyle}>
+            <Bell size={18} />
+            <span
+              style={{
+                position: "absolute",
+                top: 5,
+                right: 5,
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: dark.accent,
+              }}
+            />
+          </button>
+
+          <Link
+            href={user ? "/settings" : "/auth/signin"}
+            title={user ? "Profile" : "Sign in"}
+            className="header-icon-btn"
+            style={iconBtnStyle}
+          >
+            {user && profile?.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt=""
                 style={{
-                  width: 28,
-                  height: 28,
+                  width: 24,
+                  height: 24,
                   borderRadius: "50%",
                   objectFit: "cover",
                 }}
               />
             ) : (
-              <div
-                className="flex items-center justify-center"
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: "50%",
-                  background: dark.accent,
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: "#fff",
-                }}
-              >
-                {(profile?.display_name ?? user.email ?? "?").charAt(0).toUpperCase()}
-              </div>
+              <User size={18} />
             )}
-            <span
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: 13,
-                color: dark.textSub,
-              }}
-            >
-              {profile?.display_name ?? user.email?.split("@")[0] ?? "User"}
-            </span>
-          </div>
-        ) : (
-          <Link
-            href="/auth/signin"
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: 13,
-              color: dark.textDim,
-            }}
-          >
-            Sign in
           </Link>
-        )}
+
+          <Link href="/settings" title="Settings" className="header-icon-btn" style={iconBtnStyle}>
+            <Settings size={18} />
+          </Link>
+        </div>
       </header>
 
       {/* Sidebar */}
       <aside
-        className="fixed top-[48px] left-0 bottom-0 flex flex-col justify-between overflow-y-auto"
+        className="fixed top-[64px] left-0 bottom-0 flex flex-col justify-between overflow-y-auto"
         style={{
           width: 220,
           borderRight: `1px solid ${dark.line}`,
@@ -175,7 +228,7 @@ export async function Shell({ children }: { children: React.ReactNode }) {
         className="mx-auto"
         style={{
           marginLeft: 220,
-          paddingTop: 48,
+          paddingTop: 64,
           maxWidth: 740,
         }}
       >
