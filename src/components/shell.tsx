@@ -2,11 +2,12 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
   Search, Settings, ShieldCheck,
-  Sun, Bell, User,
+  Sun, User,
 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
 import { SidebarNav } from "@/components/sidebar-nav";
+import { RightRail } from "@/components/right-rail";
 
 export async function Shell({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -143,21 +144,6 @@ export async function Shell({ children }: { children: React.ReactNode }) {
             <Sun size={18} />
           </button>
 
-          <button title="Notifications" className="header-icon-btn" style={iconBtnStyle}>
-            <Bell size={18} />
-            <span
-              style={{
-                position: "absolute",
-                top: 5,
-                right: 5,
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: dark.accent,
-              }}
-            />
-          </button>
-
           <Link
             href={user ? "/settings" : "/auth/signin"}
             title={user ? "Profile" : "Sign in"}
@@ -186,13 +172,17 @@ export async function Shell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="flex flex-1">
-        {/* Sidebar */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "260px 1fr 360px",
+          minHeight: "calc(100vh - 64px)",
+        }}
+      >
+        {/* Left sidebar */}
         <aside
           className="sticky top-[64px] overflow-auto"
           style={{
-            width: 260,
-            minWidth: 260,
             height: "calc(100vh - 64px)",
             padding: "24px 14px 40px",
             borderRight: `1px solid ${dark.line}`,
@@ -206,12 +196,24 @@ export async function Shell({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main content */}
-        <main
-          className="mx-auto"
-          style={{ maxWidth: 740, flex: 1 }}
-        >
-          <div className="p-6">{children}</div>
+        <main>
+          <div className="p-6 mx-auto" style={{ maxWidth: 740 }}>
+            {children}
+          </div>
         </main>
+
+        {/* Right rail */}
+        <aside
+          className="sticky top-[64px] overflow-auto"
+          style={{
+            height: "calc(100vh - 64px)",
+            padding: "24px 20px 40px",
+            borderLeft: `1px solid ${dark.line}`,
+            background: dark.bg,
+          }}
+        >
+          <RightRail />
+        </aside>
       </div>
     </div>
   );
