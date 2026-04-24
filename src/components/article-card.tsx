@@ -303,7 +303,7 @@ export function ArticleCard({
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: 11,
                 color: dark.textSub,
-                padding: "3px 7px",
+                padding: "2px 7px",
                 borderRadius: 3,
                 border: `1px solid ${dark.line2}`,
                 background: dark.surface,
