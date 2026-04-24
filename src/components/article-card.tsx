@@ -145,6 +145,7 @@ export function ArticleCard({
     if (res.ok) {
       const data = await res.json();
       setFollowing(data.following);
+      window.dispatchEvent(new CustomEvent("followChanged"));
     } else {
       setFollowing(wasFollowing);
     }

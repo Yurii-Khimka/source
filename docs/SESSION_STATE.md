@@ -59,6 +59,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Remove Following/All tabs — show only followed sources
 - [2026-04-24] Discovery page
 - [2026-04-24] Rebuild Discovery page
+- [2026-04-24] Sidebar followed sources live update
 
 ## In Progress
 - Article card design polish
@@ -68,6 +69,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Right rail hashtags now match trending sources layout
 - [2026-04-24] Built /discovery with sources grid, trending tags, search, tab filters, follow/unfollow toggle
 - [2026-04-24] Sources grid with follower counts, trending tags table with rank/delta/24h, top stories with ArticleCard, underline tabs, search with clear button
+- [2026-04-24] Added /api/followed-sources endpoint, SidebarNav listens for followChanged events, dispatched from Discovery and ArticleCard
 
 ## Backlog (priority order)
 1. Discovery page

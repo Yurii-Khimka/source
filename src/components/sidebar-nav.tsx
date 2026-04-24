@@ -21,20 +21,33 @@ interface SidebarNavProps {
   followedSources: { id: string; name: string; handle: string }[];
 }
 
-export function SidebarNav({ bookmarkCount: initialBookmarkCount, followedSources }: SidebarNavProps) {
+export function SidebarNav({ bookmarkCount: initialBookmarkCount, followedSources: initialFollowedSources }: SidebarNavProps) {
   const pathname = usePathname();
   const [bookmarkCount, setBookmarkCount] = useState(initialBookmarkCount);
+  const [followedSources, setFollowedSources] = useState(initialFollowedSources);
 
   useEffect(() => {
-    async function refresh() {
+    async function refreshBookmarks() {
       const res = await fetch("/api/bookmark-count");
       if (res.ok) {
         const data = await res.json();
         setBookmarkCount(data.count);
       }
     }
-    window.addEventListener("bookmarkChanged", refresh);
-    return () => window.removeEventListener("bookmarkChanged", refresh);
+    window.addEventListener("bookmarkChanged", refreshBookmarks);
+    return () => window.removeEventListener("bookmarkChanged", refreshBookmarks);
+  }, []);
+
+  useEffect(() => {
+    async function refreshFollows() {
+      const res = await fetch("/api/followed-sources");
+      if (res.ok) {
+        const data = await res.json();
+        setFollowedSources(data.sources);
+      }
+    }
+    window.addEventListener("followChanged", refreshFollows);
+    return () => window.removeEventListener("followChanged", refreshFollows);
   }, []);
 
   return (

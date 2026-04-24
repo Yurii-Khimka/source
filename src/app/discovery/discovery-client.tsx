@@ -143,6 +143,7 @@ export function DiscoveryClient({
         body: JSON.stringify({ source_id: sourceId }),
       });
       if (!res.ok) throw new Error();
+      window.dispatchEvent(new CustomEvent("followChanged"));
     } catch {
       setFollowedIds((prev) => {
         const next = new Set(prev);
