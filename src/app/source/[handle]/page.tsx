@@ -14,7 +14,6 @@ export default async function SourceProfilePage({
   const supabase = createClient();
   const { handle } = params;
 
-  // Fetch source by handle
   const { data: source } = await supabase
     .from("sources")
     .select("id, handle, name, site_url, created_at, verification_status")
@@ -26,7 +25,6 @@ export default async function SourceProfilePage({
     notFound();
   }
 
-  // Parallel: articles, post count, follower count, user data
   const [
     { data: articles },
     { count: postCount },
@@ -57,20 +55,19 @@ export default async function SourceProfilePage({
   const user = userData?.user ?? null;
   const followerCount = allFollows?.length ?? 0;
 
-  // User-specific state
   let likedIds: string[] = [];
   let bookmarkedIds: string[] = [];
   let isFollowing = false;
   let isMuted = false;
 
   if (user) {
-    const articleIds = (articles ?? []).map((a) => a.id);
+    const ids = (articles ?? []).map((a) => a.id);
     const [likesRes, bookmarksRes, followRes, muteRes] = await Promise.all([
-      articleIds.length > 0
-        ? supabase.from("likes").select("article_id").eq("user_id", user.id).in("article_id", articleIds)
+      ids.length > 0
+        ? supabase.from("likes").select("article_id").eq("user_id", user.id).in("article_id", ids)
         : Promise.resolve({ data: [] }),
-      articleIds.length > 0
-        ? supabase.from("bookmarks").select("article_id").eq("user_id", user.id).in("article_id", articleIds)
+      ids.length > 0
+        ? supabase.from("bookmarks").select("article_id").eq("user_id", user.id).in("article_id", ids)
         : Promise.resolve({ data: [] }),
       supabase
         .from("follows")
@@ -125,6 +122,24 @@ export default async function SourceProfilePage({
     };
   });
 
+  // Build tag filter data from enriched articles
+  const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
+  for (const article of feedArticles) {
+    for (const tag of article.tags) {
+      const existing = tagMap.get(tag.slug);
+      if (existing) {
+        existing.articleIds.push(article.id);
+        existing.count++;
+      } else {
+        tagMap.set(tag.slug, { id: tag.slug, slug: tag.slug, name: tag.name, articleIds: [article.id], count: 1 });
+      }
+    }
+  }
+  const feedTags = Array.from(tagMap.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8)
+    .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }));
+
   return (
     <Shell>
       <SourceProfileClient
@@ -144,6 +159,7 @@ export default async function SourceProfilePage({
         isLoggedIn={!!user}
         followerCount={followerCount}
         postCount={postCount ?? 0}
+        tags={feedTags}
       />
     </Shell>
   );

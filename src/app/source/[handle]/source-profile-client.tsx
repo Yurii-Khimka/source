@@ -2,10 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  ShieldCheck, Globe, MoreHorizontal, Filter, Download,
-  Copy, Flag,
-} from "lucide-react";
+import { ShieldCheck, Globe, UserPlus, VolumeX } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { ArticleCard } from "@/components/article-card";
 
@@ -35,7 +32,12 @@ type SourceData = {
   verification_status: string | null;
 };
 
-type Tab = "posts" | "audit" | "about";
+type TagData = {
+  id: string;
+  slug: string;
+  name: string;
+  articleIds: string[];
+};
 
 type Props = {
   source: SourceData;
@@ -47,6 +49,7 @@ type Props = {
   isLoggedIn: boolean;
   followerCount: number;
   postCount: number;
+  tags: TagData[];
 };
 
 const PAGE_SIZE = 20;
@@ -80,19 +83,18 @@ export function SourceProfileClient({
   isLoggedIn,
   followerCount: initialFollowerCount,
   postCount,
+  tags: initialTags,
 }: Props) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<Tab>("posts");
   const [following, setFollowing] = useState(initialFollowing);
   const [muted, setMuted] = useState(initialMuted);
   const [followerCount, setFollowerCount] = useState(initialFollowerCount);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
 
-  // Posts tab state
   const [articles, setArticles] = useState(initialArticles);
   const [likedIds, setLikedIds] = useState(initialLikedIds);
   const [bookmarkedIds, setBookmarkedIds] = useState(initialBookmarkedIds);
+  const [tags, setTags] = useState(initialTags);
+  const [activeTagSlug, setActiveTagSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialArticles.length < postCount);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -102,20 +104,14 @@ export function SourceProfileClient({
 
   const createdYear = new Date(source.created_at).getFullYear();
 
-  // Close menu on outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    }
-    if (menuOpen) document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen]);
+  // Tag filtering
+  const activeTag = activeTagSlug ? tags.find((t) => t.slug === activeTagSlug) : null;
+  const displayedArticles = activeTag
+    ? articles.filter((a) => activeTag.articleIds.includes(a.id))
+    : articles;
 
   async function handleFollow() {
     if (!isLoggedIn) { router.push("/auth/signin"); return; }
-    setMenuOpen(false);
     const wasFollowing = following;
     setFollowing(!wasFollowing);
     setFollowerCount((c) => c + (wasFollowing ? -1 : 1));
@@ -136,7 +132,6 @@ export function SourceProfileClient({
 
   async function handleMute() {
     if (!isLoggedIn) { router.push("/auth/signin"); return; }
-    setMenuOpen(false);
     const wasMuted = muted;
     setMuted(!wasMuted);
     const res = await fetch("/api/mute", {
@@ -150,15 +145,6 @@ export function SourceProfileClient({
     } else {
       setMuted(wasMuted);
     }
-  }
-
-  function handleCopyLink() {
-    setMenuOpen(false);
-    navigator.clipboard.writeText(window.location.href);
-  }
-
-  function handleReport() {
-    setMenuOpen(false);
   }
 
   // Infinite scroll
@@ -190,6 +176,27 @@ export function SourceProfileClient({
       setLikedIds((prev) => [...prev, ...(data.likedIds ?? [])]);
       setBookmarkedIds((prev) => [...prev, ...(data.bookmarkedIds ?? [])]);
 
+      // Rebuild tags
+      const allArticles = [...articles, ...unique];
+      const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
+      for (const article of allArticles) {
+        for (const tag of article.tags) {
+          const existing = tagMap.get(tag.slug);
+          if (existing) {
+            existing.articleIds.push(article.id);
+            existing.count++;
+          } else {
+            tagMap.set(tag.slug, { id: tag.slug, slug: tag.slug, name: tag.name, articleIds: [article.id], count: 1 });
+          }
+        }
+      }
+      setTags(
+        Array.from(tagMap.values())
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 8)
+          .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }))
+      );
+
       if (articles.length + unique.length >= postCount) {
         setHasMore(false);
       }
@@ -200,41 +207,19 @@ export function SourceProfileClient({
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel || activeTab !== "posts") return;
-
+    if (!sentinel) return;
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) loadMore();
-      },
+      (entries) => { if (entries[0].isIntersecting) loadMore(); },
       { rootMargin: "200px" }
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [loadMore, activeTab]);
-
-  const tabItems: { key: Tab; label: string; badge?: number }[] = [
-    { key: "posts", label: "Posts", badge: postCount },
-    { key: "audit", label: "Audit Log" },
-    { key: "about", label: "About" },
-  ];
-
-  const menuBtnStyle: React.CSSProperties = {
-    display: "block",
-    width: "100%",
-    textAlign: "left",
-    background: "none",
-    border: "none",
-    fontFamily: inter,
-    fontSize: 13,
-    padding: "8px 12px",
-    cursor: "pointer",
-  };
+  }, [loadMore]);
 
   return (
-    <div style={{ padding: "32px 36px 60px" }}>
-      {/* ─── HEADER ─── */}
-      <div style={{ display: "flex", gap: 18, alignItems: "flex-start", marginBottom: 28 }}>
-        {/* Avatar */}
+    <div style={{ padding: "32px 36px 80px" }}>
+      {/* ─── IDENTITY HEADER ─── */}
+      <div style={{ display: "flex", gap: 18, alignItems: "flex-start", marginBottom: 24 }}>
         <div
           style={{
             width: 72,
@@ -254,9 +239,7 @@ export function SourceProfileClient({
           {getInitials(source.name)}
         </div>
 
-        {/* Info */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          {/* Name + badge */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <h1
               style={{
@@ -273,538 +256,229 @@ export function SourceProfileClient({
             <ShieldCheck size={22} style={{ color: dark.accent, flexShrink: 0 }} />
           </div>
 
-          {/* Pills */}
-          <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-            {source.site_url && (
-              <a
-                href={source.site_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  fontFamily: mono,
-                  fontSize: 11,
-                  color: dark.accent,
-                  padding: "2px 8px",
-                  borderRadius: 3,
-                  border: `1px solid ${dark.accentLine}`,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                  textDecoration: "none",
-                }}
-              >
-                <Globe size={12} /> {source.site_url.replace(/^https?:\/\//, "")}
-              </a>
-            )}
-            {following && (
-              <span
-                style={{
-                  fontFamily: mono,
-                  fontSize: 11,
-                  color: "#fff",
-                  background: dark.accent,
-                  padding: "2px 8px",
-                  borderRadius: 3,
-                }}
-              >
-                Following
-              </span>
-            )}
-            {muted && (
-              <span
-                style={{
-                  fontFamily: mono,
-                  fontSize: 11,
-                  color: dark.textMute,
-                  padding: "2px 8px",
-                  borderRadius: 3,
-                  border: `1px solid ${dark.line2}`,
-                  background: dark.surface,
-                }}
-              >
-                Muted
-              </span>
-            )}
-          </div>
-
-          {/* Meta line */}
           <div
             style={{
               fontFamily: mono,
               fontSize: 12,
               color: dark.textMute,
-              marginTop: 8,
+              marginTop: 6,
             }}
           >
-            @{source.handle} · est. {createdYear}
+            @{source.handle} · {followerCount} follower{followerCount !== 1 ? "s" : ""} · est. {createdYear}
           </div>
 
+          {source.site_url && (
+            <a
+              href={source.site_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontFamily: mono,
+                fontSize: 11,
+                color: dark.accent,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                marginTop: 6,
+              }}
+            >
+              <Globe size={12} /> {source.site_url.replace(/^https?:\/\//, "")}
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* ─── ACTION BLOCK ─── */}
+      <div
+        style={{
+          background: dark.surface,
+          border: `1px solid ${dark.line}`,
+          borderRadius: 6,
+          padding: 16,
+          marginBottom: 28,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: mono,
+            fontSize: 10,
+            textTransform: "uppercase",
+            letterSpacing: 1.2,
+            color: dark.textMute,
+            marginBottom: 12,
+          }}
+        >
+          THIS SOURCE
         </div>
 
-        {/* Actions dropdown */}
-        <div className="relative flex-shrink-0" ref={menuRef}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={handleFollow}
             className="cursor-pointer"
             style={{
-              background: dark.surface,
-              border: `1px solid ${dark.line}`,
+              width: "100%",
+              padding: "10px 0",
               borderRadius: 6,
-              padding: "8px 12px",
-              color: dark.textDim,
+              fontFamily: inter,
+              fontSize: 13,
+              fontWeight: 600,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: 6,
-              fontFamily: mono,
-              fontSize: 11,
+              justifyContent: "center",
+              gap: 8,
+              transition: "all 0.12s",
+              background: following ? "transparent" : dark.accent,
+              color: following ? dark.accent : "#fff",
+              border: following ? `1px solid ${dark.accentLine}` : `1px solid ${dark.accent}`,
             }}
           >
-            <MoreHorizontal size={16} /> Actions
+            <UserPlus size={15} />
+            {following ? "Following" : "Follow source"}
           </button>
-          {menuOpen && (
-            <div
-              style={{
-                position: "absolute",
-                right: 0,
-                top: 40,
-                zIndex: 50,
-                background: dark.surface2,
-                border: `1px solid ${dark.line2}`,
-                borderRadius: 6,
-                minWidth: 200,
-                overflow: "hidden",
-              }}
-            >
-              <button
-                onClick={handleFollow}
-                style={{ ...menuBtnStyle, color: dark.text }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = dark.hover)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
-              >
-                {following ? "Unfollow source" : "Follow source"}
-              </button>
-              <button
-                onClick={handleMute}
-                style={{ ...menuBtnStyle, color: dark.text }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = dark.hover)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
-              >
-                {muted ? "Unmute notifications" : "Mute notifications"}
-              </button>
-              <button
-                onClick={handleCopyLink}
-                style={{ ...menuBtnStyle, color: dark.text }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = dark.hover)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
-              >
-                <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Copy size={13} /> Copy source link
-                </span>
-              </button>
-              <button
-                onClick={handleReport}
-                style={{ ...menuBtnStyle, color: dark.danger }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = dark.hover)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
-              >
-                <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Flag size={13} /> Report source
-                </span>
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
 
-      {/* ─── STATS STRIP ─── */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr 1fr",
-          background: dark.surface,
-          border: `1px solid ${dark.line}`,
-          borderRadius: 6,
-          marginBottom: 20,
-        }}
-      >
-        {[
-          { value: String(followerCount), label: "Followers" },
-          { value: String(postCount), label: "Posts" },
-          { value: "0.12%", label: "Corrections" },
-          { value: "99.4%", label: "Citation integrity" },
-        ].map((stat, i) => (
-          <div
-            key={stat.label}
+          <button
+            onClick={handleMute}
+            className="cursor-pointer"
             style={{
-              padding: "16px 20px",
-              borderRight: i < 3 ? `1px solid ${dark.line}` : "none",
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontFamily: serif, fontSize: 24, fontWeight: 700, color: dark.text }}>
-              {stat.value}
-            </div>
-            <div
-              style={{
-                fontFamily: mono,
-                fontSize: 10,
-                color: dark.textMute,
-                textTransform: "uppercase",
-                letterSpacing: 0.8,
-                marginTop: 4,
-              }}
-            >
-              {stat.label}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* ─── TRANSPARENCY RECORD ─── */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          background: dark.surface,
-          border: `1px solid ${dark.line}`,
-          borderRadius: 6,
-          marginBottom: 28,
-        }}
-      >
-        {[
-          { value: "99.4%", label: "Citation integrity", sub: "posts with primary source" },
-          { value: "< 2h", label: "Median correction time", sub: "time to correction issued" },
-          { value: "0", label: "Moderation disclosures", sub: "actions in last 90 days" },
-        ].map((item, i) => (
-          <div
-            key={item.label}
-            style={{
-              padding: "16px 20px",
-              borderRight: i < 2 ? `1px solid ${dark.line}` : "none",
-            }}
-          >
-            <div style={{ fontFamily: serif, fontSize: 24, fontWeight: 700, color: dark.text }}>
-              {item.value}
-            </div>
-            <div
-              style={{
-                fontFamily: mono,
-                fontSize: 10,
-                color: dark.textMute,
-                textTransform: "uppercase",
-                letterSpacing: 0.8,
-                marginTop: 4,
-              }}
-            >
-              {item.label}
-            </div>
-            <div
-              style={{
-                fontFamily: mono,
-                fontSize: 11,
-                color: dark.textMute,
-                marginTop: 2,
-              }}
-            >
-              {item.sub}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          fontFamily: mono,
-          fontSize: 11,
-          color: dark.textMute,
-          textAlign: "right",
-          marginTop: -20,
-          marginBottom: 28,
-        }}
-      >
-        public ledger · cryptographically signed
-      </div>
-
-      {/* ─── TABS ─── */}
-      <div
-        style={{
-          display: "flex",
-          gap: 24,
-          borderBottom: `1px solid ${dark.line}`,
-          marginBottom: 28,
-        }}
-      >
-        {tabItems.map((tab) => {
-          const active = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              style={{
-                fontFamily: inter,
-                fontSize: 13,
-                fontWeight: 500,
-                color: active ? dark.text : dark.textDim,
-                background: "none",
-                border: "none",
-                borderBottom: active ? `2px solid ${dark.accent}` : "2px solid transparent",
-                padding: "8px 0",
-                marginBottom: -1,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                transition: "color 0.12s",
-              }}
-            >
-              {tab.label}
-              {tab.badge !== undefined && (
-                <span
-                  style={{
-                    fontFamily: mono,
-                    fontSize: 10,
-                    background: dark.surface2,
-                    border: `1px solid ${dark.line2}`,
-                    borderRadius: 3,
-                    padding: "1px 5px",
-                    lineHeight: 1.4,
-                    color: active ? dark.textDim : dark.textMute,
-                  }}
-                >
-                  {tab.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* ─── POSTS TAB ─── */}
-      {activeTab === "posts" && (
-        <div>
-          <div
-            style={{
+              width: "100%",
+              padding: "10px 0",
+              borderRadius: 6,
+              fontFamily: inter,
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 16,
+              justifyContent: "center",
+              gap: 8,
+              transition: "all 0.12s",
+              background: dark.surface2,
+              color: muted ? dark.textMute : dark.textDim,
+              border: `1px solid ${dark.line2}`,
             }}
           >
-            <div
-              style={{
-                fontFamily: mono,
-                fontSize: 11,
-                textTransform: "uppercase",
-                letterSpacing: 1.2,
-                color: dark.textMute,
-              }}
-            >
-              CHRONOLOGICAL FEED
-            </div>
-            <button
-              style={{
-                fontFamily: mono,
-                fontSize: 11,
-                color: dark.textDim,
-                background: "none",
-                border: `1px solid ${dark.line2}`,
-                borderRadius: 4,
-                padding: "5px 12px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-              }}
-            >
-              <Filter size={12} /> All categories
-            </button>
-          </div>
-
-          {articles.length === 0 ? (
-            <p
-              style={{
-                fontFamily: mono,
-                fontSize: 12,
-                color: dark.textMute,
-                textAlign: "center",
-                paddingTop: 48,
-              }}
-            >
-              No articles from this source yet.
-            </p>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {articles.map((article) => (
-                <ArticleCard
-                  key={article.id}
-                  article={article}
-                  initialLiked={likedSet.has(article.id)}
-                  initialLikeCount={article.like_count}
-                  initialBookmarked={bookmarkedSet.has(article.id)}
-                  initialFollowing={following}
-                  initialMuted={muted}
-                  sourceId={source.id}
-                  isLoggedIn={isLoggedIn}
-                />
-              ))}
-            </div>
-          )}
-
-          <div ref={sentinelRef} style={{ minHeight: 1 }} />
-          {loading && (
-            <p
-              style={{
-                fontFamily: mono,
-                fontSize: 11,
-                color: dark.textMute,
-                textAlign: "center",
-                marginTop: 24,
-              }}
-            >
-              Loading...
-            </p>
-          )}
-          {!hasMore && articles.length > 0 && (
-            <p
-              style={{
-                fontFamily: mono,
-                fontSize: 11,
-                color: dark.textMute,
-                textAlign: "center",
-                marginTop: 32,
-                marginBottom: 16,
-              }}
-            >
-              {"// end of posts from this source"}
-            </p>
-          )}
+            <VolumeX size={15} />
+            {muted ? "Muted" : "Mute notifications"}
+          </button>
         </div>
-      )}
 
-      {/* ─── AUDIT LOG TAB ─── */}
-      {activeTab === "audit" && (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 24,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: mono,
-                fontSize: 11,
-                textTransform: "uppercase",
-                letterSpacing: 1.2,
-                color: dark.textMute,
-              }}
-            >
-              AUDIT LOG · last 90 days
-            </div>
-            <button
-              style={{
-                fontFamily: mono,
-                fontSize: 11,
-                color: dark.textDim,
-                background: "none",
-                border: `1px solid ${dark.line2}`,
-                borderRadius: 4,
-                padding: "5px 12px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-              }}
-            >
-              <Download size={12} /> Export JSONL
-            </button>
-          </div>
-
+        <div style={{ borderTop: `1px solid ${dark.line}`, marginTop: 14, paddingTop: 12 }}>
           <p
             style={{
-              fontFamily: mono,
+              fontFamily: inter,
               fontSize: 12,
-              color: dark.textMute,
-              textAlign: "center",
-              paddingTop: 48,
-              paddingBottom: 48,
+              color: dark.textDim,
+              lineHeight: 1.5,
+              margin: 0,
             }}
           >
-            No audit entries yet. Public ledger coming in Phase 3.
+            Following puts this source on your home feed and enables alerts for corrections and breaking posts.
           </p>
+        </div>
+      </div>
+
+      {/* ─── CATEGORY PILLS + SHOWING COUNT (same pattern as home feed) ─── */}
+      <div
+        style={{
+          position: "sticky",
+          top: 64,
+          zIndex: 20,
+          background: dark.bg,
+          marginLeft: -36,
+          marginRight: -36,
+          paddingLeft: 36,
+          paddingRight: 36,
+          paddingTop: 4,
+          paddingBottom: 8,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 16,
+          }}
+        >
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {[{ slug: null, name: "ALL" }, ...tags.map((t) => ({ slug: t.slug, name: t.name }))].map((pill) => {
+              const active = pill.slug === activeTagSlug;
+              return (
+                <button
+                  key={pill.slug ?? "all"}
+                  onClick={() => setActiveTagSlug(pill.slug)}
+                  style={{
+                    fontFamily: mono,
+                    fontSize: 11,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.6,
+                    fontWeight: 600,
+                    padding: "4px 10px",
+                    borderRadius: 3,
+                    cursor: "pointer",
+                    transition: "background 0.12s, border-color 0.12s",
+                    background: active ? dark.accentDim : dark.surface,
+                    color: active ? dark.accent : dark.textDim,
+                    border: active
+                      ? `1px solid ${dark.accentLine}`
+                      : `1px solid ${dark.line2}`,
+                  }}
+                >
+                  {pill.name}
+                </button>
+              );
+            })}
+          </div>
+          <span style={{ fontFamily: mono, fontSize: 11, color: dark.textMute, flexShrink: 0 }}>
+            showing {displayedArticles.length} of {postCount}
+          </span>
+        </div>
+      </div>
+
+      {/* ─── POSTS FEED ─── */}
+      {displayedArticles.length === 0 ? (
+        <p
+          className="text-center py-12"
+          style={{ fontFamily: mono, fontSize: 12, color: dark.textMute }}
+        >
+          {activeTagSlug ? "No articles match this filter." : "No articles from this source yet."}
+        </p>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {displayedArticles.map((article) => (
+            <ArticleCard
+              key={article.id}
+              article={article}
+              initialLiked={likedSet.has(article.id)}
+              initialLikeCount={article.like_count}
+              initialBookmarked={bookmarkedSet.has(article.id)}
+              initialFollowing={following}
+              initialMuted={muted}
+              sourceId={source.id}
+              isLoggedIn={isLoggedIn}
+            />
+          ))}
         </div>
       )}
 
-      {/* ─── ABOUT TAB ─── */}
-      {activeTab === "about" && (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 14,
-          }}
+      <div ref={sentinelRef} style={{ minHeight: 1 }} />
+      {loading && (
+        <p
+          className="text-center"
+          style={{ fontFamily: mono, fontSize: 11, color: dark.textMute, marginTop: 24 }}
         >
-          {[
-            {
-              title: "Editorial charter",
-              body: "This source adheres to the principles of factual, unbiased reporting. All editorial decisions are made independently.",
-            },
-            {
-              title: "Verification",
-              body: "Source verified through The Source registry.",
-            },
-            {
-              title: "Ownership & legal",
-              body: `${source.name}. Independently owned.`,
-            },
-            {
-              title: "Accountability",
-              body: "Corrections are issued publicly.",
-            },
-            {
-              title: "Data & privacy",
-              body: "No trackers, no third-party analytics.",
-            },
-            {
-              title: "Funding",
-              body: "Reader supported.",
-            },
-          ].map((card) => (
-            <div
-              key={card.title}
-              style={{
-                background: dark.surface,
-                border: `1px solid ${dark.line}`,
-                borderRadius: 6,
-                padding: 16,
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: inter,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: dark.text,
-                  marginBottom: 6,
-                }}
-              >
-                {card.title}
-              </div>
-              <div
-                style={{
-                  fontFamily: inter,
-                  fontSize: 13,
-                  color: dark.textSub,
-                  lineHeight: 1.5,
-                }}
-              >
-                {card.body}
-              </div>
-            </div>
-          ))}
-        </div>
+          Loading...
+        </p>
+      )}
+      {!hasMore && displayedArticles.length > 0 && (
+        <p
+          className="text-center"
+          style={{ fontFamily: mono, fontSize: 11, color: dark.textMute, marginTop: 32, marginBottom: 16 }}
+        >
+          {"// end of posts from this source"}
+        </p>
       )}
     </div>
   );
