@@ -46,6 +46,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Filter low-res images in RSS fetcher (min 400x200)
 - [2026-04-24] Sticky category bar bottom spacing (16px)
 - [2026-04-24] Sticky bar bottom spacing adjusted to 8px
+- [2026-04-24] Blur background behind article images in card
 
 ## In Progress
 - Article card design polish

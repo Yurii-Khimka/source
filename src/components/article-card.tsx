@@ -319,12 +319,45 @@ export function ArticleCard({
 
       {/* Row 5 — Image */}
       {article.image_url && (
-        <img
-          src={article.image_url}
-          alt=""
-          className="w-full mb-3"
-          style={{ height: 220, objectFit: "cover", borderRadius: 6, border: `1px solid ${dark.line}` }}
-        />
+        <div
+          className="mb-3"
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            background: dark.surface,
+            borderRadius: 6,
+            border: `1px solid ${dark.line}`,
+            height: 220,
+          }}
+        >
+          <img
+            src={article.image_url}
+            alt=""
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              filter: "blur(24px)",
+              transform: "scale(1.1)",
+              opacity: 0.6,
+            }}
+          />
+          <img
+            src={article.image_url}
+            alt=""
+            style={{
+              position: "relative",
+              zIndex: 1,
+              display: "block",
+              width: "100%",
+              maxHeight: 420,
+              height: "100%",
+              objectFit: "contain",
+            }}
+          />
+        </div>
       )}
 
       {/* Row 5 — Footer */}
