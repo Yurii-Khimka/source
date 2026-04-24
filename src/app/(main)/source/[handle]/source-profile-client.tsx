@@ -6,6 +6,7 @@ import { dark } from "@/lib/tokens";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleCardSkeleton } from "@/components/ui/skeletons";
 import { getSourceLogoUrl } from "@/lib/source-logo";
+import { BackButton } from "@/components/ui/back-button";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -177,6 +178,7 @@ export function SourceProfileClient({
 
   return (
     <div className="page-content" style={{ padding: "32px 36px 80px" }}>
+      <BackButton />
       {/* ─── IDENTITY HEADER ─── */}
       <div className="source-identity-header" style={{ display: "flex", gap: 18, alignItems: "flex-start", marginBottom: 24 }}>
         {(() => {

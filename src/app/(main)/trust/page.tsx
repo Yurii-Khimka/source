@@ -1,4 +1,5 @@
 import { dark } from "@/lib/tokens";
+import { BackButton } from "@/components/ui/back-button";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Georgia', 'Times New Roman', serif";
@@ -40,6 +41,7 @@ const criteria = [
 export default function TrustPage() {
   return (
     <div style={{ maxWidth: 680, margin: "0 auto", padding: "32px 24px" }}>
+      <BackButton />
       {/* Title */}
       <h1
         style={{

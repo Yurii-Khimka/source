@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { ArticleCard } from "@/components/article-card";
 import { dark } from "@/lib/tokens";
+import { BackButton } from "@/components/ui/back-button";
 
 export const revalidate = 0;
 
@@ -50,6 +51,7 @@ export default async function BookmarksPage() {
 
   return (
     <div className="page-content" style={{ padding: "32px 36px 60px" }}>
+      <BackButton />
       <div style={{ marginBottom: 16 }}>
         <h1
           style={{

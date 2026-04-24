@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { Spinner } from "@/components/ui/spinner";
-import { MobileBackButton } from "@/components/mobile-back-button";
+import { BackButton } from "@/components/ui/back-button";
 import { getSourceLogoUrl } from "@/lib/source-logo";
 
 const mono = "'JetBrains Mono', monospace";
@@ -113,7 +113,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
 
   return (
     <div className="page-content" style={{ padding: "32px 36px 60px" }}>
-      <MobileBackButton />
+      <BackButton />
 
       {/* Header */}
       <h1

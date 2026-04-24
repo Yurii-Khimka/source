@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
-export function MobileBackButton() {
+export function BackButton() {
   const router = useRouter();
 
   return (
@@ -14,7 +14,7 @@ export function MobileBackButton() {
       style={{
         display: "none",
         alignItems: "center",
-        gap: 4,
+        gap: 6,
         background: "none",
         border: "none",
         fontFamily: "'Inter', system-ui, sans-serif",
@@ -22,7 +22,7 @@ export function MobileBackButton() {
         color: dark.textDim,
         cursor: "pointer",
         padding: 0,
-        marginBottom: 12,
+        marginBottom: 16,
       }}
     >
       <ArrowLeft size={16} />

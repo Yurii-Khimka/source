@@ -5,6 +5,7 @@ import { dark } from "@/lib/tokens";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleCardSkeleton } from "@/components/ui/skeletons";
 import { RankedTable } from "@/components/ranked-table";
+import { BackButton } from "@/components/ui/back-button";
 
 const mono = "'JetBrains Mono', monospace";
 
@@ -117,6 +118,7 @@ export function TagProfileClient({
 
   return (
     <div className="page-content" style={{ padding: "32px 36px 80px" }}>
+      <BackButton />
       {/* ─── IDENTITY HEADER ─── */}
       <div style={{ marginBottom: 24 }}>
         <h1
