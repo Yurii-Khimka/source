@@ -14,6 +14,7 @@ export default async function DiscoveryPage() {
 
   const [
     { data: sources },
+    { data: allTags },
     { data: tagRows24h },
     { data: tagRows48h },
     { data: topArticles },
@@ -24,15 +25,19 @@ export default async function DiscoveryPage() {
       .select("id, handle, name, site_url, verification_status")
       .eq("is_hidden", false)
       .order("name"),
-    // Tags from last 24h
+    // All tags in the DB
+    supabase
+      .from("tags")
+      .select("id, slug, name"),
+    // article_tags from last 24h
     supabase
       .from("article_tags")
-      .select("tag_id, tags!inner(id, slug, name), articles!inner(published_at)")
+      .select("tag_id, articles!inner(published_at)")
       .gte("articles.published_at", yesterday),
-    // Tags from 24h–48h ago (for delta calculation)
+    // article_tags from 24h–48h ago (for delta calculation)
     supabase
       .from("article_tags")
-      .select("tag_id, tags!inner(id, slug, name), articles!inner(published_at)")
+      .select("tag_id, articles!inner(published_at)")
       .gte("articles.published_at", twoDaysAgo)
       .lt("articles.published_at", yesterday),
     // Top stories in last 24h by like_count
@@ -73,29 +78,51 @@ export default async function DiscoveryPage() {
     followerCounts[f.source_id] = (followerCounts[f.source_id] ?? 0) + 1;
   }
 
-  // Build 24h tag counts
-  const currentCounts = new Map<string, { id: string; slug: string; name: string; count: number }>();
+  // Build 24h counts per tag_id
+  const counts24h = new Map<string, number>();
   for (const row of tagRows24h ?? []) {
-    const tag = row.tags as unknown as { id: string; slug: string; name: string };
-    const existing = currentCounts.get(tag.id);
-    if (existing) existing.count++;
-    else currentCounts.set(tag.id, { id: tag.id, slug: tag.slug, name: tag.name, count: 1 });
+    counts24h.set(row.tag_id, (counts24h.get(row.tag_id) ?? 0) + 1);
   }
 
-  // Build 24h–48h tag counts for delta
-  const prevCounts = new Map<string, number>();
+  // Build 24h–48h counts per tag_id for delta
+  const counts48h = new Map<string, number>();
   for (const row of tagRows48h ?? []) {
-    const tag = row.tags as unknown as { id: string };
-    prevCounts.set(tag.id, (prevCounts.get(tag.id) ?? 0) + 1);
+    counts48h.set(row.tag_id, (counts48h.get(row.tag_id) ?? 0) + 1);
   }
 
-  const tags = Array.from(currentCounts.values())
-    .sort((a, b) => b.count - a.count)
-    .map((t) => {
-      const prev = prevCounts.get(t.id) ?? 0;
-      const delta = prev === 0 ? null : Math.round(((t.count - prev) / prev) * 100);
-      return { ...t, delta };
-    });
+  let tags: { id: string; slug: string; name: string; count: number; delta: number | null }[];
+
+  if (allTags && allTags.length > 0) {
+    // Use all DB tags, attach counts (even if 0)
+    tags = allTags
+      .map((t) => {
+        const count = counts24h.get(t.id) ?? 0;
+        const prev = counts48h.get(t.id) ?? 0;
+        const delta = prev === 0 ? null : Math.round(((count - prev) / prev) * 100);
+        return { id: t.id, slug: t.slug, name: t.name, count, delta };
+      })
+      .sort((a, b) => b.count - a.count);
+  } else {
+    // Fallback: infer tags from recent articles via keyword matching
+    const { data: recentArticles } = await supabase
+      .from("articles")
+      .select("title, description")
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false })
+      .limit(100);
+
+    const inferred = new Map<string, { slug: string; name: string; count: number }>();
+    for (const article of recentArticles ?? []) {
+      for (const tag of inferTags(article.title, article.description)) {
+        const existing = inferred.get(tag.slug);
+        if (existing) existing.count++;
+        else inferred.set(tag.slug, { slug: tag.slug, name: tag.name, count: 1 });
+      }
+    }
+    tags = Array.from(inferred.values())
+      .sort((a, b) => b.count - a.count)
+      .map((t) => ({ id: t.slug, ...t, delta: null }));
+  }
 
   const sourcesData = (sources ?? []).map((s) => ({
     id: s.id,
