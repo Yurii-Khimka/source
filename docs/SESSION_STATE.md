@@ -111,6 +111,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Remove notification bell from mobile header
 - [2026-04-24] Tablet feed — swipeable category bar, hidden counter
 - [2026-04-24] Mobile page fixes — discovery, bookmarks, following, profile, settings
+- [2026-04-24] Mobile profile menu cleanup + settings back button
 
 ## In Progress
 - Article card design polish
@@ -172,6 +173,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Bell icon removed from mobile header for MVP.
 - [2026-04-24] Extended mobile category bar fix to 1024px tablet breakpoint.
 - [2026-04-24] Discovery description below title, simplified table on mobile, bookmarks mobile styles, following back button, profile menu updated, settings following removed.
+- [2026-04-24] Removed Bookmarks, Followed Sources, Followed Tags, Discovery from mobile profile. Added back button to settings on mobile.
 
 ## Backlog (priority order)
 1. Discovery page

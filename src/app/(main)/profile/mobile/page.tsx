@@ -6,9 +6,6 @@ import Link from "next/link";
 import {
   ChevronRight,
   Users,
-  Rss,
-  Hash,
-  Compass,
   Info,
   ShieldCheck,
   Lock,
@@ -206,14 +203,6 @@ export default function MobileProfilePage() {
       {/* Your content */}
       <SectionLabel>Your content</SectionLabel>
       <MenuRow href="/following" icon={Users} label="Following" />
-      <MenuRow href="/following" icon={Rss} label="Followed Sources" />
-      <MenuRow href="/following?tab=tags" icon={Hash} label="Followed Tags" />
-
-      <div style={dividerStyle} />
-
-      {/* Discover */}
-      <SectionLabel>Discover</SectionLabel>
-      <MenuRow href="/discovery" icon={Compass} label="Discovery" />
 
       <div style={dividerStyle} />
 

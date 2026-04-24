@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton, SourceList } from "@/components/settings-actions";
+import { MobileBackButton } from "@/components/mobile-back-button";
 import { dark } from "@/lib/tokens";
 
 export const revalidate = 0;
@@ -39,6 +40,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="p-6">
+      <MobileBackButton />
       <h1
         style={{
           fontFamily: "'Source Serif 4', Georgia, serif",
