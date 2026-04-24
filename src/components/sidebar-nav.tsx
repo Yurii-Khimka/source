@@ -10,7 +10,7 @@ const mono = "'JetBrains Mono', monospace";
 
 const navItems = [
   { label: "Home", icon: Home, href: "/" },
-  { label: "Discovery", icon: Compass, href: "/search" },
+  { label: "Discovery", icon: Compass, href: "/discovery" },
   { label: "Following", icon: Users, href: "/following" },
   { label: "Tags", icon: Hash, href: "/tags" },
   { label: "Bookmarks", icon: Bookmark, href: "/bookmarks" },

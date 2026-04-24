@@ -9,6 +9,7 @@ const routes: Record<string, { parent?: string; label: string }> = {
   "/settings": { parent: "Home", label: "Settings" },
   "/auth/signin": { parent: "Home", label: "Sign in" },
   "/auth/signup": { parent: "Home", label: "Sign up" },
+  "/discovery": { parent: "Home", label: "Discovery" },
   "/tags": { parent: "Home", label: "Tags" },
   "/following": { parent: "Home", label: "Following" },
 };
