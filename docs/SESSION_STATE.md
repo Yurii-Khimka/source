@@ -54,6 +54,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] One-time script to backfill Guardian image URLs to high resolution
 - [2026-04-24] Hide image container on load error in article card
 - [2026-04-24] Guardian URL upgrade script rewritten with urllib.parse + dry-run
+- [2026-04-24] Hide broken and low-res images in article card
 
 ## In Progress
 - Article card design polish

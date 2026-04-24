@@ -328,6 +328,7 @@ export function ArticleCard({
             background: dark.surface,
             borderRadius: 4,
             height: 420,
+            display: showImage ? "block" : "none",
           }}
         >
           <img
@@ -349,6 +350,10 @@ export function ArticleCard({
             src={article.image_url}
             alt=""
             onError={() => setShowImage(false)}
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (img.naturalWidth < 400 || img.naturalHeight < 200) setShowImage(false);
+            }}
             style={{
               position: "relative",
               zIndex: 1,
