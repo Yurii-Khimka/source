@@ -32,6 +32,26 @@
 - [ ] Step 16: KYC verification
 - [ ] Step 19: Multi-source RSS fetcher
 
+## 2026-04-24 Day 3
+- Header rebuilt matching design system (3-col grid, logo, breadcrumbs, icon buttons)
+- Left sidebar rebuilt — nav group (Home, Discovery, Following, Tags, Bookmarks), followed sources, bookmark counter
+- Right rail added — integrity widget, trending sources, recent hashtags, footer
+- Feed redesign — markets ticker, tabs with counts, category pills from real tags
+- Real tags from DB in feed filter pills (top 8 by article count)
+- Following tab active by default when logged in
+- Like/bookmark active states redesigned (accent container when active)
+- Like/bookmark toggle bug fixed (delete by user_id+article_id, error handling)
+- Tab counter badges styled to match sidebar badge pattern
+- Markets ticker border spans full card width
+- Bell (notifications) icon removed from header (post-MVP)
+- Analytics tracking added to backlog
+
+### In progress / known issues
+- Hashtags widget data depends on article_tags being populated
+- Category pill filtering is UI-only (no article categories in DB yet)
+- Markets ticker data is static placeholder
+- Light theme still not implemented
+
 ## 2026-04-23 Day 2
 - App shell built with header, sidebar, dynamic sources list
 - Design tokens implemented (dark theme)
