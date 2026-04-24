@@ -293,33 +293,7 @@ export function ArticleCard({
         </p>
       )}
 
-      {/* Row 4 — Tags */}
-      {article.tags && article.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-3">
-          {article.tags.map((tag) => (
-            <Link
-              key={tag.slug}
-              href={`/tag/${tag.slug}`}
-              className="right-rail-tag"
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 11,
-                color: dark.textSub,
-                padding: "2px 7px",
-                borderRadius: 3,
-                border: `1px solid ${dark.line2}`,
-                background: dark.surface,
-                textDecoration: "none",
-                transition: "border-color 0.12s",
-              }}
-            >
-              #{tag.name}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* Row 5 — Image (hidden probe + visible container) */}
+      {/* Row 4 — Image (hidden probe + visible container) */}
       {article.image_url && !showImage && (
         <img
           src={article.image_url}
@@ -368,6 +342,32 @@ export function ArticleCard({
               objectFit: "cover",
             }}
           />
+        </div>
+      )}
+
+      {/* Row 5 — Tags */}
+      {article.tags && article.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-3">
+          {article.tags.map((tag) => (
+            <Link
+              key={tag.slug}
+              href={`/tag/${tag.slug}`}
+              className="right-rail-tag"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 11,
+                color: dark.textSub,
+                padding: "2px 7px",
+                borderRadius: 3,
+                border: `1px solid ${dark.line2}`,
+                background: dark.surface,
+                textDecoration: "none",
+                transition: "border-color 0.12s",
+              }}
+            >
+              #{tag.name}
+            </Link>
+          ))}
         </div>
       )}
 
