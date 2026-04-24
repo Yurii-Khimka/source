@@ -29,7 +29,7 @@ export function SignOutButton() {
   return (
     <button
       onClick={handleSignOut}
-      className="cursor-pointer"
+      className="btn-outline cursor-pointer"
       style={{
         fontFamily: "'Inter', system-ui, sans-serif",
         fontSize: 13,
@@ -108,7 +108,7 @@ export function SourceList({
           )}
           <Link
             href={`/source/${source.handle}`}
-            className="flex-1"
+            className="text-link flex-1"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 13,
@@ -120,7 +120,7 @@ export function SourceList({
           </Link>
           <button
             onClick={() => handleRemove(source.id)}
-            className="cursor-pointer"
+            className="btn-outline cursor-pointer"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 12,

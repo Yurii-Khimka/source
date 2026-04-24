@@ -141,7 +141,7 @@ export default function OnboardingPage() {
           </Link>
           <button
             onClick={completeOnboarding}
-            className="cursor-pointer"
+            className="text-link cursor-pointer"
             style={{
               display: "flex", alignItems: "center", gap: 6,
               background: "none", border: "none",
@@ -212,7 +212,7 @@ export default function OnboardingPage() {
             {step > 0 && (
               <button
                 onClick={back}
-                className="cursor-pointer"
+                className="btn-outline cursor-pointer"
                 style={{
                   background: "none",
                   border: `1px solid ${dark.line2}`,
@@ -236,7 +236,7 @@ export default function OnboardingPage() {
           <div style={{ width: 120, textAlign: "right" }}>
             <button
               onClick={next}
-              className="cursor-pointer"
+              className="btn-primary cursor-pointer"
               style={{
                 background: dark.accent,
                 border: "none",
@@ -325,7 +325,7 @@ function StepSources({
             <button
               key={s.id}
               onClick={() => onToggle(s.id)}
-              className="cursor-pointer"
+              className={`cursor-pointer ${followed ? "onboarding-source-card-selected" : "onboarding-source-card"}`}
               style={{
                 position: "relative",
                 display: "flex",
@@ -420,7 +420,7 @@ function StepTags({
             <button
               key={t.id}
               onClick={() => onToggle(t.id)}
-              className="cursor-pointer"
+              className={`cursor-pointer ${followed ? "onboarding-tag-pill-active" : "onboarding-tag-pill"}`}
               style={{
                 fontFamily: mono,
                 fontSize: 13,

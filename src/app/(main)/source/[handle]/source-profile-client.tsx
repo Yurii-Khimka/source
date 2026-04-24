@@ -246,6 +246,7 @@ export function SourceProfileClient({
                   href={source.site_url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-link"
                   style={{
                     color: dark.accent,
                     textDecoration: "none",
@@ -294,6 +295,7 @@ export function SourceProfileClient({
                 <button
                   key={pill.slug ?? "all"}
                   onClick={() => setActiveTagSlug(pill.slug)}
+                  className={`cursor-pointer ${active ? "tag-pill-active" : "tag-pill"}`}
                   style={{
                     fontFamily: mono,
                     fontSize: 11,
@@ -303,7 +305,6 @@ export function SourceProfileClient({
                     padding: "4px 10px",
                     borderRadius: 3,
                     cursor: "pointer",
-                    transition: "background 0.12s, border-color 0.12s",
                     background: active ? dark.accentDim : dark.surface,
                     color: active ? dark.accent : dark.textDim,
                     border: active

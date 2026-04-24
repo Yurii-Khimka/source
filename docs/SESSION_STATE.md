@@ -105,6 +105,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] 404 and 502 error pages
 - [2026-04-24] Onboarding flow
 - [2026-04-24] Fix onboarding button alignment
+- [2026-04-24] Hover and click states audit
 
 ## In Progress
 - Article card design polish
@@ -160,6 +161,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Built not-found.tsx, error.tsx, global-error.tsx. Terminal aesthetic, no shell, fun copy.
 - [2026-04-24] Built 4-step onboarding at /onboarding. Welcome, follow sources, follow tags, complete. Triggers on first login. Skip and empty feed state included.
 - [2026-04-24] Fixed flex alignment on Continue, Back, and Skip buttons.
+- [2026-04-24] Standardised hover, active, focus states for all buttons, links, nav items, cards, pills, and icon buttons across the entire app.
 
 ## Backlog (priority order)
 1. Discovery page

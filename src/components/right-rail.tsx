@@ -90,7 +90,7 @@ export function RightRail() {
               <Link
                 key={source.id}
                 href={`/source/${source.handle}`}
-                className="sidebar-nav-item block truncate"
+                className="source-row block truncate"
                 style={{
                   fontFamily: inter,
                   fontSize: 13,
@@ -98,7 +98,6 @@ export function RightRail() {
                   padding: "6px 8px",
                   borderRadius: 4,
                   textDecoration: "none",
-                  transition: "background 0.12s",
                 }}
               >
                 <span style={{ color: dark.textDim }}>@</span>
@@ -150,7 +149,7 @@ export function RightRail() {
           lineHeight: 1.8,
         }}
       >
-        <div><Link href="/about" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · Feedback · <Link href="/privacy" style={{ color: dark.textMute, textDecoration: "none" }}>Privacy</Link> · <Link href="/terms" style={{ color: dark.textMute, textDecoration: "none" }}>Terms</Link> · <Link href="/trust" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link> · <a href="https://github.com/Yurii-Khimka/source" target="_blank" rel="noopener noreferrer" style={{ color: dark.textMute, textDecoration: "none" }}>GitHub</a></div>
+        <div><Link href="/about" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · Feedback · <Link href="/privacy" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Privacy</Link> · <Link href="/terms" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Terms</Link> · <Link href="/trust" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link> · <a href="https://github.com/Yurii-Khimka/source" target="_blank" rel="noopener noreferrer" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>GitHub</a></div>
         <div>© 2026 The Source</div>
       </div>
     </div>

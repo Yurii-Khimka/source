@@ -248,6 +248,7 @@ export function DiscoveryClient({
         {search && (
           <button
             onClick={() => setSearch("")}
+            className="icon-btn cursor-pointer"
             style={{
               position: "absolute",
               right: 10,
@@ -256,6 +257,7 @@ export function DiscoveryClient({
               background: "none",
               border: "none",
               padding: 4,
+              borderRadius: 4,
               cursor: "pointer",
               color: dark.textMute,
               display: "flex",
@@ -282,6 +284,7 @@ export function DiscoveryClient({
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
+              className="nav-tab cursor-pointer"
               style={{
                 fontFamily: inter,
                 fontSize: 13,
@@ -296,7 +299,6 @@ export function DiscoveryClient({
                 display: "flex",
                 alignItems: "center",
                 gap: 6,
-                transition: "color 0.12s",
               }}
             >
               {tab.label}
@@ -347,6 +349,7 @@ export function DiscoveryClient({
               return (
                 <div
                   key={source.id}
+                  className="article-card"
                   style={{
                     background: dark.surface,
                     border: `1px solid ${dark.line}`,
@@ -413,6 +416,7 @@ export function DiscoveryClient({
                     <button
                       onClick={() => toggleFollow(source.id)}
                       disabled={isLoading || !isLoggedIn}
+                      className={`cursor-pointer ${isFollowing ? "btn-following" : "btn-primary"}`}
                       style={{
                         fontFamily: mono,
                         fontSize: 11,
@@ -420,7 +424,6 @@ export function DiscoveryClient({
                         padding: "5px 14px",
                         borderRadius: 4,
                         cursor: isLoading ? "wait" : isLoggedIn ? "pointer" : "default",
-                        transition: "all 0.12s",
                         background: isFollowing ? "transparent" : dark.accent,
                         color: isFollowing ? dark.accent : "#fff",
                         border: isFollowing
@@ -436,12 +439,12 @@ export function DiscoveryClient({
                     </button>
                     <Link
                       href={`/source/${source.handle}`}
+                      className="text-link"
                       style={{
                         fontFamily: mono,
                         fontSize: 11,
                         color: dark.textMute,
                         textDecoration: "none",
-                        transition: "color 0.12s",
                       }}
                     >
                       View profile →

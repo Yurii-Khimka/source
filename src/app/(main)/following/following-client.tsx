@@ -140,6 +140,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
+              className="nav-tab cursor-pointer"
               style={{
                 fontFamily: inter,
                 fontSize: 13,
@@ -154,7 +155,6 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                 display: "flex",
                 alignItems: "center",
                 gap: 6,
-                transition: "color 0.12s",
               }}
             >
               {tab.label}
@@ -198,6 +198,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
             {sources.map((source, i) => (
               <div
                 key={source.id}
+                className="source-row"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -245,6 +246,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                   <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                     <Link
                       href={`/source/${source.handle}`}
+                      className="text-link"
                       style={{
                         fontFamily: inter,
                         fontSize: 13,
@@ -273,7 +275,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                 <button
                   onClick={() => unfollowSource(source.id)}
                   disabled={loadingSource.has(source.id)}
-                  className="cursor-pointer"
+                  className="btn-outline cursor-pointer"
                   style={{
                     fontFamily: mono,
                     fontSize: 11,
@@ -284,7 +286,6 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                     background: "transparent",
                     color: dark.textDim,
                     border: `1px solid ${dark.line2}`,
-                    transition: "all 0.12s",
                     flexShrink: 0,
                     display: "flex",
                     alignItems: "center",
@@ -321,6 +322,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
             {tags.map((tag, i) => (
               <div
                 key={tag.id}
+                className="source-row"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -348,6 +350,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <Link
                     href={`/tag/${tag.slug}`}
+                    className="text-link"
                     style={{
                       fontFamily: inter,
                       fontSize: 13,
@@ -374,7 +377,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                 <button
                   onClick={() => unfollowTag(tag.id)}
                   disabled={loadingTag.has(tag.id)}
-                  className="cursor-pointer"
+                  className="btn-outline cursor-pointer"
                   style={{
                     fontFamily: mono,
                     fontSize: 11,
@@ -385,7 +388,6 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                     background: "transparent",
                     color: dark.textDim,
                     border: `1px solid ${dark.line2}`,
-                    transition: "all 0.12s",
                     flexShrink: 0,
                     display: "flex",
                     alignItems: "center",

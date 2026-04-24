@@ -72,14 +72,14 @@ export function SidebarNav() {
               className="sidebar-nav-item flex items-center gap-2.5"
               style={{
                 height: 36,
-                padding: "8px 10px",
+                padding: active ? "8px 8px 8px 8px" : "8px 10px",
                 borderRadius: 6,
                 fontFamily: inter,
                 fontSize: 13.5,
                 color: active ? "#EEF1F6" : "#C7CCD6",
                 background: active ? "#161B26" : undefined,
+                borderLeft: active ? "2px solid rgb(100,104,240)" : "2px solid transparent",
                 textDecoration: "none",
-                transition: "background 0.12s",
               }}
             >
               <Icon
@@ -135,14 +135,14 @@ export function SidebarNav() {
                   className="sidebar-nav-item flex items-center gap-2.5 truncate"
                   style={{
                     height: 36,
-                    padding: "8px 10px",
+                    padding: active ? "8px 8px 8px 8px" : "8px 10px",
                     borderRadius: 6,
                     fontFamily: inter,
                     fontSize: 13.5,
                     color: active ? "#EEF1F6" : "#C7CCD6",
                     background: active ? "#161B26" : undefined,
+                    borderLeft: active ? "2px solid rgb(100,104,240)" : "2px solid transparent",
                     textDecoration: "none",
-                    transition: "background 0.12s",
                   }}
                 >
                   <span style={{ color: "#A3ACBD", flexShrink: 0 }}>#</span>
@@ -181,14 +181,14 @@ export function SidebarNav() {
                   className="sidebar-nav-item flex items-center gap-2.5 truncate"
                   style={{
                     height: 36,
-                    padding: "8px 10px",
+                    padding: active ? "8px 8px 8px 8px" : "8px 10px",
                     borderRadius: 6,
                     fontFamily: inter,
                     fontSize: 13.5,
                     color: active ? "#EEF1F6" : "#C7CCD6",
                     background: active ? "#161B26" : undefined,
+                    borderLeft: active ? "2px solid rgb(100,104,240)" : "2px solid transparent",
                     textDecoration: "none",
-                    transition: "background 0.12s",
                   }}
                 >
                   <span style={{ color: "#A3ACBD", flexShrink: 0 }}>#</span>

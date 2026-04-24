@@ -76,6 +76,7 @@ export function SearchClient() {
         {results.map((article) => (
           <div
             key={article.id}
+            className="search-result-card"
             style={{
               background: "#11151D",
               border: "1px solid rgba(255,255,255,0.06)",
@@ -94,6 +95,7 @@ export function SearchClient() {
               {article.sources?.handle ? (
                 <Link
                   href={`/source/${article.sources.handle}`}
+                  className="text-link"
                   style={{ color: "#6C727E", textDecoration: "none" }}
                 >
                   {article.sources.name}
@@ -107,6 +109,7 @@ export function SearchClient() {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
+              className="text-link"
               style={{
                 color: "#EEF1F6",
                 textDecoration: "none",

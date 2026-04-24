@@ -52,6 +52,7 @@ export function RankedTable({ items, showDelta = true }: Props) {
         return (
           <div
             key={item.id}
+            className="ranked-row"
             style={{
               display: "grid",
               gridTemplateColumns: gridCols,
@@ -101,6 +102,7 @@ export function RankedTable({ items, showDelta = true }: Props) {
             )}
             <Link
               href={item.href}
+              className="text-link"
               style={{
                 fontFamily: mono,
                 fontSize: 15,
@@ -141,6 +143,7 @@ export function RankedTable({ items, showDelta = true }: Props) {
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <Link
                 href={item.href}
+                className="view-btn"
                 style={{
                   fontFamily: mono,
                   fontSize: 10,
@@ -149,7 +152,6 @@ export function RankedTable({ items, showDelta = true }: Props) {
                   padding: "3px 8px",
                   border: `1px solid ${dark.line2}`,
                   borderRadius: 3,
-                  transition: "border-color 0.12s",
                 }}
               >
                 View

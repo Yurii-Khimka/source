@@ -154,7 +154,7 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg cursor-pointer"
+            className="btn-primary w-full rounded-lg cursor-pointer"
             style={{
               background: dark.accent,
               color: "#fff",
@@ -180,7 +180,7 @@ export default function SignUpPage() {
           }}
         >
           Already have an account?{" "}
-          <Link href="/auth/signin" style={{ color: dark.accent }}>
+          <Link href="/auth/signin" className="text-link" style={{ color: dark.accent }}>
             Sign in
           </Link>
         </p>

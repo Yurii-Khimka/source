@@ -191,6 +191,7 @@ export function ArticleCard({
 
   return (
     <div
+      className="article-card"
       style={{
         background: dark.surface,
         border: `1px solid ${dark.line}`,
@@ -221,7 +222,7 @@ export function ArticleCard({
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <Link href={`/source/${source?.handle ?? "unknown"}`} style={{ textDecoration: "none", fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: dark.text }}>
+            <Link href={`/source/${source?.handle ?? "unknown"}`} className="text-link" style={{ textDecoration: "none", fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: dark.text }}>
               {name}
             </Link>
             <CheckCircle2 size={12} style={{ color: dark.accent, flexShrink: 0 }} />
@@ -235,8 +236,8 @@ export function ArticleCard({
         <div className="relative flex-shrink-0" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="cursor-pointer"
-            style={{ background: "none", border: "none", padding: 4, color: dark.textMute }}
+            className="icon-btn cursor-pointer"
+            style={{ background: "none", border: "none", padding: 4, borderRadius: 4, color: dark.textMute }}
           >
             <MoreHorizontal size={16} />
           </button>
@@ -256,7 +257,7 @@ export function ArticleCard({
             >
               <button
                 onClick={handleFollow}
-                className="w-full text-left cursor-pointer"
+                className="menu-item w-full text-left cursor-pointer"
                 style={{
                   display: "block",
                   background: "none",
@@ -266,14 +267,12 @@ export function ArticleCard({
                   color: dark.text,
                   padding: "8px 12px",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = dark.hover)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
               >
                 {following ? "Unfollow source" : "Follow source"}
               </button>
               <button
                 onClick={handleMute}
-                className="w-full text-left cursor-pointer"
+                className="menu-item w-full text-left cursor-pointer"
                 style={{
                   display: "block",
                   background: "none",
@@ -283,8 +282,6 @@ export function ArticleCard({
                   color: dark.danger,
                   padding: "8px 12px",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = dark.hover)}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
               >
                 {muted ? "Unmute source" : "Mute source"}
               </button>
@@ -403,7 +400,7 @@ export function ArticleCard({
         <button
           onClick={handleLike}
           disabled={likeLoading}
-          className="flex items-center gap-1.5 cursor-pointer"
+          className={`flex items-center gap-1.5 cursor-pointer ${liked ? "icon-btn-active" : "icon-btn"}`}
           style={{
             background: liked ? "rgba(100,104,240,0.12)" : "none",
             border: liked ? "1px solid rgba(100,104,240,0.42)" : "1px solid transparent",
@@ -428,9 +425,9 @@ export function ArticleCard({
         <button
           onClick={handleBookmark}
           disabled={bookmarkLoading}
-          className="cursor-pointer"
+          className={`cursor-pointer ${bookmarked ? "icon-btn-active" : "icon-btn"}`}
           style={{
-            background: "none", border: "none", padding: 0, font: "inherit",
+            background: "none", border: "none", padding: 4, borderRadius: 4, font: "inherit",
             color: bookmarked ? dark.accent : dark.textMute,
             cursor: bookmarkLoading ? "wait" : "pointer",
           }}
@@ -441,7 +438,7 @@ export function ArticleCard({
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto hover:underline flex items-center gap-1"
+          className="text-link ml-auto flex items-center gap-1"
           style={{ color: dark.textMute }}
         >
           <ExternalLink size={12} /> source

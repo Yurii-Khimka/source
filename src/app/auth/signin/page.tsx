@@ -103,7 +103,7 @@ export default function SignInPage() {
         {/* Google */}
         <button
           onClick={handleGoogle}
-          className="w-full rounded-lg cursor-pointer"
+          className="btn-primary w-full rounded-lg cursor-pointer"
           style={{
             background: dark.accent,
             color: "#fff",
@@ -176,7 +176,7 @@ export default function SignInPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg cursor-pointer"
+            className="btn-outline w-full rounded-lg cursor-pointer"
             style={{
               background: "transparent",
               color: dark.text,
@@ -202,7 +202,7 @@ export default function SignInPage() {
           }}
         >
           Don&apos;t have an account?{" "}
-          <Link href="/auth/signup" style={{ color: dark.accent }}>
+          <Link href="/auth/signup" className="text-link" style={{ color: dark.accent }}>
             Sign up
           </Link>
         </p>

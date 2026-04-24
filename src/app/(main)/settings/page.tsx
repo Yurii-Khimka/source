@@ -89,6 +89,7 @@ export default async function SettingsPage() {
         <h2 style={sectionHeading}>Theme</h2>
         <div className="flex gap-2" style={{ padding: "12px 0" }}>
           <button
+            className="btn-primary"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 13,
@@ -97,12 +98,14 @@ export default async function SettingsPage() {
               border: "none",
               borderRadius: 6,
               padding: "6px 16px",
+              cursor: "pointer",
             }}
           >
             Dark
           </button>
           <button
             disabled
+            className="btn-outline"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 13,
@@ -111,8 +114,6 @@ export default async function SettingsPage() {
               border: `1px solid ${dark.line2}`,
               borderRadius: 6,
               padding: "6px 16px",
-              opacity: 0.5,
-              cursor: "not-allowed",
             }}
           >
             Light (coming soon)

@@ -13,16 +13,233 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
 }
 
+/* ── Header icon buttons ── */
+.header-icon-btn {
+  transition: background 150ms ease-out, color 120ms ease-out;
+}
 .header-icon-btn:hover {
   background: rgba(255, 255, 255, 0.04) !important;
+  color: #EEF1F6 !important;
+}
+.header-icon-btn:focus-visible {
+  outline: 2px solid rgb(100, 104, 240);
+  outline-offset: 2px;
 }
 
+/* ── Sidebar nav items ── */
+.sidebar-nav-item {
+  transition: background 120ms ease-out, color 120ms ease-out;
+}
 .sidebar-nav-item:hover {
+  background: #161B26 !important;
+  color: #EEF1F6 !important;
+}
+.sidebar-nav-item:focus-visible {
+  outline: 2px solid rgb(100, 104, 240);
+  outline-offset: 2px;
+}
+
+/* ── Right-rail tag pills ── */
+.right-rail-tag {
+  transition: background 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+}
+.right-rail-tag:hover {
+  background: #161B26 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #EEF1F6 !important;
+}
+
+/* ── Primary button ── */
+.btn-primary {
+  transition: background 150ms ease-out, transform 80ms ease-out;
+}
+.btn-primary:hover:not(:disabled) {
+  background: rgb(85, 89, 220) !important;
+}
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.97);
+  filter: brightness(0.95);
+}
+.btn-primary:focus-visible {
+  outline: 2px solid rgb(100, 104, 240);
+  outline-offset: 2px;
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+}
+
+/* ── Outline button ── */
+.btn-outline {
+  transition: background 150ms ease-out, border-color 150ms ease-out, transform 80ms ease-out;
+}
+.btn-outline:hover:not(:disabled) {
+  background: #161B26 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+.btn-outline:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.btn-outline:focus-visible {
+  outline: 2px solid rgb(100, 104, 240);
+  outline-offset: 2px;
+}
+.btn-outline:disabled {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+}
+
+/* ── Tag pill (default) ── */
+.tag-pill {
+  transition: background 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+}
+.tag-pill:hover {
+  background: #161B26 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #EEF1F6 !important;
+}
+
+/* ── Tag pill (active / followed) ── */
+.tag-pill-active {
+  transition: background 120ms ease-out, border-color 120ms ease-out;
+}
+.tag-pill-active:hover {
+  background: rgba(100, 104, 240, 0.22) !important;
+}
+
+/* ── Article card ── */
+.article-card {
+  transition: background 150ms ease-out, border-color 150ms ease-out;
+}
+.article-card:hover {
+  border-color: rgba(255, 255, 255, 0.09) !important;
+  background: #131822 !important;
+}
+
+/* ── Icon button (like, bookmark, share, menu) ── */
+.icon-btn {
+  transition: color 120ms ease-out, background 120ms ease-out;
+}
+.icon-btn:hover:not(:disabled) {
+  color: #EEF1F6 !important;
+  background: rgba(22, 27, 38, 0.6) !important;
+}
+.icon-btn-active:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+/* ── Source row (in lists) ── */
+.source-row {
+  transition: background 120ms ease-out;
+  cursor: pointer;
+}
+.source-row:hover {
+  background: #161B26 !important;
+}
+
+/* ── Nav tabs (discovery, following) ── */
+.nav-tab {
+  transition: color 120ms ease-out;
+}
+.nav-tab:hover {
+  color: #EEF1F6 !important;
+}
+
+/* ── Ranked table row ── */
+.ranked-row {
+  transition: background 120ms ease-out;
+}
+.ranked-row:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* ── View / small outline link-button ── */
+.view-btn {
+  transition: border-color 120ms ease-out, background 120ms ease-out, color 120ms ease-out;
+}
+.view-btn:hover {
+  background: #161B26 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #EEF1F6 !important;
+}
+
+/* ── Footer link ── */
+.footer-link {
+  transition: color 120ms ease-out;
+}
+.footer-link:hover {
+  color: #C7CCD6 !important;
+}
+
+/* ── Text link ── */
+.text-link {
+  transition: color 120ms ease-out;
+}
+.text-link:hover {
+  color: #EEF1F6 !important;
+}
+
+/* ── Onboarding source card ── */
+.onboarding-source-card {
+  transition: background 150ms ease-out, border-color 150ms ease-out;
+}
+.onboarding-source-card:hover {
+  background: #161B26 !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+.onboarding-source-card-selected {
+  transition: background 150ms ease-out, border-color 150ms ease-out;
+}
+.onboarding-source-card-selected:hover {
+  background: rgba(100, 104, 240, 0.12) !important;
+}
+
+/* ── Onboarding tag pill ── */
+.onboarding-tag-pill {
+  transition: background 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+}
+.onboarding-tag-pill:hover {
+  background: #161B26 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #EEF1F6 !important;
+}
+.onboarding-tag-pill-active {
+  transition: background 150ms ease-out, border-color 150ms ease-out;
+}
+.onboarding-tag-pill-active:hover {
+  background: rgba(100, 104, 240, 0.22) !important;
+}
+
+/* ── Search result card ── */
+.search-result-card {
+  transition: background 150ms ease-out, border-color 150ms ease-out;
+}
+.search-result-card:hover {
+  border-color: rgba(255, 255, 255, 0.09) !important;
+  background: #131822 !important;
+}
+
+/* ── Dropdown menu item ── */
+.menu-item {
+  transition: background 100ms ease-out;
+}
+.menu-item:hover {
   background: rgba(255, 255, 255, 0.04) !important;
 }
 
-.right-rail-tag:hover {
-  border-color: rgba(255, 255, 255, 0.20) !important;
+/* ── Follow button (already following state) ── */
+.btn-following {
+  transition: background 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out, transform 80ms ease-out;
+}
+.btn-following:hover:not(:disabled) {
+  background: rgba(100, 104, 240, 0.08) !important;
+}
+.btn-following:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.btn-following:focus-visible {
+  outline: 2px solid rgb(100, 104, 240);
+  outline-offset: 2px;
 }
 
 @keyframes shimmer {
@@ -52,7 +269,7 @@ body {
 }
 
 .input-field {
-  transition: border-color 0.15s, background-color 0.15s;
+  transition: border-color 0.15s ease-out, background-color 0.15s ease-out;
 }
 .input-field:hover {
   border-color: rgba(255, 255, 255, 0.18) !important;
