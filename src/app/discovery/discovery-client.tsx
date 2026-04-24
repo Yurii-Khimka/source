@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Search, ShieldCheck, X, ArrowUp, ArrowDown } from "lucide-react";
 import { dark } from "@/lib/tokens";
-import { ArticleCard } from "@/components/article-card";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -27,29 +26,12 @@ type Tag = {
   delta: number | null; // null = "new"
 };
 
-type ArticleData = {
-  id: string;
-  title: string;
-  description: string | null;
-  url: string;
-  image_url: string | null;
-  published_at: string | null;
-  like_count: number;
-  source_id: string;
-  sources: { name: string; handle: string; logo_url: string | null } | null;
-  tags: { slug: string; name: string }[];
-};
-
-type Tab = "all" | "sources" | "tags" | "posts";
+type Tab = "all" | "sources" | "tags";
 
 type Props = {
   sources: Source[];
   tags: Tag[];
-  articles: ArticleData[];
   followedSourceIds: string[];
-  mutedSourceIds: string[];
-  likedIds: string[];
-  bookmarkedIds: string[];
   isLoggedIn: boolean;
 };
 
@@ -75,11 +57,7 @@ function getInitials(name: string): string {
 export function DiscoveryClient({
   sources,
   tags,
-  articles,
   followedSourceIds,
-  mutedSourceIds,
-  likedIds,
-  bookmarkedIds,
   isLoggedIn,
 }: Props) {
   const [search, setSearch] = useState("");
@@ -109,20 +87,8 @@ export function DiscoveryClient({
     [tags, query]
   );
 
-  const filteredArticles = useMemo(
-    () =>
-      articles.filter(
-        (a) =>
-          a.title.toLowerCase().includes(query) ||
-          (a.description ?? "").toLowerCase().includes(query) ||
-          (a.sources?.name ?? "").toLowerCase().includes(query)
-      ),
-    [articles, query]
-  );
-
   const showSources = activeTab === "all" || activeTab === "sources";
   const showTags = activeTab === "all" || activeTab === "tags";
-  const showPosts = activeTab === "all" || activeTab === "posts";
 
   async function toggleFollow(sourceId: string) {
     if (!isLoggedIn) return;
@@ -161,15 +127,10 @@ export function DiscoveryClient({
   }
 
   const tabItems: { key: Tab; label: string; count: number }[] = [
-    { key: "all", label: "All", count: filteredSources.length + filteredTags.length + filteredArticles.length },
+    { key: "all", label: "All", count: filteredSources.length + filteredTags.length },
     { key: "sources", label: "Sources", count: filteredSources.length },
     { key: "tags", label: "Tags", count: filteredTags.length },
-    { key: "posts", label: "Posts", count: filteredArticles.length },
   ];
-
-  const likedSet = new Set(likedIds);
-  const bookmarkedSet = new Set(bookmarkedIds);
-  const mutedSet = new Set(mutedSourceIds);
 
   return (
     <div style={{ padding: "32px 36px 60px" }}>
@@ -558,41 +519,8 @@ export function DiscoveryClient({
         </div>
       )}
 
-      {/* Posts section — top stories */}
-      {showPosts && filteredArticles.length > 0 && (
-        <div style={{ marginBottom: 32 }}>
-          <div
-            style={{
-              fontFamily: mono,
-              fontSize: 11,
-              textTransform: "uppercase",
-              letterSpacing: 1.2,
-              color: dark.textMute,
-              marginBottom: 14,
-            }}
-          >
-            TOP STORIES · 24H
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {filteredArticles.map((article) => (
-              <ArticleCard
-                key={article.id}
-                article={article}
-                initialLiked={likedSet.has(article.id)}
-                initialLikeCount={article.like_count}
-                initialBookmarked={bookmarkedSet.has(article.id)}
-                initialFollowing={followedIds.has(article.source_id)}
-                initialMuted={mutedSet.has(article.source_id)}
-                sourceId={article.source_id}
-                isLoggedIn={isLoggedIn}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Empty state */}
-      {filteredSources.length === 0 && filteredTags.length === 0 && filteredArticles.length === 0 && (
+      {filteredSources.length === 0 && filteredTags.length === 0 && (
         <p
           style={{
             fontFamily: mono,
