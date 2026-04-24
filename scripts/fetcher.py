@@ -264,6 +264,76 @@ def main():
 
     print(f"\nDone: {total_inserted} inserted, {total_skipped} skipped across {len(sources)} sources")
 
+    validate(supabase, total_inserted, sources)
+
+
+def validate(supabase, inserted_count: int, sources: list[dict]):
+    """Post-run validation — report data consistency issues."""
+    print("\n--- Validation ---")
+    has_warn = False
+
+    # 1. Articles inserted this run
+    print(f"  [validation] articles inserted this run: {inserted_count}")
+
+    # 2. Articles with no tags
+    all_articles_resp = supabase.table("articles").select("id, url").eq("is_hidden", False).execute()
+    tagged_resp = supabase.table("article_tags").select("article_id").execute()
+    tagged_ids = {r["article_id"] for r in (tagged_resp.data or [])}
+    untagged = [a for a in (all_articles_resp.data or []) if a["id"] not in tagged_ids]
+    no_tags_count = len(untagged)
+
+    if no_tags_count > 0:
+        has_warn = True
+        sample = ", ".join(a["url"][:60] for a in untagged[:3])
+        print(f"  [WARN] [validation] articles with no tags: {no_tags_count} — {sample}")
+    else:
+        print(f"  [validation] articles with no tags: 0")
+
+    # 3. Articles with no source_id
+    no_source_resp = (
+        supabase.table("articles")
+        .select("id", count="exact")
+        .is_("source_id", "null")
+        .execute()
+    )
+    no_source_count = no_source_resp.count or 0
+    if no_source_count > 0:
+        has_warn = True
+        print(f"  [WARN] [validation] articles with no source_id: {no_source_count}")
+    else:
+        print(f"  [validation] articles with no source_id: 0")
+
+    # 4. Sources with 0 articles in last 24h
+    yesterday = (datetime.now(timezone.utc).timestamp() - 86400)
+    yesterday_iso = datetime.fromtimestamp(yesterday, tz=timezone.utc).isoformat()
+    empty_handles = []
+    for source in sources:
+        count_resp = (
+            supabase.table("articles")
+            .select("id", count="exact", head=True)
+            .eq("source_id", source["id"])
+            .gte("published_at", yesterday_iso)
+            .execute()
+        )
+        if (count_resp.count or 0) == 0:
+            empty_handles.append(source["handle"])
+
+    if empty_handles:
+        has_warn = True
+        print(f"  [WARN] [validation] sources with 0 articles in last 24h: {', '.join(empty_handles)}")
+    else:
+        print(f"  [validation] sources with 0 articles in last 24h: none")
+
+    # 5. Total tags in DB
+    tags_resp = supabase.table("tags").select("id", count="exact", head=True).execute()
+    print(f"  [validation] total tags in DB: {tags_resp.count or 0}")
+
+    # Summary
+    if has_warn:
+        print("  [WARN] validation completed with warnings")
+    else:
+        print("  [validation] OK — all checks passed")
+
 
 if __name__ == "__main__":
     main()
