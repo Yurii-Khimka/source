@@ -179,7 +179,7 @@ export function DiscoveryClient({
   ];
 
   return (
-    <div style={{ padding: "32px 36px 60px" }}>
+    <div className="page-content" style={{ padding: "32px 36px 60px" }}>
       {/* Header */}
       <div
         style={{
@@ -337,6 +337,7 @@ export function DiscoveryClient({
             VERIFIED SOURCES · {filteredSources.length}
           </div>
           <div
+            className="discovery-sources-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",

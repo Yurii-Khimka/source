@@ -175,9 +175,9 @@ export function SourceProfileClient({
   }, [loadMore]);
 
   return (
-    <div style={{ padding: "32px 36px 80px" }}>
+    <div className="page-content" style={{ padding: "32px 36px 80px" }}>
       {/* ─── IDENTITY HEADER ─── */}
-      <div style={{ display: "flex", gap: 18, alignItems: "flex-start", marginBottom: 24 }}>
+      <div className="source-identity-header" style={{ display: "flex", gap: 18, alignItems: "flex-start", marginBottom: 24 }}>
         {source.logo_url ? (
           <img
             src={source.logo_url}
@@ -267,6 +267,7 @@ export function SourceProfileClient({
 
       {/* ─── CATEGORY PILLS + SHOWING COUNT ─── */}
       <div
+        className="source-sticky-bar"
         style={{
           position: "sticky",
           top: 64,

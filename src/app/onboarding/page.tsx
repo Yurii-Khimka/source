@@ -171,6 +171,7 @@ export default function OnboardingPage() {
 
         {/* Step card */}
         <div
+          className="onboarding-card"
           style={{
             background: dark.surface,
             border: `1px solid ${dark.line}`,
@@ -318,7 +319,7 @@ function StepSources({
         Choose at least one source to personalise your feed.
         You can change this at any time.
       </p>
-      <div style={{ marginTop: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      <div className="onboarding-sources-grid" style={{ marginTop: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {sources.map((s) => {
           const followed = followedIds.has(s.id);
           const initial = s.name.charAt(0).toUpperCase();

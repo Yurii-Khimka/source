@@ -295,7 +295,7 @@ export function ArticleCard({
         href={article.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block mb-2 hover:underline"
+        className="article-title block mb-2 hover:underline"
         style={{ fontFamily: "'Source Serif 4', Georgia, serif", fontSize: 22, fontWeight: 700, color: dark.text, lineHeight: 1.22 }}
       >
         {article.title}
@@ -325,7 +325,7 @@ export function ArticleCard({
       )}
       {article.image_url && showImage && (
         <div
-          className="mb-3"
+          className="article-image-container mb-3"
           style={{
             position: "relative",
             overflow: "hidden",

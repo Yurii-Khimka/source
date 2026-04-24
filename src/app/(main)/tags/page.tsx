@@ -31,7 +31,7 @@ export default async function TagsPage() {
     .sort((a, b) => b.count - a.count);
 
   return (
-    <div style={{ padding: "32px 36px 60px" }}>
+    <div className="page-content" style={{ padding: "32px 36px 60px" }}>
         <h1
           style={{
             fontFamily: serif,

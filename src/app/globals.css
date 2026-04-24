@@ -278,3 +278,116 @@ body {
   border-color: rgb(100, 104, 240) !important;
   background-color: rgba(100, 104, 240, 0.04) !important;
 }
+
+/* ══════════════════════════════════════════
+   MOBILE LAYOUT — max-width: 768px
+   ══════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* Show mobile header */
+  .mobile-header {
+    display: flex !important;
+  }
+
+  /* Hide desktop header */
+  .desktop-header {
+    display: none !important;
+  }
+
+  /* Show bottom tab bar */
+  .bottom-tab-bar {
+    display: flex !important;
+  }
+
+  /* Hide left sidebar and right rail */
+  .desktop-sidebar,
+  .desktop-right-rail {
+    display: none !important;
+  }
+
+  /* App body: single column */
+  .app-body {
+    grid-template-columns: 1fr !important;
+    min-height: calc(100vh - 56px) !important;
+  }
+
+  /* Main content: full width + padding for tab bar */
+  .main-content {
+    padding: 0 16px !important;
+    padding-bottom: 80px !important;
+  }
+
+  /* ─── Article card mobile ─── */
+  .article-card .article-image-container {
+    height: 200px !important;
+  }
+
+  .article-card .article-title {
+    font-size: 15px !important;
+  }
+
+  .article-card .icon-btn,
+  .article-card .icon-btn-active {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  /* ─── Discovery page mobile ─── */
+  .discovery-sources-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── Source profile mobile ─── */
+  .source-identity-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .source-action-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .source-action-buttons button,
+  .source-action-buttons a {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* ─── Tag page mobile ─── */
+  .tag-action-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .tag-action-buttons button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* ─── Onboarding mobile ─── */
+  .onboarding-sources-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .onboarding-card {
+    padding: 20px !important;
+  }
+
+  /* ─── Sticky bars: adjust top for mobile header height ─── */
+  .source-sticky-bar,
+  .tag-sticky-bar {
+    top: 56px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* ─── Page padding adjustments ─── */
+  .page-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 20px !important;
+  }
+}

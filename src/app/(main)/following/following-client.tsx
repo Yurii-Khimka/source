@@ -109,7 +109,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
   ];
 
   return (
-    <div style={{ padding: "32px 36px 60px" }}>
+    <div className="page-content" style={{ padding: "32px 36px 60px" }}>
       {/* Header */}
       <h1
         style={{

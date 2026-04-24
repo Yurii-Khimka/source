@@ -107,6 +107,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Fix onboarding button alignment
 - [2026-04-24] Hover and click states audit
 - [2026-04-24] Fix onboarding button text wrap
+- [2026-04-24] Mobile responsive layout
 
 ## In Progress
 - Article card design polish
@@ -164,6 +165,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Fixed flex alignment on Continue, Back, and Skip buttons.
 - [2026-04-24] Standardised hover, active, focus states for all buttons, links, nav items, cards, pills, and icon buttons across the entire app.
 - [2026-04-24] Added white-space nowrap to all onboarding footer buttons.
+- [2026-04-24] Added mobile layout at 768px breakpoint. Bottom tab bar (4 icons), mobile header, hidden sidebars, mobile profile page, adapted article card and all pages.
 
 ## Backlog (priority order)
 1. Discovery page

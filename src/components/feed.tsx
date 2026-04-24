@@ -163,7 +163,7 @@ export function Feed({
   }, [loadMore]);
 
   return (
-    <div style={{ padding: "22px 36px 80px" }}>
+    <div className="page-content" style={{ padding: "22px 36px 80px" }}>
       {/* Markets ticker card */}
       <div
         style={{
@@ -249,6 +249,7 @@ export function Feed({
 
       {/* Sticky filter bar */}
       <div
+        className="source-sticky-bar"
         style={{
           position: "sticky",
           top: 64,

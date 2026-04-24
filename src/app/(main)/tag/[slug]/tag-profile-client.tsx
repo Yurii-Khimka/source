@@ -115,7 +115,7 @@ export function TagProfileClient({
   const formattedCount = postCount.toLocaleString();
 
   return (
-    <div style={{ padding: "32px 36px 80px" }}>
+    <div className="page-content" style={{ padding: "32px 36px 80px" }}>
       {/* ─── IDENTITY HEADER ─── */}
       <div style={{ marginBottom: 24 }}>
         <h1
@@ -171,6 +171,7 @@ export function TagProfileClient({
 
       {/* ─── RECENT POSTS + SHOWING COUNT ─── */}
       <div
+        className="tag-sticky-bar"
         style={{
           position: "sticky",
           top: 64,

@@ -11,6 +11,8 @@ import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { RightRail } from "@/components/right-rail";
 import { useRightRailTop } from "@/components/right-rail-context";
+import { MobileHeader } from "@/components/mobile-header";
+import { BottomTabBar } from "@/components/bottom-tab-bar";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -47,9 +49,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: dark.bg, color: dark.text }}>
-      {/* Header */}
+      {/* Mobile header — visible only at <=768px via CSS */}
+      <MobileHeader />
+
+      {/* Desktop header — hidden at <=768px via CSS */}
       <header
-        className="sticky top-0 z-30"
+        className="desktop-header sticky top-0 z-30"
         style={{
           display: "grid",
           gridTemplateColumns: "260px 1fr 360px",
@@ -142,6 +147,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
 
       <div
+        className="app-body"
         style={{
           display: "grid",
           gridTemplateColumns: "260px 1fr 360px",
@@ -150,7 +156,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         {/* Left sidebar */}
         <aside
-          className="sticky top-[64px] overflow-auto"
+          className="desktop-sidebar sticky top-[64px] overflow-auto"
           style={{
             height: "calc(100vh - 64px)",
             padding: "24px 14px 40px",
@@ -162,13 +168,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main content */}
-        <main style={{ minWidth: 0 }}>
+        <main className="main-content" style={{ minWidth: 0 }}>
           {children}
         </main>
 
         {/* Right rail */}
         <aside
-          className="sticky top-[64px] overflow-auto"
+          className="desktop-right-rail sticky top-[64px] overflow-auto"
           style={{
             height: "calc(100vh - 64px)",
             padding: "24px 20px 40px",
@@ -180,6 +186,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <RightRail />
         </aside>
       </div>
+
+      {/* Bottom tab bar — visible only at <=768px via CSS */}
+      <BottomTabBar />
     </div>
   );
 }

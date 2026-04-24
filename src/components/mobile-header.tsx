@@ -1,0 +1,101 @@
+"use client";
+
+import Link from "next/link";
+import { Search, Bell, ShieldCheck } from "lucide-react";
+import { dark } from "@/lib/tokens";
+
+export function MobileHeader() {
+  return (
+    <header
+      className="mobile-header"
+      style={{
+        display: "none",
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        height: 56,
+        background: dark.bg,
+        borderBottom: `1px solid ${dark.line}`,
+        padding: "0 16px",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      {/* Logo */}
+      <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
+        <div
+          className="flex items-center justify-center"
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 6,
+            background: dark.text,
+            flexShrink: 0,
+          }}
+        >
+          <ShieldCheck size={18} color={dark.bg} />
+        </div>
+        <div style={{ lineHeight: 1.3 }}>
+          <div
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 13,
+              fontWeight: 600,
+              color: dark.text,
+              letterSpacing: 0.8,
+            }}
+          >
+            The Source
+          </div>
+          <div
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 10,
+              color: dark.textDim,
+            }}
+          >
+            Source of Truth
+          </div>
+        </div>
+      </Link>
+
+      {/* Icons */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <Link
+          href="/search"
+          className="header-icon-btn"
+          style={{
+            width: 44,
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: dark.textDim,
+            background: "transparent",
+            border: "none",
+            borderRadius: 6,
+          }}
+        >
+          <Search size={20} />
+        </Link>
+        <button
+          className="header-icon-btn"
+          style={{
+            width: 44,
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: dark.textDim,
+            background: "transparent",
+            border: "none",
+            borderRadius: 6,
+            cursor: "pointer",
+          }}
+        >
+          <Bell size={20} />
+        </button>
+      </div>
+    </header>
+  );
+}
