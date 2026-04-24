@@ -3,7 +3,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { ArticleCard } from "@/components/article-card";
 
-const inter = "'Inter', system-ui, sans-serif";
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
 
@@ -59,26 +58,11 @@ export function Feed({
   const [bookmarkedIds, setBookmarkedIds] = useState(initialBookmarkedIds);
   const [tags, setTags] = useState(initialTags);
 
-  const [activeTab, setActiveTab] = useState<"all" | "following">(
-    isLoggedIn ? "following" : "all"
-  );
   const [activeTagSlug, setActiveTagSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialArticles.length < totalCount);
 
   const sentinelRef = useRef<HTMLDivElement>(null);
-
-  const counterBadge: React.CSSProperties = {
-    fontFamily: mono,
-    fontSize: 10,
-    color: "#6C727E",
-    background: "#161B26",
-    border: "1px solid rgba(255,255,255,0.10)",
-    borderRadius: 3,
-    padding: "1px 5px",
-    marginLeft: 6,
-    verticalAlign: "middle",
-  };
 
   const likedSet = new Set(likedIds);
   const bookmarkedSet = new Set(bookmarkedIds);
@@ -89,16 +73,11 @@ export function Feed({
   const visibleArticles = articles.filter((a) => !mutedSet.has(a.source_id));
   const followingArticles = visibleArticles.filter((a) => followedSet.has(a.source_id));
 
-  // Apply tab filter
-  const tabFiltered = activeTab === "following"
-    ? followingArticles
-    : visibleArticles;
-
   // Apply tag filter
   const activeTag = activeTagSlug ? tags.find((t) => t.slug === activeTagSlug) : null;
   const displayedArticles = activeTag
-    ? tabFiltered.filter((a) => activeTag.articleIds.includes(a.id))
-    : tabFiltered;
+    ? followingArticles.filter((a) => activeTag.articleIds.includes(a.id))
+    : followingArticles;
 
   // Load more articles
   const loadMore = useCallback(async () => {
@@ -275,51 +254,6 @@ export function Feed({
           paddingBottom: 8,
         }}
       >
-      {/* Tabs */}
-      <div
-        className="flex gap-0"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: 12 }}
-      >
-        <button
-          onClick={() => setActiveTab("following")}
-          style={{
-            fontFamily: inter,
-            fontSize: 14,
-            fontWeight: 500,
-            padding: "10px 16px",
-            cursor: "pointer",
-            background: "none",
-            border: "none",
-            color: activeTab === "following" ? "#EEF1F6" : "#A3ACBD",
-            borderBottom: activeTab === "following"
-              ? "2px solid rgb(100,104,240)"
-              : "2px solid transparent",
-          }}
-        >
-          Following {isLoggedIn && (
-            <span style={counterBadge}>{followingArticles.length}</span>
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab("all")}
-          style={{
-            fontFamily: inter,
-            fontSize: 14,
-            fontWeight: 500,
-            padding: "10px 16px",
-            cursor: "pointer",
-            background: "none",
-            border: "none",
-            color: activeTab === "all" ? "#EEF1F6" : "#A3ACBD",
-            borderBottom: activeTab === "all"
-              ? "2px solid rgb(100,104,240)"
-              : "2px solid transparent",
-          }}
-        >
-          All sources <span style={counterBadge}>{visibleArticles.length}</span>
-        </button>
-      </div>
-
       {/* Category pills + showing count */}
       <div
         style={{
@@ -365,19 +299,19 @@ export function Feed({
       </div>
 
       {/* Article list */}
-      {activeTab === "following" && !isLoggedIn ? (
+      {followedSourceIds.length === 0 ? (
         <p
           className="text-center py-12"
-          style={{ fontFamily: inter, fontSize: 14, color: "#6C727E" }}
+          style={{ fontFamily: mono, fontSize: 12, color: "#6C727E" }}
         >
-          Sign in to follow sources
+          You are not following any sources yet. Go to Discovery to find sources.
         </p>
-      ) : activeTab === "following" && displayedArticles.length === 0 ? (
+      ) : displayedArticles.length === 0 ? (
         <p
           className="text-center py-12"
-          style={{ fontFamily: inter, fontSize: 14, color: "#6C727E" }}
+          style={{ fontFamily: mono, fontSize: 12, color: "#6C727E" }}
         >
-          Follow some sources to see them here
+          No articles match this filter.
         </p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
