@@ -35,7 +35,8 @@ export default function SignUpPage() {
     if (error) {
       setError(error.message);
     } else {
-      router.push("/");
+      // New users always go to onboarding
+      router.push("/onboarding");
       router.refresh();
     }
   }

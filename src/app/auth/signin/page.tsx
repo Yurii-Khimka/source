@@ -35,7 +35,14 @@ export default function SignInPage() {
     if (error) {
       setError(error.message);
     } else {
-      router.push("/");
+      // Check if user has completed onboarding
+      const res = await fetch("/api/onboarding");
+      const data = await res.json();
+      if (!data.onboarding_completed) {
+        router.push("/onboarding");
+      } else {
+        router.push("/");
+      }
       router.refresh();
     }
   }

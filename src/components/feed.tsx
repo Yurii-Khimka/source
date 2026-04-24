@@ -3,9 +3,11 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleCardSkeleton } from "@/components/ui/skeletons";
+import { dark } from "@/lib/tokens";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
+const sans = "'Inter', system-ui, sans-serif";
 
 type ArticleData = {
   id: string;
@@ -306,12 +308,31 @@ export function Feed({
 
       {/* Article list */}
       {followedSourceIds.length === 0 ? (
-        <p
-          className="text-center py-12"
-          style={{ fontFamily: mono, fontSize: 12, color: "#6C727E" }}
-        >
-          You are not following any sources yet. Go to Discovery to find sources.
-        </p>
+        <div className="text-center" style={{ padding: "60px 0" }}>
+          <h2 style={{ fontFamily: serif, fontSize: 20, fontWeight: 700, color: dark.text }}>
+            Nothing here yet.
+          </h2>
+          <p style={{ fontFamily: sans, fontSize: 14, color: dark.textDim, marginTop: 8 }}>
+            Follow sources and tags to build your feed.
+          </p>
+          <a
+            href="/discovery"
+            style={{
+              display: "inline-block",
+              marginTop: 20,
+              padding: "8px 20px",
+              borderRadius: 6,
+              background: dark.accent,
+              color: "#fff",
+              fontFamily: sans,
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            Discover
+          </a>
+        </div>
       ) : displayedArticles.length === 0 ? (
         <p
           className="text-center py-12"
