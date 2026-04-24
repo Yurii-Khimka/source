@@ -62,6 +62,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Sidebar followed sources live update
 - [2026-04-24] Fix trending tags query
 - [2026-04-24] Remove Posts tab from Discovery
+- [2026-04-24] Keyword fallback tagging for Ukrainian articles
 
 ## In Progress
 - Article card design polish
@@ -74,6 +75,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Added /api/followed-sources endpoint, SidebarNav listens for followChanged events, dispatched from Discovery and ArticleCard
 - [2026-04-24] Fetch all tags from tags table, count 24h/48h via article_tags, show tags with 0 articles, keyword inference fallback
 - [2026-04-24] Removed Posts tab, TOP STORIES section, articles query, and related props — Discovery now has All, Sources, Tags only
+- [2026-04-24] Added TAG_KEYWORDS dict with Ukrainian+English keywords, infer_tags function, assign_tags function, RSS category check then keyword fallback in fetcher
 
 ## Backlog (priority order)
 1. Discovery page

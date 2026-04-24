@@ -61,6 +61,77 @@ def upgrade_guardian_image(url: str) -> str:
     return url
 
 
+# Keyword fallback tagging — matches Ukrainian and English keywords to tags
+TAG_KEYWORDS: dict[str, list[str]] = {
+    "economy":       ["економік", "економіч", "фінанс", "ринок",
+                      "economy", "economic", "market", "finance", "bank", "inflation", "gdp", "trade"],
+    "politics":      ["політик", "уряд", "влад", "парламент",
+                      "politics", "political", "election", "government", "parliament", "vote"],
+    "conflict":      ["війна", "конфлікт", "армія", "військ", "оборон",
+                      "war", "military", "attack", "conflict", "missile", "defense", "defence", "troops"],
+    "investigation": ["розслідуван",
+                      "investigation", "investigat"],
+    "europe":        ["євросоюз", "євро", "ес ",
+                      "europe", "eu", "european", "brussels"],
+    "ukraine":       ["україна", "ukrainian",
+                      "ukraine", "kyiv", "zelenskyy", "zelensky"],
+    "world":         ["світ", "міжнародн",
+                      "world", "international", "global", "united nations"],
+    "tech":          ["технолог", "наука",
+                      "technology", "tech", "ai", "digital", "cyber", "software", "science"],
+    "climate":       ["клімат", "екологі", "енергетик",
+                      "climate", "energy", "green", "carbon", "renewable"],
+}
+
+
+def infer_tags(title: str, description: str | None) -> list[str]:
+    """Return list of tag slugs matched by keyword search."""
+    text = f"{title} {description or ''}".lower()
+    matched = []
+    for slug, keywords in TAG_KEYWORDS.items():
+        if any(kw in text for kw in keywords):
+            matched.append(slug)
+    return matched
+
+
+def assign_tags(supabase, article_id: str, tag_slugs: list[str], url: str):
+    """Look up or create tags, then link to article via article_tags."""
+    if not tag_slugs:
+        return
+
+    for slug in tag_slugs:
+        # Upsert tag (get existing or create)
+        tag_resp = (
+            supabase.table("tags")
+            .select("id")
+            .eq("slug", slug)
+            .maybe_single()
+            .execute()
+        )
+        if tag_resp.data:
+            tag_id = tag_resp.data["id"]
+        else:
+            name = slug.capitalize()
+            insert_resp = (
+                supabase.table("tags")
+                .insert({"slug": slug, "name": name})
+                .execute()
+            )
+            tag_id = insert_resp.data[0]["id"]
+
+        # Insert article_tag link (ignore duplicates)
+        try:
+            supabase.table("article_tags").insert({
+                "article_id": article_id,
+                "tag_id": tag_id,
+            }).execute()
+        except Exception as e:
+            if "23505" not in str(e):
+                raise
+
+    print(f"  [tags] {url[:60]} → {tag_slugs}")
+
+
 from dotenv import load_dotenv
 from supabase import create_client
 
@@ -139,8 +210,25 @@ def fetch_source(supabase, source):
         }
 
         try:
-            supabase.table("articles").insert(article).execute()
+            insert_resp = supabase.table("articles").insert(article).execute()
             inserted += 1
+
+            # Assign tags via keyword fallback
+            article_id = insert_resp.data[0]["id"]
+
+            # Try RSS categories first
+            rss_tags: list[str] = []
+            if hasattr(entry, "tags") and entry.tags:
+                for t in entry.tags:
+                    term = (t.get("term") or "").strip().lower()
+                    if term and term in TAG_KEYWORDS:
+                        rss_tags.append(term)
+
+            # Keyword fallback if RSS categories yielded nothing
+            if not rss_tags:
+                rss_tags = infer_tags(title, description)
+
+            assign_tags(supabase, article_id, rss_tags, url)
         except Exception as e:
             if "23505" in str(e):
                 skipped += 1
