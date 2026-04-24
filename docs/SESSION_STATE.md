@@ -69,6 +69,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Add posts sections to Discovery tabs, fix All tab order
 - [2026-04-24] Expand Ukrainian keyword matching, re-backfill untagged articles
 - [2026-04-24] Assign General fallback tag to all untagged articles
+- [2026-04-24] Fix root cause of untagged articles
 
 ## In Progress
 - Article card design polish
@@ -88,6 +89,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Added ALL POSTS section to All tab (after sources+tags), POSTS FROM THESE SOURCES to Sources tab, RECENT POSTS to Tags tab. Fetches recent 20 articles with tags and user interactions. Reuses ArticleCard component.
 - [2026-04-24] Added 40+ Ukrainian keywords across conflict/politics/ukraine/world/economy tags. Fixed backfill pagination bug (1000-row limit). Re-ran backfill: 1037/1355 articles now tagged (76.5%), up from 577.
 - [2026-04-24] Added general fallback in infer_tags(), backfill second pass assigns general to still-untagged articles. 1037 specific + 318 general = 1355 total, 0 untagged.
+- [2026-04-24] Three root causes: (1) backfill used get_tags_from_text() instead of infer_tags(), missing the general fallback; (2) backfill filtered is_hidden=False, skipping hidden articles; (3) second pass reused filtered list. Fixed all three.
 
 ## Backlog (priority order)
 1. Discovery page

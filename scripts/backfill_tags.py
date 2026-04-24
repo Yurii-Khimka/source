@@ -8,7 +8,7 @@ from supabase import create_client
 
 # Import shared keyword matching from fetcher
 sys.path.insert(0, os.path.dirname(__file__))
-from fetcher import get_tags_from_text
+from fetcher import infer_tags
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env.local"))
 
@@ -47,14 +47,13 @@ def main():
         offset += 1000
     print(f"Articles already tagged: {len(tagged_ids)}")
 
-    # Get all articles (paginate past 1000-row limit)
+    # Get all articles — no is_hidden filter so every article gets tagged
     all_articles: list[dict] = []
     offset = 0
     while True:
         resp = (
             supabase.table("articles")
             .select("id, title, description, url")
-            .eq("is_hidden", False)
             .range(offset, offset + 999)
             .execute()
         )
@@ -71,8 +70,8 @@ def main():
     total_tags_assigned = 0
 
     for i, article in enumerate(untagged):
-        text = f"{article['title']} {article['description'] or ''}"
-        slugs = get_tags_from_text(text)
+        # infer_tags returns ["general"] when no keywords match
+        slugs = infer_tags(article["title"], article.get("description"))
 
         # Filter to only slugs that exist in DB
         valid_slugs = [s for s in slugs if s in tag_map]
