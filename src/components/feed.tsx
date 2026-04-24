@@ -19,6 +19,13 @@ type ArticleData = {
   sources: { name: string; handle: string; logo_url: string | null } | null;
 };
 
+type TagData = {
+  id: string;
+  slug: string;
+  name: string;
+  articleIds: string[];
+};
+
 type Props = {
   articles: ArticleData[];
   likedIds: string[];
@@ -28,9 +35,8 @@ type Props = {
   isLoggedIn: boolean;
   followedSourceCount: number;
   todayArticleCount: number;
+  tags: TagData[];
 };
-
-const categories = ["ALL", "WIRE", "ANALYSIS", "INVESTIGATION"] as const;
 
 export function Feed({
   articles,
@@ -41,9 +47,12 @@ export function Feed({
   isLoggedIn,
   followedSourceCount,
   todayArticleCount,
+  tags,
 }: Props) {
-  const [activeTab, setActiveTab] = useState<"all" | "following">("all");
-  const [activeCategory, setActiveCategory] = useState<string>("ALL");
+  const [activeTab, setActiveTab] = useState<"all" | "following">(
+    isLoggedIn ? "following" : "all"
+  );
+  const [activeTagSlug, setActiveTagSlug] = useState<string | null>(null);
 
   const likedSet = new Set(likedIds);
   const bookmarkedSet = new Set(bookmarkedIds);
@@ -55,9 +64,15 @@ export function Feed({
   const followingArticles = visibleArticles.filter((a) => followedSet.has(a.source_id));
 
   // Apply tab filter
-  const displayedArticles = activeTab === "following"
+  const tabFiltered = activeTab === "following"
     ? followingArticles
     : visibleArticles;
+
+  // Apply tag filter
+  const activeTag = activeTagSlug ? tags.find((t) => t.slug === activeTagSlug) : null;
+  const displayedArticles = activeTag
+    ? tabFiltered.filter((a) => activeTag.articleIds.includes(a.id))
+    : tabFiltered;
 
   return (
     <div style={{ padding: "22px 36px 80px" }}>
@@ -72,7 +87,7 @@ export function Feed({
         }}
       >
         {/* Ticker bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 12, marginBottom: 14, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
             <span
               style={{
@@ -196,14 +211,13 @@ export function Feed({
           marginBottom: 16,
         }}
       >
-        <div style={{ display: "flex", gap: 6 }}>
-          {categories.map((cat) => {
-            const active = activeCategory === cat;
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {[{ slug: null, name: "ALL" }, ...tags.map((t) => ({ slug: t.slug, name: t.name }))].map((pill) => {
+            const active = pill.slug === activeTagSlug;
             return (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className="category-pill"
+                key={pill.slug ?? "all"}
+                onClick={() => setActiveTagSlug(pill.slug)}
                 style={{
                   fontFamily: mono,
                   fontSize: 11,
@@ -221,7 +235,7 @@ export function Feed({
                     : "1px solid rgba(255,255,255,0.10)",
                 }}
               >
-                {cat}
+                {pill.name}
               </button>
             );
           })}

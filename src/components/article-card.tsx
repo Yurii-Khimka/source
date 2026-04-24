@@ -301,10 +301,32 @@ export function ArticleCard({
       >
         <button
           onClick={handleLike}
-          className="flex items-center gap-1 cursor-pointer"
-          style={{ background: "none", border: "none", padding: 0, font: "inherit", color: liked ? dark.accent : dark.textMute }}
+          className="flex items-center gap-1.5 cursor-pointer"
+          style={{
+            background: liked ? dark.accentBg : "none",
+            border: "none",
+            padding: liked ? "2px 6px" : 0,
+            borderRadius: 3,
+            font: "inherit",
+            color: liked ? dark.accent : dark.textMute,
+          }}
         >
-          <ThumbsUp size={14} fill={liked ? dark.accent : "none"} /> {likeCount}
+          <ThumbsUp size={14} fill={liked ? dark.accent : "none"} />
+          {likeCount > 0 && (
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 10,
+                color: liked ? dark.accent : dark.textMute,
+                background: liked ? "transparent" : dark.surface2,
+                border: liked ? "none" : `1px solid ${dark.line2}`,
+                borderRadius: 3,
+                padding: liked ? 0 : "1px 5px",
+              }}
+            >
+              {likeCount}
+            </span>
+          )}
         </button>
         <button
           onClick={handleBookmark}

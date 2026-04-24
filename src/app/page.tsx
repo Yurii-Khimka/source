@@ -53,6 +53,27 @@ export default async function Home() {
     (a) => a.published_at && new Date(a.published_at) >= todayStart
   ).length;
 
+  // Fetch top 8 tags by article count with their article IDs
+  const { data: tagRows } = await supabase
+    .from("article_tags")
+    .select("article_id, tag_id, tags!inner(id, slug, name)");
+
+  const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
+  for (const row of tagRows ?? []) {
+    const tag = row.tags as unknown as { id: string; slug: string; name: string };
+    const existing = tagMap.get(tag.id);
+    if (existing) {
+      existing.articleIds.push(row.article_id);
+      existing.count++;
+    } else {
+      tagMap.set(tag.id, { id: tag.id, slug: tag.slug, name: tag.name, articleIds: [row.article_id], count: 1 });
+    }
+  }
+  const feedTags = Array.from(tagMap.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8)
+    .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }));
+
   return (
     <Shell>
       <Feed
@@ -64,6 +85,7 @@ export default async function Home() {
         isLoggedIn={!!user}
         followedSourceCount={followedSourceIds.length}
         todayArticleCount={todayArticles}
+        tags={feedTags}
       />
     </Shell>
   );
