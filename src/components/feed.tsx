@@ -260,6 +260,21 @@ export function Feed({
         </p>
       </div>
 
+      {/* Sticky filter bar */}
+      <div
+        style={{
+          position: "sticky",
+          top: 64,
+          zIndex: 20,
+          background: "#0A0E14",
+          marginLeft: -36,
+          marginRight: -36,
+          paddingLeft: 36,
+          paddingRight: 36,
+          paddingTop: 4,
+          paddingBottom: 0,
+        }}
+      >
       {/* Tabs */}
       <div
         className="flex gap-0"
@@ -346,6 +361,7 @@ export function Feed({
         <span style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", flexShrink: 0 }}>
           showing {displayedArticles.length} of {totalCount}
         </span>
+      </div>
       </div>
 
       {/* Article list */}
