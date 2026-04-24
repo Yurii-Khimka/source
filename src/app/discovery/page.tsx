@@ -26,7 +26,7 @@ export default async function DiscoveryPage() {
     // All tags in the DB
     supabase
       .from("tags")
-      .select("id, slug, name"),
+      .select("id, slug, name:label"),
     // article_tags from last 24h
     supabase
       .from("article_tags")

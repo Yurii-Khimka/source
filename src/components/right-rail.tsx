@@ -21,7 +21,7 @@ async function getRecentTags(supabase: ReturnType<typeof createClient>) {
   // Try tags from article_tags (24h, then all)
   const { data: recentTagRows } = await supabase
     .from("article_tags")
-    .select("tag_id, tags!inner(slug, name), articles!inner(published_at)")
+    .select("tag_id, tags!inner(slug, name:label), articles!inner(published_at)")
     .gte("articles.published_at", yesterday);
 
   if (recentTagRows && recentTagRows.length > 0) {
@@ -37,7 +37,7 @@ async function getRecentTags(supabase: ReturnType<typeof createClient>) {
 
   const { data: allTagRows } = await supabase
     .from("article_tags")
-    .select("tag_id, tags!inner(slug, name)");
+    .select("tag_id, tags!inner(slug, name:label)");
 
   if (allTagRows && allTagRows.length > 0) {
     const counts = new Map<string, { slug: string; name: string; count: number }>();

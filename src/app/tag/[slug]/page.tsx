@@ -16,7 +16,7 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
   // Try fetching the tag from DB
   const { data: tag } = await supabase
     .from("tags")
-    .select("id, name, slug")
+    .select("id, name:label, slug")
     .eq("slug", slug)
     .maybeSingle();
 

@@ -64,6 +64,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Remove Posts tab from Discovery
 - [2026-04-24] Keyword fallback tagging for Ukrainian articles
 - [2026-04-24] Post-run validation checks in fetcher
+- [2026-04-24] Backfill tags on existing articles
 
 ## In Progress
 - Article card design polish
@@ -78,6 +79,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Removed Posts tab, TOP STORIES section, articles query, and related props — Discovery now has All, Sources, Tags only
 - [2026-04-24] Added TAG_KEYWORDS dict with Ukrainian+English keywords, infer_tags function, assign_tags function, RSS category check then keyword fallback in fetcher
 - [2026-04-24] Added validate() — checks untagged articles, missing source_id, inactive sources (24h), total tags count, logs WARN or OK
+- [2026-04-24] Created backfill_tags.py, seeded 9 tags, tagged 605/1000 articles (1048 assignments). Fixed tags table column name→label across frontend queries and fetcher.
 
 ## Backlog (priority order)
 1. Discovery page

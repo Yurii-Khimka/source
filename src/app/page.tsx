@@ -52,7 +52,7 @@ export default async function Home() {
   // Fetch all article_tags with tag info (used for both per-article tags and feed filter pills)
   const { data: tagRows } = await supabase
     .from("article_tags")
-    .select("article_id, tag_id, tags!inner(id, slug, name)");
+    .select("article_id, tag_id, tags!inner(id, slug, name:label)");
 
   // Build article→tags map and tag→articles map in one pass
   const articleTagsMap = new Map<string, { slug: string; name: string }[]>();

@@ -43,7 +43,7 @@ export async function GET(request: Request) {
     if (articleIds.length > 0) {
       const { data: tagRows } = await supabase
         .from("article_tags")
-        .select("article_id, tags!inner(slug, name)")
+        .select("article_id, tags!inner(slug, name:label)")
         .in("article_id", articleIds);
 
       for (const row of tagRows ?? []) {

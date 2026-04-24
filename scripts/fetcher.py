@@ -84,14 +84,19 @@ TAG_KEYWORDS: dict[str, list[str]] = {
 }
 
 
-def infer_tags(title: str, description: str | None) -> list[str]:
-    """Return list of tag slugs matched by keyword search."""
-    text = f"{title} {description or ''}".lower()
+def get_tags_from_text(text: str) -> list[str]:
+    """Return list of tag slugs matched by keyword search on arbitrary text."""
+    lower = text.lower()
     matched = []
     for slug, keywords in TAG_KEYWORDS.items():
-        if any(kw in text for kw in keywords):
+        if any(kw in lower for kw in keywords):
             matched.append(slug)
     return matched
+
+
+def infer_tags(title: str, description: str | None) -> list[str]:
+    """Return list of tag slugs matched by keyword search on title + description."""
+    return get_tags_from_text(f"{title} {description or ''}")
 
 
 def assign_tags(supabase, article_id: str, tag_slugs: list[str], url: str):
@@ -111,10 +116,10 @@ def assign_tags(supabase, article_id: str, tag_slugs: list[str], url: str):
         if tag_resp.data:
             tag_id = tag_resp.data["id"]
         else:
-            name = slug.capitalize()
+            label = slug.capitalize()
             insert_resp = (
                 supabase.table("tags")
-                .insert({"slug": slug, "name": name})
+                .insert({"slug": slug, "label": label})
                 .execute()
             )
             tag_id = insert_resp.data[0]["id"]
