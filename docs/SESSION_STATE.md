@@ -71,6 +71,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Assign General fallback tag to all untagged articles
 - [2026-04-24] Fix root cause of untagged articles
 - [2026-04-24] Move hashtags below post image in article card
+- [2026-04-24] Remove divider below tags in post card
 
 ## In Progress
 - Article card design polish
@@ -92,6 +93,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Added general fallback in infer_tags(), backfill second pass assigns general to still-untagged articles. 1037 specific + 318 general = 1355 total, 0 untagged.
 - [2026-04-24] Three root causes: (1) backfill used get_tags_from_text() instead of infer_tags(), missing the general fallback; (2) backfill filtered is_hidden=False, skipping hidden articles; (3) second pass reused filtered list. Fixed all three.
 - [2026-04-24] Swapped Tags and Image sections in article-card.tsx. New order: Title → Description → Image → Tags → Footer.
+- [2026-04-24] Removed borderTop and paddingTop from footer row in article-card.tsx.
 
 ## Backlog (priority order)
 1. Discovery page
