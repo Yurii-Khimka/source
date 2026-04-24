@@ -104,6 +104,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Terms and Privacy pages + GitHub footer link
 - [2026-04-24] 404 and 502 error pages
 - [2026-04-24] Onboarding flow
+- [2026-04-24] Fix onboarding button alignment
 
 ## In Progress
 - Article card design polish
@@ -158,6 +159,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Built /terms and /privacy with full content. GitHub link added to right rail footer. Privacy and Terms footer links now point to correct routes.
 - [2026-04-24] Built not-found.tsx, error.tsx, global-error.tsx. Terminal aesthetic, no shell, fun copy.
 - [2026-04-24] Built 4-step onboarding at /onboarding. Welcome, follow sources, follow tags, complete. Triggers on first login. Skip and empty feed state included.
+- [2026-04-24] Fixed flex alignment on Continue, Back, and Skip buttons.
 
 ## Backlog (priority order)
 1. Discovery page

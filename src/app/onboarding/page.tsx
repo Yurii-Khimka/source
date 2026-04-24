@@ -143,12 +143,13 @@ export default function OnboardingPage() {
             onClick={completeOnboarding}
             className="cursor-pointer"
             style={{
+              display: "flex", alignItems: "center", gap: 6,
               background: "none", border: "none",
               fontFamily: mono, fontSize: 12, color: dark.textMute,
               cursor: "pointer",
             }}
           >
-            Skip <ArrowRight size={12} style={{ verticalAlign: "middle" }} />
+            <span>Skip</span> <ArrowRight size={12} />
           </button>
         </div>
 
@@ -221,10 +222,11 @@ export default function OnboardingPage() {
                   fontSize: 13,
                   color: dark.textSub,
                   cursor: "pointer",
+                  display: "flex", alignItems: "center", gap: 6,
                 }}
               >
-                <ArrowLeft size={12} style={{ verticalAlign: "middle", marginRight: 4 }} />
-                Back
+                <ArrowLeft size={12} />
+                <span>Back</span>
               </button>
             )}
           </div>
@@ -245,11 +247,11 @@ export default function OnboardingPage() {
                 fontWeight: 600,
                 color: "#fff",
                 cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 6,
               }}
             >
-              {step === 3 ? "Go to my feed" : "Continue"}
-              {" "}
-              <ArrowRight size={12} style={{ verticalAlign: "middle" }} />
+              <span>{step === 3 ? "Go to my feed" : "Continue"}</span>
+              <ArrowRight size={12} />
             </button>
           </div>
         </div>
