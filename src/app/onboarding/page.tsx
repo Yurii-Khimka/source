@@ -223,6 +223,7 @@ export default function OnboardingPage() {
                   color: dark.textSub,
                   cursor: "pointer",
                   display: "flex", alignItems: "center", gap: 6,
+                  whiteSpace: "nowrap",
                 }}
               >
                 <ArrowLeft size={12} />
@@ -248,6 +249,7 @@ export default function OnboardingPage() {
                 color: "#fff",
                 cursor: "pointer",
                 display: "flex", alignItems: "center", gap: 6,
+                whiteSpace: "nowrap",
               }}
             >
               <span>{step === 3 ? "Go to my feed" : "Continue"}</span>
