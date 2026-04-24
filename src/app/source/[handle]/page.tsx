@@ -17,7 +17,7 @@ export default async function SourceProfilePage({
   // Fetch source by handle
   const { data: source } = await supabase
     .from("sources")
-    .select("id, handle, name, site_url, description, created_at, verification_status")
+    .select("id, handle, name, site_url, created_at, verification_status")
     .eq("handle", handle)
     .eq("is_hidden", false)
     .maybeSingle();
@@ -133,7 +133,6 @@ export default async function SourceProfilePage({
           handle: source.handle,
           name: source.name,
           site_url: source.site_url,
-          description: source.description,
           created_at: source.created_at,
           verification_status: source.verification_status,
         }}

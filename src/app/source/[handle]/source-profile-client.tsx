@@ -31,7 +31,6 @@ type SourceData = {
   handle: string;
   name: string;
   site_url: string | null;
-  description: string | null;
   created_at: string;
   verification_status: string | null;
 };
@@ -333,23 +332,6 @@ export function SourceProfileClient({
           >
             @{source.handle} · est. {createdYear}
           </div>
-
-          {/* Bio */}
-          {source.description && (
-            <p
-              style={{
-                fontFamily: inter,
-                fontSize: 14,
-                color: dark.textSub,
-                lineHeight: 1.55,
-                maxWidth: 580,
-                marginTop: 10,
-                marginBottom: 0,
-              }}
-            >
-              {source.description}
-            </p>
-          )}
 
           {/* Website */}
           {source.site_url && (

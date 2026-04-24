@@ -76,6 +76,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Fix Vercel build failure
 - [2026-04-24] Build Source profile page
 - [2026-04-24] Fix source profile navigation
+- [2026-04-24] Fix source profile 404
 
 ## In Progress
 - Article card design polish
@@ -102,6 +103,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] ESLint prefer-const error: articleTagsMap in discovery/page.tsx was declared with let but never reassigned. Changed to const.
 - [2026-04-24] Created /source/[handle] with identity header, stats strip, transparency record, 3 tabs (Posts with infinite scroll, Audit Log empty state, About cards), actions dropdown, and source_id filter on articles API
 - [2026-04-24] Fixed /source/[handle] routing, article card source links, right rail trending sources, Verified Sources view profile link. Full codebase audit completed.
+- [2026-04-24] Removed non-existent description column from sources query that caused Supabase error and 404 on /source/[handle]
 
 ## Backlog (priority order)
 1. Discovery page
