@@ -13,7 +13,6 @@ export default async function DiscoveryPage() {
   const [
     { data: sources },
     { data: allTags },
-    { data: allTagRows },
     { data: tagRows24h },
     { data: tagRows48h },
     { data: userData },
@@ -28,19 +27,17 @@ export default async function DiscoveryPage() {
     supabase
       .from("tags")
       .select("id, slug, name:label"),
-    // All article_tags (total count per tag, no time filter)
-    supabase
-      .from("article_tags")
-      .select("tag_id"),
     // article_tags from last 24h (for trending sort + delta)
     supabase
       .from("article_tags")
-      .select("tag_id, articles!inner(published_at)")
+      .select("tag_id, articles!inner(published_at, is_hidden)")
+      .eq("articles.is_hidden", false)
       .gte("articles.published_at", yesterday),
     // article_tags from 24h–48h ago (for delta calculation)
     supabase
       .from("article_tags")
-      .select("tag_id, articles!inner(published_at)")
+      .select("tag_id, articles!inner(published_at, is_hidden)")
+      .eq("articles.is_hidden", false)
       .gte("articles.published_at", twoDaysAgo)
       .lt("articles.published_at", yesterday),
     supabase.auth.getUser(),
@@ -85,10 +82,21 @@ export default async function DiscoveryPage() {
     followerCounts[f.source_id] = (followerCounts[f.source_id] ?? 0) + 1;
   }
 
-  // Build total counts per tag_id (all time)
+  // Build total counts per tag_id (all time) — use exact count queries to avoid row limit
   const countsTotal = new Map<string, number>();
-  for (const row of allTagRows ?? []) {
-    countsTotal.set(row.tag_id, (countsTotal.get(row.tag_id) ?? 0) + 1);
+  if (allTags && allTags.length > 0) {
+    const countResults = await Promise.all(
+      allTags.map((t) =>
+        supabase
+          .from("article_tags")
+          .select("article_id, articles!inner(id)", { count: "exact", head: true })
+          .eq("tag_id", t.id)
+          .eq("articles.is_hidden", false)
+      )
+    );
+    allTags.forEach((t, i) => {
+      countsTotal.set(t.id, countResults[i].count ?? 0);
+    });
   }
 
   // Build 24h counts per tag_id (for trending sort)

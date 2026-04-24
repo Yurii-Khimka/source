@@ -22,11 +22,12 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
     notFound();
   }
 
-  // Count articles for this tag
+  // Count articles for this tag (only non-hidden)
   const { count: postCount } = await supabase
     .from("article_tags")
-    .select("*", { count: "exact", head: true })
-    .eq("tag_id", tag.id);
+    .select("article_id, articles!inner(id)", { count: "exact", head: true })
+    .eq("tag_id", tag.id)
+    .eq("articles.is_hidden", false);
 
   if (!postCount || postCount === 0) {
     notFound();
@@ -160,24 +161,6 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
     };
   });
 
-  // Build tag filter data from enriched articles
-  const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
-  for (const article of feedArticles) {
-    for (const t of article.tags) {
-      const existing = tagMap.get(t.slug);
-      if (existing) {
-        existing.articleIds.push(article.id);
-        existing.count++;
-      } else {
-        tagMap.set(t.slug, { id: t.slug, slug: t.slug, name: t.name, articleIds: [article.id], count: 1 });
-      }
-    }
-  }
-  const feedTags = Array.from(tagMap.values())
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 8)
-    .map(({ id, slug: s, name, articleIds }) => ({ id, slug: s, name, articleIds }));
-
   return (
     <>
       <RightRailInjector>
@@ -198,7 +181,6 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
         followedSourceIds={followedSourceIds}
         mutedSourceIds={mutedSourceIds}
         isLoggedIn={!!user}
-        tags={feedTags}
       />
     </>
   );

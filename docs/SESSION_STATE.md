@@ -95,6 +95,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Fix Vercel build failure
 - [2026-04-24] Fix followed tags left rail update
 - [2026-04-24] Fix tag page articles and skeleton
+- [2026-04-24] Tag page — top sources table, counter fix, remove tabs
 
 ## In Progress
 - Article card design polish
@@ -140,6 +141,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Removed unused bookmarkCount and followedSources variables in shell.tsx.
 - [2026-04-24] Fixed follow tag write, left rail query, and live update event so followed tags appear immediately without page reload.
 - [2026-04-24] Fixed articles query join path (article_tags → tags), fixed skeleton/empty state mutual exclusion.
+- [2026-04-24] Top sources now reuses Trending Tags component. Fixed post count inconsistency between Discovery and tag pages. Removed category tabs, added Recent posts label.
 
 ## Backlog (priority order)
 1. Discovery page

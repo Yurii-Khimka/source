@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { Search, ShieldCheck, X, ArrowUp, ArrowDown } from "lucide-react";
+import { Search, ShieldCheck, X } from "lucide-react";
+import { RankedTable } from "@/components/ranked-table";
 import { dark } from "@/lib/tokens";
 import { ArticleCard } from "@/components/article-card";
 import { Spinner } from "@/components/ui/spinner";
@@ -468,107 +469,16 @@ export function DiscoveryClient({
           >
             TRENDING TAGS · 24H
           </div>
-          <div
-            style={{
-              background: dark.surface,
-              border: `1px solid ${dark.line}`,
-              borderRadius: 6,
-              overflow: "hidden",
-            }}
-          >
-            {filteredTags.map((tag, i) => {
-              const isLast = i === filteredTags.length - 1;
-              const deltaStr =
-                tag.delta === null
-                  ? "new"
-                  : `${tag.delta >= 0 ? "+" : ""}${tag.delta}%`;
-              const deltaPositive = tag.delta === null || tag.delta >= 0;
-              const deltaColor = deltaPositive ? "#4CAF50" : dark.danger;
-
-              return (
-                <div
-                  key={tag.id}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "40px 1fr 100px 80px 80px",
-                    alignItems: "center",
-                    padding: "10px 14px",
-                    borderBottom: isLast ? "none" : `1px solid ${dark.line}`,
-                  }}
-                >
-                  {/* Rank */}
-                  <span
-                    style={{
-                      fontFamily: mono,
-                      fontSize: 12,
-                      color: dark.textMute,
-                    }}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {/* Tag name */}
-                  <Link
-                    href={`/tag/${tag.slug}`}
-                    style={{
-                      fontFamily: mono,
-                      fontSize: 15,
-                      fontWeight: 500,
-                      color: dark.text,
-                      textDecoration: "none",
-                    }}
-                  >
-                    #{tag.name}
-                  </Link>
-                  {/* Post count */}
-                  <span
-                    style={{
-                      fontFamily: mono,
-                      fontSize: 12,
-                      color: dark.textDim,
-                    }}
-                  >
-                    {tag.count} posts
-                  </span>
-                  {/* Delta */}
-                  <span
-                    style={{
-                      fontFamily: mono,
-                      fontSize: 12,
-                      color: deltaColor,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                    }}
-                  >
-                    {tag.delta !== null && (
-                      deltaPositive
-                        ? <ArrowUp size={11} />
-                        : <ArrowDown size={11} />
-                    )}
-                    {deltaStr}
-                  </span>
-                  {/* Follow button — placeholder, tags don't have follow yet */}
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Link
-                      href={`/tag/${tag.slug}`}
-                      style={{
-                        fontFamily: mono,
-                        fontSize: 10,
-                        color: dark.textMute,
-                        textDecoration: "none",
-                        padding: "3px 8px",
-                        border: `1px solid ${dark.line2}`,
-                        borderRadius: 3,
-                        transition: "border-color 0.12s",
-                      }}
-                    >
-                      View
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <RankedTable
+            items={filteredTags.map((tag) => ({
+              id: tag.id,
+              name: tag.name,
+              href: `/tag/${tag.slug}`,
+              count: tag.count,
+              delta: tag.delta,
+              prefix: "#",
+            }))}
+          />
         </div>
       )}
 
