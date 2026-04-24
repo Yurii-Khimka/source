@@ -54,6 +54,18 @@ export function Feed({
   );
   const [activeTagSlug, setActiveTagSlug] = useState<string | null>(null);
 
+  const counterBadge: React.CSSProperties = {
+    fontFamily: mono,
+    fontSize: 10,
+    color: "#6C727E",
+    background: "#161B26",
+    border: "1px solid rgba(255,255,255,0.10)",
+    borderRadius: 3,
+    padding: "1px 5px",
+    marginLeft: 6,
+    verticalAlign: "middle",
+  };
+
   const likedSet = new Set(likedIds);
   const bookmarkedSet = new Set(bookmarkedIds);
   const followedSet = new Set(followedSourceIds);
@@ -87,7 +99,7 @@ export function Feed({
         }}
       >
         {/* Ticker bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 12, marginBottom: 14, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 12, marginBottom: 14, marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
             <span
               style={{
@@ -180,7 +192,9 @@ export function Feed({
               : "2px solid transparent",
           }}
         >
-          Following {isLoggedIn && <span style={{ opacity: 0.6 }}>({followingArticles.length})</span>}
+          Following {isLoggedIn && (
+            <span style={counterBadge}>{followingArticles.length}</span>
+          )}
         </button>
         <button
           onClick={() => setActiveTab("all")}
@@ -198,7 +212,7 @@ export function Feed({
               : "2px solid transparent",
           }}
         >
-          All sources <span style={{ opacity: 0.6 }}>({visibleArticles.length})</span>
+          All sources <span style={counterBadge}>{visibleArticles.length}</span>
         </button>
       </div>
 

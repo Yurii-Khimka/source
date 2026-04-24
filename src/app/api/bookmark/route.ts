@@ -34,10 +34,24 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (existing) {
-    await supabase.from("bookmarks").delete().eq("id", existing.id);
+    const { error: deleteError } = await supabase
+      .from("bookmarks")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("article_id", article_id);
+
+    if (deleteError) {
+      return NextResponse.json({ error: deleteError.message }, { status: 500 });
+    }
     return NextResponse.json({ bookmarked: false });
   }
 
-  await supabase.from("bookmarks").insert({ user_id: user.id, article_id });
+  const { error: insertError } = await supabase
+    .from("bookmarks")
+    .insert({ user_id: user.id, article_id });
+
+  if (insertError) {
+    return NextResponse.json({ error: insertError.message }, { status: 500 });
+  }
   return NextResponse.json({ bookmarked: true });
 }

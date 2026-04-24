@@ -303,30 +303,24 @@ export function ArticleCard({
           onClick={handleLike}
           className="flex items-center gap-1.5 cursor-pointer"
           style={{
-            background: liked ? dark.accentBg : "none",
-            border: "none",
-            padding: liked ? "2px 6px" : 0,
-            borderRadius: 3,
+            background: liked ? "rgba(100,104,240,0.12)" : "none",
+            border: liked ? "1px solid rgba(100,104,240,0.42)" : "1px solid transparent",
+            padding: "4px 10px",
+            borderRadius: 6,
             font: "inherit",
             color: liked ? dark.accent : dark.textMute,
           }}
         >
           <ThumbsUp size={14} fill={liked ? dark.accent : "none"} />
-          {likeCount > 0 && (
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 10,
-                color: liked ? dark.accent : dark.textMute,
-                background: liked ? "transparent" : dark.surface2,
-                border: liked ? "none" : `1px solid ${dark.line2}`,
-                borderRadius: 3,
-                padding: liked ? 0 : "1px 5px",
-              }}
-            >
-              {likeCount}
-            </span>
-          )}
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 12,
+              color: liked ? dark.accent : dark.textMute,
+            }}
+          >
+            {likeCount}
+          </span>
         </button>
         <button
           onClick={handleBookmark}

@@ -34,7 +34,15 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (existing) {
-    await supabase.from("likes").delete().eq("id", existing.id);
+    const { error: deleteError } = await supabase
+      .from("likes")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("article_id", article_id);
+
+    if (deleteError) {
+      return NextResponse.json({ error: deleteError.message }, { status: 500 });
+    }
 
     // Decrement like_count
     const { data: current } = await supabase
@@ -48,7 +56,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ liked: false, like_count: newCount });
   }
 
-  await supabase.from("likes").insert({ user_id: user.id, article_id });
+  const { error: insertError } = await supabase
+    .from("likes")
+    .insert({ user_id: user.id, article_id });
+
+  if (insertError) {
+    return NextResponse.json({ error: insertError.message }, { status: 500 });
+  }
 
   // Increment like_count
   const { data: current } = await supabase
