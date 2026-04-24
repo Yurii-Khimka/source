@@ -371,10 +371,13 @@ export function ArticleCard({
         </div>
       )}
 
-      {/* Row 5 — Footer */}
+      {/* Divider — full width */}
+      <div style={{ margin: "0 -16px", borderTop: `1px solid ${dark.line}` }} />
+
+      {/* Row 6 — Footer */}
       <div
         className="flex items-center gap-4"
-        style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: dark.textMute }}
+        style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: dark.textMute, paddingTop: 10 }}
       >
         <button
           onClick={handleLike}
