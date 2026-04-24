@@ -81,6 +81,16 @@ Phase 1 — MVP in progress
 - [2026-04-24] Source profile page MVP rebuild
 - [2026-04-24] Move action block to right rail
 - [2026-04-24] Sync follow/mute state between action block and article cards
+- [2026-04-24] Smaller right rail buttons on source page
+- [2026-04-24] Source link in same row as handle/followers
+- [2026-04-24] Source logo on profile page
+- [2026-04-24] Source link first in meta row
+- [2026-04-24] Tag page
+- [2026-04-24] Global links audit
+- [2026-04-24] Remove Tags nav item from left rail
+- [2026-04-24] Input hover and focus states
+- [2026-04-24] Following page
+- [2026-04-24] Loading states — skeletons and micro-spinners
 
 ## In Progress
 - Article card design polish
@@ -112,6 +122,16 @@ Phase 1 — MVP in progress
 - [2026-04-24] Removed tabs, dashboard, crypto. Added Follow/Mute action block. Reused feed category pills and post counter.
 - [2026-04-24] Moved Follow/Mute action block to right rail via Shell rightRailTop slot. Created SourceActionBlock client component. Cleaned source-profile-client of follow/mute handlers.
 - [2026-04-24] Added sourceFollowChanged/sourceMuteChanged custom events to sync follow/mute state bidirectionally between SourceActionBlock and ArticleCard
+- [2026-04-24] Reduced button padding 10→7px, fontSize 13→12, icon size 15→13, borderRadius 6→5, gap 8→6
+- [2026-04-24] Merged site_url link into the @handle · followers · est. row with dot separator
+- [2026-04-24] Show logo_url image instead of initials avatar when available, with fallback to initials
+- [2026-04-24] Moved site_url link before @handle in the meta info row
+- [2026-04-24] Built /tag/[slug] mirroring source profile structure. Top sources ranked by post count. Follow/mute action block in right rail. Verified mute tag logic applied to feed query.
+- [2026-04-24] Fixed all unlinked source logos, source names, and tag pills across the entire codebase. Discovery Verified Sources fixed. Full audit completed.
+- [2026-04-24] Removed top-level Tags menu item from left sidebar.
+- [2026-04-24] Added .input-field CSS class with hover (brighter border) and focus (accent border + subtle accent bg). Applied to all 7 inputs: discovery search, article search, signin email/password, signup email/password/confirm.
+- [2026-04-24] Built /following with Sources and Tags tabs, unfollow actions, empty states.
+- [2026-04-24] Skeleton primitive + composite skeletons applied to all pages. Micro-spinner on like, bookmark, follow, mute, unfollow buttons.
 
 ## Backlog (priority order)
 1. Discovery page

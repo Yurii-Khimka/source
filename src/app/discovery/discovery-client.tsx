@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, ShieldCheck, X, ArrowUp, ArrowDown } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { ArticleCard } from "@/components/article-card";
+import { Spinner } from "@/components/ui/spinner";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -229,6 +230,7 @@ export function DiscoveryClient({
           placeholder="Search verified sources, tags, or headlines…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          className="input-field"
           style={{
             width: "100%",
             background: dark.surface,
@@ -353,36 +355,40 @@ export function DiscoveryClient({
                 >
                   {/* Avatar + info row */}
                   <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                    <div
-                      style={{
-                        width: 42,
-                        height: 42,
-                        borderRadius: 6,
-                        background: handleToColor(source.handle),
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        fontFamily: inter,
-                        fontSize: 15,
-                        fontWeight: 700,
-                        color: "#fff",
-                      }}
-                    >
-                      {getInitials(source.name)}
-                    </div>
+                    <Link href={`/source/${source.handle}`} className="flex-shrink-0" style={{ textDecoration: "none" }}>
+                      <div
+                        style={{
+                          width: 42,
+                          height: 42,
+                          borderRadius: 6,
+                          background: handleToColor(source.handle),
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                          fontFamily: inter,
+                          fontSize: 15,
+                          fontWeight: 700,
+                          color: "#fff",
+                        }}
+                      >
+                        {getInitials(source.name)}
+                      </div>
+                    </Link>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                        <span
+                        <Link
+                          href={`/source/${source.handle}`}
                           style={{
                             fontFamily: serif,
                             fontSize: 16,
                             fontWeight: 700,
                             color: dark.text,
+                            textDecoration: "none",
                           }}
                         >
                           {source.name}
-                        </span>
+                        </Link>
                         <ShieldCheck
                           size={13}
                           style={{ color: dark.accent, flexShrink: 0 }}
@@ -412,16 +418,19 @@ export function DiscoveryClient({
                         fontWeight: 600,
                         padding: "5px 14px",
                         borderRadius: 4,
-                        cursor: isLoggedIn ? "pointer" : "default",
+                        cursor: isLoading ? "wait" : isLoggedIn ? "pointer" : "default",
                         transition: "all 0.12s",
                         background: isFollowing ? "transparent" : dark.accent,
                         color: isFollowing ? dark.accent : "#fff",
                         border: isFollowing
                           ? `1px solid ${dark.accentLine}`
                           : `1px solid ${dark.accent}`,
-                        opacity: isLoading ? 0.5 : 1,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
                       }}
                     >
+                      {isLoading && <Spinner />}
                       {isFollowing ? "Following" : "Follow"}
                     </button>
                     <Link

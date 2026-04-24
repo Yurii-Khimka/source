@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { UserPlus, VolumeX } from "lucide-react";
+import { Tag, VolumeX } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -10,35 +10,18 @@ const mono = "'JetBrains Mono', monospace";
 const inter = "'Inter', system-ui, sans-serif";
 
 type Props = {
-  sourceId: string;
+  tagId: string;
   initialFollowing: boolean;
   initialMuted: boolean;
   isLoggedIn: boolean;
 };
 
-export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, isLoggedIn }: Props) {
+export function TagActionBlock({ tagId, initialFollowing, initialMuted, isLoggedIn }: Props) {
   const router = useRouter();
   const [following, setFollowing] = useState(initialFollowing);
   const [muted, setMuted] = useState(initialMuted);
   const [followLoading, setFollowLoading] = useState(false);
   const [muteLoading, setMuteLoading] = useState(false);
-
-  useEffect(() => {
-    function onFollowChanged(e: Event) {
-      const detail = (e as CustomEvent).detail;
-      if (detail?.sourceId === sourceId) setFollowing(detail.following);
-    }
-    function onMuteChanged(e: Event) {
-      const detail = (e as CustomEvent).detail;
-      if (detail?.sourceId === sourceId) setMuted(detail.muted);
-    }
-    window.addEventListener("sourceFollowChanged", onFollowChanged);
-    window.addEventListener("sourceMuteChanged", onMuteChanged);
-    return () => {
-      window.removeEventListener("sourceFollowChanged", onFollowChanged);
-      window.removeEventListener("sourceMuteChanged", onMuteChanged);
-    };
-  }, [sourceId]);
 
   async function handleFollow() {
     if (!isLoggedIn) { router.push("/auth/signin"); return; }
@@ -47,16 +30,14 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
     const was = following;
     setFollowing(!was);
     try {
-      const res = await fetch("/api/follow", {
+      const res = await fetch("/api/follow-tag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source_id: sourceId }),
+        body: JSON.stringify({ tag_id: tagId }),
       });
       if (res.ok) {
         const data = await res.json();
         setFollowing(data.following);
-        window.dispatchEvent(new CustomEvent("followChanged"));
-        window.dispatchEvent(new CustomEvent("sourceFollowChanged", { detail: { sourceId, following: data.following } }));
       } else {
         setFollowing(was);
       }
@@ -72,15 +53,14 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
     const was = muted;
     setMuted(!was);
     try {
-      const res = await fetch("/api/mute", {
+      const res = await fetch("/api/mute-tag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source_id: sourceId }),
+        body: JSON.stringify({ tag_id: tagId }),
       });
       if (res.ok) {
         const data = await res.json();
         setMuted(data.muted);
-        window.dispatchEvent(new CustomEvent("sourceMuteChanged", { detail: { sourceId, muted: data.muted } }));
       } else {
         setMuted(was);
       }
@@ -109,7 +89,7 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
           marginBottom: 12,
         }}
       >
-        THIS SOURCE
+        THIS TAG
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -135,8 +115,8 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
             border: following ? `1px solid ${dark.accentLine}` : `1px solid ${dark.accent}`,
           }}
         >
-          {followLoading ? <Spinner /> : <UserPlus size={13} />}
-          {following ? "Following" : "Follow source"}
+          {followLoading ? <Spinner /> : <Tag size={13} />}
+          {following ? "Following" : "Follow tag"}
         </button>
 
         <button
@@ -162,7 +142,7 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
           }}
         >
           {muteLoading ? <Spinner /> : <VolumeX size={13} />}
-          {muted ? "Muted" : "Mute notifications"}
+          {muted ? "Muted" : "Mute tag"}
         </button>
       </div>
 
@@ -176,7 +156,7 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
             margin: 0,
           }}
         >
-          Following puts this source on your home feed and enables alerts for corrections and breaking posts.
+          Following this tag adds matching posts to your home feed.
         </p>
       </div>
     </div>

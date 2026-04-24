@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { ShieldCheck, Globe } from "lucide-react";
+import Link from "next/link";
 import { dark } from "@/lib/tokens";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleCardSkeleton } from "@/components/ui/skeletons";
 
 const mono = "'JetBrains Mono', monospace";
-const serif = "'Source Serif 4', Georgia, serif";
 const inter = "'Inter', system-ui, sans-serif";
 
 type ArticleData = {
@@ -23,14 +22,11 @@ type ArticleData = {
   tags: { slug: string; name: string }[];
 };
 
-type SourceData = {
-  id: string;
+type TopSource = {
   handle: string;
   name: string;
-  site_url: string | null;
-  created_at: string;
-  verification_status: string | null;
   logo_url: string | null;
+  postCount: number;
 };
 
 type TagData = {
@@ -41,49 +37,30 @@ type TagData = {
 };
 
 type Props = {
-  source: SourceData;
+  slug: string;
+  postCount: number;
+  topSources: TopSource[];
   articles: ArticleData[];
   likedIds: string[];
   bookmarkedIds: string[];
-  initialFollowing: boolean;
-  initialMuted: boolean;
+  followedSourceIds: string[];
+  mutedSourceIds: string[];
   isLoggedIn: boolean;
-  followerCount: number;
-  postCount: number;
   tags: TagData[];
 };
 
 const PAGE_SIZE = 20;
 
-function handleToColor(handle: string): string {
-  let hash = 0;
-  for (let i = 0; i < handle.length; i++) {
-    hash = handle.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const colors = [
-    "#3d5a80", "#e0b14f", "#ee6c4d", "#5b8fb9",
-    "#9c6ade", "#44bd8f", "#cf6a87", "#4a9ec5",
-    "#d4845a", "#7b6bb5",
-  ];
-  return colors[Math.abs(hash) % colors.length];
-}
-
-function getInitials(name: string): string {
-  const words = name.split(/\s+/).filter(Boolean);
-  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
-  return name.slice(0, 2).toUpperCase();
-}
-
-export function SourceProfileClient({
-  source,
+export function TagProfileClient({
+  slug,
+  postCount,
+  topSources,
   articles: initialArticles,
   likedIds: initialLikedIds,
   bookmarkedIds: initialBookmarkedIds,
-  initialFollowing,
-  initialMuted,
+  followedSourceIds,
+  mutedSourceIds,
   isLoggedIn,
-  followerCount,
-  postCount,
   tags: initialTags,
 }: Props) {
   const [articles, setArticles] = useState(initialArticles);
@@ -97,21 +74,20 @@ export function SourceProfileClient({
 
   const likedSet = new Set(likedIds);
   const bookmarkedSet = new Set(bookmarkedIds);
-
-  const createdYear = new Date(source.created_at).getFullYear();
+  const followedSet = new Set(followedSourceIds);
+  const mutedSet = new Set(mutedSourceIds);
 
   const activeTag = activeTagSlug ? tags.find((t) => t.slug === activeTagSlug) : null;
   const displayedArticles = activeTag
     ? articles.filter((a) => activeTag.articleIds.includes(a.id))
     : articles;
 
-  // Infinite scroll
   const loadMore = useCallback(async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/articles?offset=${articles.length}&limit=${PAGE_SIZE}&source_id=${source.id}`
+        `/api/articles?offset=${articles.length}&limit=${PAGE_SIZE}&tag_slug=${slug}`
       );
       if (!res.ok) return;
       const data = await res.json();
@@ -134,7 +110,6 @@ export function SourceProfileClient({
       setLikedIds((prev) => [...prev, ...(data.likedIds ?? [])]);
       setBookmarkedIds((prev) => [...prev, ...(data.bookmarkedIds ?? [])]);
 
-      // Rebuild tags
       const allArticles = [...articles, ...unique];
       const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
       for (const article of allArticles) {
@@ -161,7 +136,7 @@ export function SourceProfileClient({
     } finally {
       setLoading(false);
     }
-  }, [articles, loading, hasMore, postCount, source.id]);
+  }, [articles, loading, hasMore, postCount, slug]);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -174,95 +149,157 @@ export function SourceProfileClient({
     return () => observer.disconnect();
   }, [loadMore]);
 
+  const formattedCount = postCount.toLocaleString();
+
   return (
     <div style={{ padding: "32px 36px 80px" }}>
       {/* ─── IDENTITY HEADER ─── */}
-      <div style={{ display: "flex", gap: 18, alignItems: "flex-start", marginBottom: 24 }}>
-        {source.logo_url ? (
-          <img
-            src={source.logo_url}
-            alt={source.name}
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 6,
-              objectFit: "cover",
-              flexShrink: 0,
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 6,
-              background: handleToColor(source.handle),
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              fontFamily: inter,
-              fontSize: 24,
-              fontWeight: 700,
-              color: "#fff",
-            }}
-          >
-            {getInitials(source.name)}
-          </div>
-        )}
+      <div style={{ marginBottom: 24 }}>
+        <h1
+          style={{
+            fontFamily: mono,
+            fontSize: 28,
+            fontWeight: 700,
+            color: dark.accent,
+            margin: 0,
+          }}
+        >
+          #{slug}
+        </h1>
+        <p
+          style={{
+            fontFamily: mono,
+            fontSize: 12,
+            color: dark.textMute,
+            marginTop: 6,
+          }}
+        >
+          {formattedCount} posts
+        </p>
+      </div>
 
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <h1
-              style={{
-                fontFamily: serif,
-                fontSize: 28,
-                fontWeight: 700,
-                letterSpacing: -0.5,
-                color: dark.text,
-                margin: 0,
-              }}
-            >
-              {source.name}
-            </h1>
-            <ShieldCheck size={22} style={{ color: dark.accent, flexShrink: 0 }} />
-          </div>
-
+      {/* ─── TOP SOURCES ON #TAG ─── */}
+      {topSources.length > 0 && (
+        <div
+          style={{
+            background: dark.surface,
+            border: `1px solid ${dark.line}`,
+            borderRadius: 8,
+            padding: 16,
+            marginBottom: 24,
+          }}
+        >
           <div
             style={{
               fontFamily: mono,
-              fontSize: 12,
+              fontSize: 10,
+              textTransform: "uppercase",
+              letterSpacing: 1.2,
               color: dark.textMute,
-              marginTop: 6,
-              display: "flex",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: 0,
+              marginBottom: 14,
             }}
           >
-            {source.site_url && (
-              <>
-                <a
-                  href={source.site_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+            TOP SOURCES ON #{slug}
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {topSources.map((src, i) => (
+              <div
+                key={src.handle}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <span
                   style={{
-                    color: dark.accent,
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
+                    fontFamily: mono,
+                    fontSize: 11,
+                    color: dark.textMute,
+                    width: 18,
+                    textAlign: "right",
+                    flexShrink: 0,
                   }}
                 >
-                  <Globe size={12} /> {source.site_url.replace(/^https?:\/\//, "")}
-                </a>
-                <span style={{ margin: "0 5px" }}>·</span>
-              </>
-            )}
-            <span>@{source.handle} · {followerCount} follower{followerCount !== 1 ? "s" : ""} · est. {createdYear}</span>
+                  {i + 1}
+                </span>
+
+                <Link href={`/source/${src.handle}`} className="flex-shrink-0" style={{ textDecoration: "none" }}>
+                  {src.logo_url ? (
+                    <img
+                      src={src.logo_url}
+                      alt={src.name}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 4,
+                        objectFit: "cover",
+                        flexShrink: 0,
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 4,
+                        background: dark.surface2,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        fontFamily: inter,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: dark.textDim,
+                      }}
+                    >
+                      {src.name.slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                </Link>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <Link
+                    href={`/source/${src.handle}`}
+                    style={{
+                      fontFamily: inter,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: dark.text,
+                      textDecoration: "none",
+                    }}
+                  >
+                    {src.name}
+                  </Link>
+                  <span
+                    style={{
+                      fontFamily: mono,
+                      fontSize: 11,
+                      color: dark.textMute,
+                      marginLeft: 6,
+                    }}
+                  >
+                    @{src.handle}
+                  </span>
+                </div>
+
+                <span
+                  style={{
+                    fontFamily: mono,
+                    fontSize: 11,
+                    color: dark.textMute,
+                    flexShrink: 0,
+                  }}
+                >
+                  {src.postCount.toLocaleString()} posts
+                </span>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      )}
 
       {/* ─── CATEGORY PILLS + SHOWING COUNT ─── */}
       <div
@@ -317,7 +354,7 @@ export function SourceProfileClient({
             })}
           </div>
           <span style={{ fontFamily: mono, fontSize: 11, color: dark.textMute, flexShrink: 0 }}>
-            showing {displayedArticles.length} of {postCount}
+            showing {displayedArticles.length} of {formattedCount}
           </span>
         </div>
       </div>
@@ -328,7 +365,7 @@ export function SourceProfileClient({
           className="text-center py-12"
           style={{ fontFamily: mono, fontSize: 12, color: dark.textMute }}
         >
-          {activeTagSlug ? "No articles match this filter." : "No articles from this source yet."}
+          {activeTagSlug ? "No articles match this filter." : "No articles with this tag yet."}
         </p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -339,9 +376,9 @@ export function SourceProfileClient({
               initialLiked={likedSet.has(article.id)}
               initialLikeCount={article.like_count}
               initialBookmarked={bookmarkedSet.has(article.id)}
-              initialFollowing={initialFollowing}
-              initialMuted={initialMuted}
-              sourceId={source.id}
+              initialFollowing={followedSet.has(article.source_id)}
+              initialMuted={mutedSet.has(article.source_id)}
+              sourceId={article.source_id}
               isLoggedIn={isLoggedIn}
             />
           ))}
@@ -361,7 +398,7 @@ export function SourceProfileClient({
           className="text-center"
           style={{ fontFamily: mono, fontSize: 11, color: dark.textMute, marginTop: 32, marginBottom: 16 }}
         >
-          {"// end of posts from this source"}
+          {"// end of posts for this tag"}
         </p>
       )}
     </div>

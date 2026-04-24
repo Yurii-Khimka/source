@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { ArticleCard } from "@/components/article-card";
+import { ArticleCardSkeleton } from "@/components/ui/skeletons";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -32,6 +33,7 @@ type Props = {
   bookmarkedIds: string[];
   followedSourceIds: string[];
   mutedSourceIds: string[];
+  mutedTagArticleIds?: string[];
   isLoggedIn: boolean;
   followedSourceCount: number;
   todayArticleCount: number;
@@ -47,6 +49,7 @@ export function Feed({
   bookmarkedIds: initialBookmarkedIds,
   followedSourceIds,
   mutedSourceIds,
+  mutedTagArticleIds = [],
   isLoggedIn,
   followedSourceCount,
   todayArticleCount,
@@ -68,9 +71,12 @@ export function Feed({
   const bookmarkedSet = new Set(bookmarkedIds);
   const followedSet = new Set(followedSourceIds);
   const mutedSet = new Set(mutedSourceIds);
+  const mutedTagSet = new Set(mutedTagArticleIds);
 
-  // Filter out muted sources
-  const visibleArticles = articles.filter((a) => !mutedSet.has(a.source_id));
+  // Filter out muted sources and muted tag articles
+  const visibleArticles = articles.filter(
+    (a) => !mutedSet.has(a.source_id) && !mutedTagSet.has(a.id)
+  );
   const followingArticles = visibleArticles.filter((a) => followedSet.has(a.source_id));
 
   // Apply tag filter
@@ -334,12 +340,11 @@ export function Feed({
       {/* Scroll sentinel + loading/end state */}
       <div ref={sentinelRef} style={{ minHeight: 1 }} />
       {loading && (
-        <p
-          className="text-center"
-          style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", marginTop: 24 }}
-        >
-          Loading...
-        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 14 }}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <ArticleCardSkeleton key={i} />
+          ))}
+        </div>
       )}
       {!hasMore && displayedArticles.length > 0 && (
         <p

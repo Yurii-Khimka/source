@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { ArticleCardSkeleton } from "@/components/ui/skeletons";
 
 export function SearchClient() {
   const [query, setQuery] = useState("");
@@ -35,6 +36,7 @@ export function SearchClient() {
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="Search articles..."
+          className="input-field"
           style={{
             width: "100%",
             height: 44,
@@ -53,9 +55,11 @@ export function SearchClient() {
       </div>
 
       {loading && (
-        <p style={{ fontFamily: "monospace", color: "#6C727E", fontSize: 11 }}>
-          Searching...
-        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <ArticleCardSkeleton key={i} />
+          ))}
+        </div>
       )}
       {!loading && query.length >= 2 && results.length === 0 && (
         <p style={{ fontFamily: "monospace", color: "#6C727E", fontSize: 11 }}>

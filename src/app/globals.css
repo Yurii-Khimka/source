@@ -24,3 +24,40 @@ body {
 .right-rail-tag:hover {
   border-color: rgba(255, 255, 255, 0.20) !important;
 }
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 40%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.04) 60%,
+    transparent 100%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-rotate {
+  animation: spin 0.7s linear infinite;
+}
+
+.input-field {
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.input-field:hover {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+.input-field:focus {
+  border-color: rgb(100, 104, 240) !important;
+  background-color: rgba(100, 104, 240, 0.04) !important;
+}

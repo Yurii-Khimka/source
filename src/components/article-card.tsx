@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ThumbsUp, Bookmark, ExternalLink, CheckCircle2, MoreHorizontal } from "lucide-react";
 import { dark } from "@/lib/tokens";
+import { Spinner } from "@/components/ui/spinner";
 
 type Article = {
   id: string;
@@ -410,11 +411,10 @@ export function ArticleCard({
             borderRadius: 6,
             font: "inherit",
             color: liked ? dark.accent : dark.textMute,
-            opacity: likeLoading ? 0.5 : 1,
             cursor: likeLoading ? "wait" : "pointer",
           }}
         >
-          <ThumbsUp size={14} fill={liked ? dark.accent : "none"} />
+          {likeLoading ? <Spinner /> : <ThumbsUp size={14} fill={liked ? dark.accent : "none"} />}
           <span
             style={{
               fontFamily: "'JetBrains Mono', monospace",
@@ -432,11 +432,10 @@ export function ArticleCard({
           style={{
             background: "none", border: "none", padding: 0, font: "inherit",
             color: bookmarked ? dark.accent : dark.textMute,
-            opacity: bookmarkLoading ? 0.5 : 1,
             cursor: bookmarkLoading ? "wait" : "pointer",
           }}
         >
-          <Bookmark size={14} fill={bookmarked ? dark.accent : "none"} />
+          {bookmarkLoading ? <Spinner /> : <Bookmark size={14} fill={bookmarked ? dark.accent : "none"} />}
         </button>
         <a
           href={article.url}
