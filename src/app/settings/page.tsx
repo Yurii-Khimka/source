@@ -50,6 +50,7 @@ export default async function SettingsPage() {
 
   return (
     <Shell>
+      <div className="p-6">
       <h1
         style={{
           fontFamily: "'Source Serif 4', Georgia, serif",
@@ -119,6 +120,7 @@ export default async function SettingsPage() {
             Light (coming soon)
           </button>
         </div>
+      </div>
       </div>
     </Shell>
   );

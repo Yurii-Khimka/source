@@ -196,10 +196,8 @@ export async function Shell({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main content */}
-        <main>
-          <div className="p-6 mx-auto" style={{ maxWidth: 740 }}>
-            {children}
-          </div>
+        <main style={{ minWidth: 0 }}>
+          {children}
         </main>
 
         {/* Right rail */}

@@ -46,6 +46,13 @@ export default async function Home() {
     sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
   }));
 
+  // Count articles published today
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayArticles = feedArticles.filter(
+    (a) => a.published_at && new Date(a.published_at) >= todayStart
+  ).length;
+
   return (
     <Shell>
       <Feed
@@ -55,6 +62,8 @@ export default async function Home() {
         followedSourceIds={followedSourceIds}
         mutedSourceIds={mutedSourceIds}
         isLoggedIn={!!user}
+        followedSourceCount={followedSourceIds.length}
+        todayArticleCount={todayArticles}
       />
     </Shell>
   );

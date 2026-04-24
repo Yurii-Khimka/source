@@ -20,3 +20,7 @@ body {
 .sidebar-nav-item:hover {
   background: rgba(255, 255, 255, 0.04) !important;
 }
+
+.right-rail-tag:hover {
+  border-color: rgba(255, 255, 255, 0.20) !important;
+}

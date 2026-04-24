@@ -4,7 +4,9 @@ import { SearchClient } from "./search-client";
 export default function SearchPage() {
   return (
     <Shell>
-      <SearchClient />
+      <div className="p-6">
+        <SearchClient />
+      </div>
     </Shell>
   );
 }

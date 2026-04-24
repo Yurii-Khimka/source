@@ -11,12 +11,14 @@ export default async function BookmarksPage() {
   if (!user) {
     return (
       <Shell>
-        <p
-          className="text-center py-16"
-          style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
-        >
-          Sign in to save bookmarks
-        </p>
+        <div className="p-6">
+          <p
+            className="text-center py-16"
+            style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
+          >
+            Sign in to save bookmarks
+          </p>
+        </div>
       </Shell>
     );
   }
@@ -50,6 +52,7 @@ export default async function BookmarksPage() {
 
   return (
     <Shell>
+      <div className="p-6">
       <div className="mb-4">
         <h1
           style={{
@@ -101,6 +104,7 @@ export default async function BookmarksPage() {
           ))}
         </div>
       )}
+      </div>
     </Shell>
   );
 }

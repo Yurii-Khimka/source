@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { ArticleCard } from "@/components/article-card";
 
+const inter = "'Inter', system-ui, sans-serif";
+const mono = "'JetBrains Mono', monospace";
+const serif = "'Source Serif 4', Georgia, serif";
+
 type ArticleData = {
   id: string;
   title: string;
@@ -22,10 +26,24 @@ type Props = {
   followedSourceIds: string[];
   mutedSourceIds: string[];
   isLoggedIn: boolean;
+  followedSourceCount: number;
+  todayArticleCount: number;
 };
 
-export function Feed({ articles, likedIds, bookmarkedIds, followedSourceIds, mutedSourceIds, isLoggedIn }: Props) {
+const categories = ["ALL", "WIRE", "ANALYSIS", "INVESTIGATION"] as const;
+
+export function Feed({
+  articles,
+  likedIds,
+  bookmarkedIds,
+  followedSourceIds,
+  mutedSourceIds,
+  isLoggedIn,
+  followedSourceCount,
+  todayArticleCount,
+}: Props) {
   const [activeTab, setActiveTab] = useState<"all" | "following">("all");
+  const [activeCategory, setActiveCategory] = useState<string>("ALL");
 
   const likedSet = new Set(likedIds);
   const bookmarkedSet = new Set(bookmarkedIds);
@@ -34,91 +52,202 @@ export function Feed({ articles, likedIds, bookmarkedIds, followedSourceIds, mut
 
   // Filter out muted sources
   const visibleArticles = articles.filter((a) => !mutedSet.has(a.source_id));
+  const followingArticles = visibleArticles.filter((a) => followedSet.has(a.source_id));
 
   // Apply tab filter
   const displayedArticles = activeTab === "following"
-    ? visibleArticles.filter((a) => followedSet.has(a.source_id))
+    ? followingArticles
     : visibleArticles;
 
-  const tabBase = {
-    fontFamily: "'Inter', system-ui, sans-serif",
-    fontSize: 14,
-    paddingBottom: 10,
-    cursor: "pointer" as const,
-    background: "none" as const,
-    border: "none" as const,
-  };
-
   return (
-    <>
-      {/* Feed header */}
-      <div className="mb-4">
+    <div style={{ padding: "22px 36px 80px" }}>
+      {/* Markets ticker card */}
+      <div
+        style={{
+          background: "#11151D",
+          border: "1px solid rgba(255,255,255,0.06)",
+          borderRadius: 8,
+          padding: "14px 16px",
+          marginBottom: 16,
+        }}
+      >
+        {/* Ticker bar */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "rgb(68,189,56)",
+                display: "inline-block",
+              }}
+            />
+            <span
+              style={{
+                fontFamily: mono,
+                fontSize: 10,
+                textTransform: "uppercase",
+                letterSpacing: 1.2,
+                color: "rgb(68,189,56)",
+              }}
+            >
+              Markets
+            </span>
+          </div>
+          <div
+            style={{
+              fontFamily: mono,
+              fontSize: 11,
+              color: "#6C727E",
+              flex: 1,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            EUR/USD 1.0842 ▲ · USD/JPY 154.32 ▼ · GER40 18,234 ▲ · DXY 104.21 ▼
+          </div>
+          <span
+            style={{
+              fontFamily: mono,
+              fontSize: 10,
+              color: "#6C727E",
+              flexShrink: 0,
+            }}
+          >
+            live
+          </span>
+        </div>
+
+        {/* Heading */}
         <h1
           style={{
-            fontFamily: "'Source Serif 4', Georgia, serif",
+            fontFamily: serif,
             fontSize: 24,
             fontWeight: 700,
             color: "#EEF1F6",
+            margin: 0,
           }}
         >
-          Your feed
+          Your timeline
         </h1>
         <p
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: mono,
             fontSize: 11,
             color: "#6C727E",
             marginTop: 4,
           }}
         >
-          chronological · no algorithm · {displayedArticles.length} articles
+          {followedSourceCount} sources · {todayArticleCount} articles today · chronological · no algorithm
         </p>
       </div>
 
-      {/* Filter tabs */}
+      {/* Tabs */}
       <div
-        className="flex gap-6 mb-5"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        className="flex gap-0"
+        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: 12 }}
       >
-        <button
-          onClick={() => setActiveTab("all")}
-          style={{
-            ...tabBase,
-            color: activeTab === "all" ? "#EEF1F6" : "#6C727E",
-            borderBottom: activeTab === "all" ? "2px solid rgb(100,104,240)" : "2px solid transparent",
-          }}
-        >
-          All sources
-        </button>
         <button
           onClick={() => setActiveTab("following")}
           style={{
-            ...tabBase,
-            color: activeTab === "following" ? "#EEF1F6" : "#6C727E",
-            borderBottom: activeTab === "following" ? "2px solid rgb(100,104,240)" : "2px solid transparent",
+            fontFamily: inter,
+            fontSize: 14,
+            fontWeight: 500,
+            padding: "10px 16px",
+            cursor: "pointer",
+            background: "none",
+            border: "none",
+            color: activeTab === "following" ? "#EEF1F6" : "#A3ACBD",
+            borderBottom: activeTab === "following"
+              ? "2px solid rgb(100,104,240)"
+              : "2px solid transparent",
           }}
         >
-          Following
+          Following {isLoggedIn && <span style={{ opacity: 0.6 }}>({followingArticles.length})</span>}
         </button>
+        <button
+          onClick={() => setActiveTab("all")}
+          style={{
+            fontFamily: inter,
+            fontSize: 14,
+            fontWeight: 500,
+            padding: "10px 16px",
+            cursor: "pointer",
+            background: "none",
+            border: "none",
+            color: activeTab === "all" ? "#EEF1F6" : "#A3ACBD",
+            borderBottom: activeTab === "all"
+              ? "2px solid rgb(100,104,240)"
+              : "2px solid transparent",
+          }}
+        >
+          All sources <span style={{ opacity: 0.6 }}>({visibleArticles.length})</span>
+        </button>
+      </div>
+
+      {/* Category pills + showing count */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ display: "flex", gap: 6 }}>
+          {categories.map((cat) => {
+            const active = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className="category-pill"
+                style={{
+                  fontFamily: mono,
+                  fontSize: 11,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.6,
+                  fontWeight: 600,
+                  padding: "4px 10px",
+                  borderRadius: 3,
+                  cursor: "pointer",
+                  transition: "background 0.12s, border-color 0.12s",
+                  background: active ? "rgba(100,104,240,0.16)" : "#11151D",
+                  color: active ? "rgb(100,104,240)" : "#A3ACBD",
+                  border: active
+                    ? "1px solid rgba(100,104,240,0.42)"
+                    : "1px solid rgba(255,255,255,0.10)",
+                }}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+        <span style={{ fontFamily: mono, fontSize: 11, color: "#6C727E" }}>
+          showing {displayedArticles.length} of {visibleArticles.length}
+        </span>
       </div>
 
       {/* Article list */}
       {activeTab === "following" && !isLoggedIn ? (
         <p
           className="text-center py-12"
-          style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
+          style={{ fontFamily: inter, fontSize: 14, color: "#6C727E" }}
         >
           Sign in to follow sources
         </p>
       ) : activeTab === "following" && displayedArticles.length === 0 ? (
         <p
           className="text-center py-12"
-          style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 14, color: "#6C727E" }}
+          style={{ fontFamily: inter, fontSize: 14, color: "#6C727E" }}
         >
           Follow some sources to see them here
         </p>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {displayedArticles.map((article) => (
             <ArticleCard
               key={article.id}
@@ -139,7 +268,7 @@ export function Feed({ articles, likedIds, bookmarkedIds, followedSourceIds, mut
       <p
         className="text-center"
         style={{
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: mono,
           fontSize: 11,
           color: "#6C727E",
           marginTop: 32,
@@ -148,6 +277,6 @@ export function Feed({ articles, likedIds, bookmarkedIds, followedSourceIds, mut
       >
         {"// caught up · The Source never serves you posts out of order"}
       </p>
-    </>
+    </div>
   );
 }
