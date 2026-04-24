@@ -71,7 +71,6 @@ export function ArticleCard({
   const [muted, setMuted] = useState(initialMuted);
   const [likeLoading, setLikeLoading] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
-  const [showImage, setShowImage] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -319,15 +318,14 @@ export function ArticleCard({
       )}
 
       {/* Row 5 — Image */}
-      {article.image_url && showImage && (
+      {article.image_url && (
         <div
           className="mb-3"
           style={{
             position: "relative",
             overflow: "hidden",
             background: dark.surface,
-            borderRadius: 6,
-            border: `1px solid ${dark.line}`,
+            borderRadius: 4,
             height: 420,
           }}
         >
@@ -342,25 +340,18 @@ export function ArticleCard({
               objectFit: "cover",
               filter: "blur(24px)",
               transform: "scale(1.1)",
-              opacity: 0.6,
+              opacity: 0.5,
             }}
           />
           <img
             src={article.image_url}
             alt=""
-            onLoad={(e) => {
-              const img = e.currentTarget;
-              if (img.naturalWidth < 400 || img.naturalHeight < 200) {
-                setShowImage(false);
-              }
-            }}
-            onError={() => setShowImage(false)}
             style={{
               position: "relative",
               zIndex: 1,
               display: "block",
               width: "100%",
-              height: 420,
+              height: "100%",
               objectFit: "cover",
             }}
           />

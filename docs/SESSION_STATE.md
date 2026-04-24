@@ -49,6 +49,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Blur background behind article images in card
 - [2026-04-24] Article image object-fit cover — fill full card width
 - [2026-04-24] Hide low-quality images in article card (min 400x200 natural)
+- [2026-04-24] Restore blur background on article images
 
 ## In Progress
 - Article card design polish
