@@ -67,6 +67,8 @@ export function ArticleCard({
   const [bookmarked, setBookmarked] = useState(initialBookmarked);
   const [following, setFollowing] = useState(initialFollowing);
   const [muted, setMuted] = useState(initialMuted);
+  const [likeLoading, setLikeLoading] = useState(false);
+  const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -89,38 +91,40 @@ export function ArticleCard({
 
   async function handleLike() {
     if (!isLoggedIn) { router.push("/auth/signin"); return; }
-    const wasLiked = liked;
-    setLiked(!wasLiked);
-    setLikeCount((c) => wasLiked ? c - 1 : c + 1);
-    const res = await fetch("/api/like", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ article_id: article.id }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setLiked(data.liked);
-      setLikeCount(data.like_count);
-    } else {
-      setLiked(wasLiked);
-      setLikeCount((c) => wasLiked ? c + 1 : c - 1);
+    if (likeLoading) return;
+    setLikeLoading(true);
+    try {
+      const res = await fetch("/api/like", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ article_id: article.id }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLiked(data.liked);
+        setLikeCount(data.like_count);
+      }
+    } finally {
+      setLikeLoading(false);
     }
   }
 
   async function handleBookmark() {
     if (!isLoggedIn) { router.push("/auth/signin"); return; }
-    const wasBookmarked = bookmarked;
-    setBookmarked(!wasBookmarked);
-    const res = await fetch("/api/bookmark", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ article_id: article.id }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setBookmarked(data.bookmarked);
-    } else {
-      setBookmarked(wasBookmarked);
+    if (bookmarkLoading) return;
+    setBookmarkLoading(true);
+    try {
+      const res = await fetch("/api/bookmark", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ article_id: article.id }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBookmarked(data.bookmarked);
+      }
+    } finally {
+      setBookmarkLoading(false);
     }
   }
 
@@ -301,6 +305,7 @@ export function ArticleCard({
       >
         <button
           onClick={handleLike}
+          disabled={likeLoading}
           className="flex items-center gap-1.5 cursor-pointer"
           style={{
             background: liked ? "rgba(100,104,240,0.12)" : "none",
@@ -309,6 +314,8 @@ export function ArticleCard({
             borderRadius: 6,
             font: "inherit",
             color: liked ? dark.accent : dark.textMute,
+            opacity: likeLoading ? 0.5 : 1,
+            cursor: likeLoading ? "wait" : "pointer",
           }}
         >
           <ThumbsUp size={14} fill={liked ? dark.accent : "none"} />
@@ -324,8 +331,14 @@ export function ArticleCard({
         </button>
         <button
           onClick={handleBookmark}
+          disabled={bookmarkLoading}
           className="cursor-pointer"
-          style={{ background: "none", border: "none", padding: 0, font: "inherit", color: bookmarked ? dark.accent : dark.textMute }}
+          style={{
+            background: "none", border: "none", padding: 0, font: "inherit",
+            color: bookmarked ? dark.accent : dark.textMute,
+            opacity: bookmarkLoading ? 0.5 : 1,
+            cursor: bookmarkLoading ? "wait" : "pointer",
+          }}
         >
           <Bookmark size={14} fill={bookmarked ? dark.accent : "none"} />
         </button>
