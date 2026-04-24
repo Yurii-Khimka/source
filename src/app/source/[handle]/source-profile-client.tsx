@@ -275,21 +275,27 @@ export function SourceProfileClient({
 
           {/* Pills */}
           <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-            <span
-              style={{
-                fontFamily: mono,
-                fontSize: 11,
-                color: dark.accent,
-                padding: "2px 8px",
-                borderRadius: 3,
-                border: `1px solid ${dark.accentLine}`,
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-              }}
-            >
-              <ShieldCheck size={10} /> Official Source
-            </span>
+            {source.site_url && (
+              <a
+                href={source.site_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: mono,
+                  fontSize: 11,
+                  color: dark.accent,
+                  padding: "2px 8px",
+                  borderRadius: 3,
+                  border: `1px solid ${dark.accentLine}`,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  textDecoration: "none",
+                }}
+              >
+                <Globe size={12} /> {source.site_url.replace(/^https?:\/\//, "")}
+              </a>
+            )}
             {following && (
               <span
                 style={{
@@ -333,26 +339,6 @@ export function SourceProfileClient({
             @{source.handle} · est. {createdYear}
           </div>
 
-          {/* Website */}
-          {source.site_url && (
-            <a
-              href={source.site_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontFamily: mono,
-                fontSize: 12,
-                color: dark.accent,
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
-                marginTop: 8,
-              }}
-            >
-              <Globe size={12} /> {source.site_url.replace(/^https?:\/\//, "")}
-            </a>
-          )}
         </div>
 
         {/* Actions dropdown */}
