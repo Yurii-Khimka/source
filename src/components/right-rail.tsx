@@ -165,29 +165,39 @@ export async function RightRail() {
         </div>
       </div>
 
-      {/* Widget 3 — Recent hashtags */}
+      {/* Widget 3 — Hashtags */}
       {recentTags.length > 0 && (
         <div>
-          <div style={sectionTitle}>Recent hashtags</div>
-          <div style={{ display: "inline-flex", flexWrap: "wrap", gap: 4 }}>
+          <div style={sectionTitle}>Hashtags</div>
+          <div className="space-y-0.5">
             {recentTags.map((tag) => (
               <Link
                 key={tag.slug}
                 href={`/tag/${tag.slug}`}
-                className="right-rail-tag"
+                className="sidebar-nav-item flex items-center justify-between truncate"
                 style={{
-                  fontFamily: mono,
-                  fontSize: 11,
+                  fontFamily: inter,
+                  fontSize: 13,
                   color: dark.textSub,
-                  padding: "3px 7px",
-                  borderRadius: 3,
-                  border: `1px solid ${dark.line2}`,
-                  background: dark.surface,
+                  padding: "6px 8px",
+                  borderRadius: 4,
                   textDecoration: "none",
-                  transition: "border-color 0.12s",
+                  transition: "background 0.12s",
                 }}
               >
-                #{tag.name}
+                <span>
+                  <span style={{ color: dark.textDim }}>#</span>
+                  {tag.slug}
+                </span>
+                <span
+                  style={{
+                    fontFamily: mono,
+                    fontSize: 10,
+                    color: dark.textMute,
+                  }}
+                >
+                  {tag.count}
+                </span>
               </Link>
             ))}
           </div>

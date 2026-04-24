@@ -33,12 +33,14 @@ Phase 1 — MVP in progress
 - [2026-04-24] Bookmark counter real-time updates
 - [2026-04-24] Hashtag support — tags on articles, tag page, tag filter pills
 - [2026-04-24] Auto session state update script
+- [2026-04-24] Hashtags widget in right rail (list style with counts)
 
 ## In Progress
 - Article card design polish
 - Hashtags widget in right rail
 - Markets ticker border fix
 - [2026-04-24] Added update_session.py and CLAUDE.md rule
+- [2026-04-24] Right rail hashtags now match trending sources layout
 
 ## Backlog (priority order)
 1. Discovery page
