@@ -5,6 +5,7 @@ import { ShieldCheck, Globe } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleCardSkeleton } from "@/components/ui/skeletons";
+import { getSourceLogoUrl } from "@/lib/source-logo";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -19,7 +20,7 @@ type ArticleData = {
   published_at: string | null;
   like_count: number;
   source_id: string;
-  sources: { name: string; handle: string; logo_url: string | null } | null;
+  sources: { name: string; handle: string; logo_url: string | null; site_url?: string | null } | null;
   tags: { slug: string; name: string }[];
 };
 
@@ -178,38 +179,42 @@ export function SourceProfileClient({
     <div className="page-content" style={{ padding: "32px 36px 80px" }}>
       {/* ─── IDENTITY HEADER ─── */}
       <div className="source-identity-header" style={{ display: "flex", gap: 18, alignItems: "flex-start", marginBottom: 24 }}>
-        {source.logo_url ? (
-          <img
-            src={source.logo_url}
-            alt={source.name}
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 6,
-              objectFit: "cover",
-              flexShrink: 0,
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 6,
-              background: handleToColor(source.handle),
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              fontFamily: inter,
-              fontSize: 24,
-              fontWeight: 700,
-              color: "#fff",
-            }}
-          >
-            {getInitials(source.name)}
-          </div>
-        )}
+        {(() => {
+          const logoSrc = getSourceLogoUrl(source.logo_url, source.site_url);
+          return logoSrc ? (
+            <img
+              src={logoSrc}
+              alt={source.name}
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 8,
+                objectFit: "cover",
+                flexShrink: 0,
+              }}
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 8,
+                background: handleToColor(source.handle),
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                fontFamily: inter,
+                fontSize: 18,
+                fontWeight: 700,
+                color: "#fff",
+              }}
+            >
+              {getInitials(source.name)}
+            </div>
+          );
+        })()}
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

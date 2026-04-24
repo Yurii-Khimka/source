@@ -28,13 +28,14 @@ export default async function FollowingPage() {
     handle: string;
     name: string;
     logo_url: string | null;
+    site_url: string | null;
     verification_status: string | null;
   }[] = [];
 
   if (sourceIds.length > 0) {
     const { data } = await supabase
       .from("sources")
-      .select("id, handle, name, logo_url, verification_status")
+      .select("id, handle, name, logo_url, site_url, verification_status")
       .in("id", sourceIds)
       .eq("is_hidden", false)
       .order("name");

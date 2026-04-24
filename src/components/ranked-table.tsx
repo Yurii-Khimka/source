@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { dark } from "@/lib/tokens";
+import { getSourceLogoUrl } from "@/lib/source-logo";
 
 const mono = "'JetBrains Mono', monospace";
 
@@ -16,6 +17,7 @@ export type RankedTableItem = {
   delta?: number | null;
   prefix?: string;
   logoUrl?: string | null;
+  siteUrl?: string | null;
 };
 
 type Props = {
@@ -68,36 +70,27 @@ export function RankedTable({ items, showDelta = true }: Props) {
             </span>
             {hasLogos && (
               <Link href={item.href} style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
-                {item.logoUrl ? (
-                  <img
-                    src={item.logoUrl}
-                    alt={item.name}
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: 4,
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: 4,
-                      background: dark.surface2,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontFamily: inter,
-                      fontSize: 9,
-                      fontWeight: 700,
-                      color: dark.textDim,
-                    }}
-                  >
-                    {item.name.slice(0, 2).toUpperCase()}
-                  </div>
-                )}
+                {(() => {
+                  const logoSrc = getSourceLogoUrl(item.logoUrl, item.siteUrl);
+                  return logoSrc ? (
+                    <img
+                      src={logoSrc}
+                      alt={item.name}
+                      style={{ width: 22, height: 22, borderRadius: 4, objectFit: "cover" }}
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: 22, height: 22, borderRadius: 4,
+                        background: dark.surface2, display: "flex", alignItems: "center", justifyContent: "center",
+                        fontFamily: inter, fontSize: 9, fontWeight: 700, color: dark.textDim,
+                      }}
+                    >
+                      {item.name.slice(0, 2).toUpperCase()}
+                    </div>
+                  );
+                })()}
               </Link>
             )}
             <Link

@@ -20,7 +20,7 @@ export default async function DiscoveryPage() {
   ] = await Promise.all([
     supabase
       .from("sources")
-      .select("id, handle, name, site_url, verification_status")
+      .select("id, handle, name, site_url, logo_url, verification_status")
       .eq("is_hidden", false)
       .order("name"),
     // All tags in the DB
@@ -44,7 +44,7 @@ export default async function DiscoveryPage() {
     // Recent articles for posts sections
     supabase
       .from("articles")
-      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
+      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url, site_url)")
       .eq("is_hidden", false)
       .order("published_at", { ascending: false })
       .limit(20),
@@ -134,6 +134,7 @@ export default async function DiscoveryPage() {
     handle: s.handle,
     name: s.name,
     site_url: s.site_url,
+    logo_url: s.logo_url,
     verification_status: s.verification_status,
     followers_count: followerCounts[s.id] ?? 0,
   }));
@@ -169,7 +170,7 @@ export default async function DiscoveryPage() {
       published_at: a.published_at,
       like_count: a.like_count,
       source_id: a.source_id,
-      sources: a.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
+      sources: a.sources as unknown as { name: string; handle: string; logo_url: string | null; site_url: string | null } | null,
       tags: articleTagsMap[a.id] ?? [],
     },
     initialLiked: likedSet.has(a.id),

@@ -35,7 +35,7 @@ export default async function SourceProfilePage({
     supabase
       .from("articles")
       .select(
-        "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)"
+        "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url, site_url)"
       )
       .eq("source_id", source.id)
       .eq("is_hidden", false)
@@ -118,6 +118,7 @@ export default async function SourceProfilePage({
         name: string;
         handle: string;
         logo_url: string | null;
+        site_url: string | null;
       } | null,
       tags,
     };

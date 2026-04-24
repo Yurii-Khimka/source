@@ -43,8 +43,8 @@ export async function GET(request: Request) {
 
     // Use inner join for tag filter to avoid row-limit issues
     const selectCols = tagId
-      ? "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url), article_tags!inner(tag_id)"
-      : "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)";
+      ? "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url, site_url), article_tags!inner(tag_id)"
+      : "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url, site_url)";
 
     let query = supabase
       .from("articles")
@@ -115,7 +115,7 @@ export async function GET(request: Request) {
       const tags = dbTags.length > 0 ? dbTags : inferTags(article.title, article.description);
       return {
         ...article,
-        sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
+        sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null; site_url: string | null } | null,
         tags,
       };
     });

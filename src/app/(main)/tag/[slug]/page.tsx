@@ -37,7 +37,7 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
   const { data: articlesRaw } = await supabase
     .from("articles")
     .select(
-      "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url), article_tags!inner(tag_id)"
+      "id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url, site_url), article_tags!inner(tag_id)"
     )
     .eq("article_tags.tag_id", tag.id)
     .eq("is_hidden", false)
@@ -66,11 +66,11 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
     .slice(0, 5)
     .map(([id]) => id);
 
-  let topSources: { handle: string; name: string; logo_url: string | null; postCount: number }[] = [];
+  let topSources: { handle: string; name: string; logo_url: string | null; site_url: string | null; postCount: number }[] = [];
   if (topSourceIds.length > 0) {
     const { data: sourceDetails } = await supabase
       .from("sources")
-      .select("id, handle, name, logo_url")
+      .select("id, handle, name, logo_url, site_url")
       .in("id", topSourceIds);
     topSources = topSourceIds.map((id) => {
       const src = (sourceDetails ?? []).find((s) => s.id === id);
@@ -78,6 +78,7 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
         handle: src?.handle ?? "",
         name: src?.name ?? "",
         logo_url: src?.logo_url ?? null,
+        site_url: src?.site_url ?? null,
         postCount: sourceCountMap.get(id) ?? 0,
       };
     });
@@ -156,6 +157,7 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
         name: string;
         handle: string;
         logo_url: string | null;
+        site_url: string | null;
       } | null,
       tags,
     };

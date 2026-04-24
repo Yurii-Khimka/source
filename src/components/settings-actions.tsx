@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
 import { dark } from "@/lib/tokens";
+import { getSourceLogoUrl } from "@/lib/source-logo";
 
 type Source = {
   id: string;
   name: string;
   handle: string;
   logo_url: string | null;
+  site_url: string | null;
 };
 
 export function SignOutButton() {
@@ -83,29 +85,27 @@ export function SourceList({
             borderBottom: "1px solid rgba(255,255,255,0.04)",
           }}
         >
-          {source.logo_url ? (
-            <img
-              src={source.logo_url}
-              alt={source.name}
-              style={{ width: 24, height: 24, borderRadius: 4, objectFit: "cover" }}
-            />
-          ) : (
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 4,
-                background: dark.textMute,
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: 11,
-                fontWeight: 700,
-                color: "#fff",
-              }}
-            >
-              {source.name.charAt(0).toUpperCase()}
-            </div>
-          )}
+          {(() => {
+            const logoSrc = getSourceLogoUrl(source.logo_url, source.site_url);
+            return logoSrc ? (
+              <img
+                src={logoSrc}
+                alt={source.name}
+                style={{ width: 24, height: 24, borderRadius: 4, objectFit: "cover" }}
+                onError={(e) => { e.currentTarget.style.display = "none"; }}
+              />
+            ) : (
+              <div
+                className="flex items-center justify-center"
+                style={{
+                  width: 24, height: 24, borderRadius: 4, background: dark.textMute,
+                  fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11, fontWeight: 700, color: "#fff",
+                }}
+              >
+                {source.name.charAt(0).toUpperCase()}
+              </div>
+            );
+          })()}
           <Link
             href={`/source/${source.handle}`}
             className="text-link flex-1"

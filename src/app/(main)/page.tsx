@@ -10,7 +10,7 @@ export default async function Home() {
   const [{ data: articles, error }, { count: totalArticleCount }] = await Promise.all([
     supabase
       .from("articles")
-      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
+      .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url, site_url)")
       .eq("is_hidden", false)
       .order("published_at", { ascending: false })
       .range(0, 19),
@@ -84,7 +84,7 @@ export default async function Home() {
     const tags = dbTags.length > 0 ? dbTags : inferTags(article.title, article.description);
     return {
       ...article,
-      sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null } | null,
+      sources: article.sources as unknown as { name: string; handle: string; logo_url: string | null; site_url: string | null } | null,
       tags,
     };
   });

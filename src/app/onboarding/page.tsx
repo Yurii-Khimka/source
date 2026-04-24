@@ -15,6 +15,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { dark } from "@/lib/tokens";
+import { getSourceLogoUrl } from "@/lib/source-logo";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -25,6 +26,7 @@ type Source = {
   handle: string;
   name: string;
   logo_url: string | null;
+  site_url: string | null;
 };
 
 type Tag = {
@@ -362,23 +364,27 @@ function StepSources({
                   <Check size={12} style={{ color: dark.accent }} />
                 </div>
               )}
-              {s.logo_url ? (
-                <img
-                  src={s.logo_url}
-                  alt={s.name}
-                  style={{ width: 32, height: 32, borderRadius: 4, objectFit: "cover", flexShrink: 0 }}
-                />
-              ) : (
-                <div
-                  className="flex items-center justify-center"
-                  style={{
-                    width: 32, height: 32, borderRadius: 4, background: bg,
-                    fontFamily: sans, fontSize: 13, fontWeight: 700, color: "#fff", flexShrink: 0,
-                  }}
-                >
-                  {initial}
-                </div>
-              )}
+              {(() => {
+                const logoSrc = getSourceLogoUrl(s.logo_url, s.site_url);
+                return logoSrc ? (
+                  <img
+                    src={logoSrc}
+                    alt={s.name}
+                    style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover", flexShrink: 0 }}
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  />
+                ) : (
+                  <div
+                    className="flex items-center justify-center"
+                    style={{
+                      width: 32, height: 32, borderRadius: 6, background: bg,
+                      fontFamily: sans, fontSize: 13, fontWeight: 700, color: "#fff", flexShrink: 0,
+                    }}
+                  >
+                    {initial}
+                  </div>
+                );
+              })()}
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontFamily: sans, fontSize: 13, color: dark.text, fontWeight: 500 }}>
                   {s.name}

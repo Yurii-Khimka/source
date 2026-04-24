@@ -1,5 +1,5 @@
 # The Source — Session State
-**Last updated:** 2026-04-24
+**Last updated:** 2026-04-25
 
 ## Production
 - URL: https://srct.news
@@ -112,6 +112,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Tablet feed — swipeable category bar, hidden counter
 - [2026-04-24] Mobile page fixes — discovery, bookmarks, following, profile, settings
 - [2026-04-24] Mobile profile menu cleanup + settings back button
+- [2026-04-25] Fix source logos — use real logos everywhere
 
 ## In Progress
 - Article card design polish
@@ -174,6 +175,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Extended mobile category bar fix to 1024px tablet breakpoint.
 - [2026-04-24] Discovery description below title, simplified table on mobile, bookmarks mobile styles, following back button, profile menu updated, settings following removed.
 - [2026-04-24] Removed Bookmarks, Followed Sources, Followed Tags, Discovery from mobile profile. Added back button to settings on mobile.
+- [2026-04-25] Fixed logo_url usage with favicon fallback across all source logo render locations. Initials now last resort only.
 
 ## Backlog (priority order)
 1. Discovery page

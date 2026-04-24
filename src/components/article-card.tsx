@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ThumbsUp, Bookmark, ExternalLink, CheckCircle2, MoreHorizontal } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { Spinner } from "@/components/ui/spinner";
+import { getSourceLogoUrl } from "@/lib/source-logo";
 
 type Article = {
   id: string;
@@ -16,7 +17,7 @@ type Article = {
   published_at: string | null;
   like_count: number;
   source_id: string;
-  sources: { name: string; handle: string; logo_url: string | null } | null;
+  sources: { name: string; handle: string; logo_url: string | null; site_url?: string | null } | null;
   tags?: { slug: string; name: string }[];
 };
 
@@ -202,23 +203,27 @@ export function ArticleCard({
       {/* Row 1 — Source header */}
       <div className="flex items-start gap-3 mb-3">
         <Link href={`/source/${source?.handle ?? "unknown"}`} className="flex-shrink-0" style={{ textDecoration: "none" }}>
-          {source?.logo_url ? (
-            <img
-              src={source.logo_url}
-              alt={name}
-              style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover" }}
-            />
-          ) : (
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: 32, height: 32, borderRadius: 6, background: avatarBg,
-                fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: "#fff",
-              }}
-            >
-              {initial}
-            </div>
-          )}
+          {(() => {
+            const logoSrc = getSourceLogoUrl(source?.logo_url, source?.site_url);
+            return logoSrc ? (
+              <img
+                src={logoSrc}
+                alt={name}
+                style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover" }}
+                onError={(e) => { e.currentTarget.style.display = "none"; }}
+              />
+            ) : (
+              <div
+                className="flex items-center justify-center"
+                style={{
+                  width: 32, height: 32, borderRadius: 6, background: avatarBg,
+                  fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: "#fff",
+                }}
+              >
+                {initial}
+              </div>
+            );
+          })()}
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">

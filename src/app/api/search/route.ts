@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase
     .from("articles")
-    .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url)")
+    .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url, site_url)")
     .eq("is_hidden", false)
     .or(`title.ilike.${pattern},description.ilike.${pattern}`)
     .order("published_at", { ascending: false })

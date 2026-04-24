@@ -6,6 +6,7 @@ import { CheckCircle2 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { Spinner } from "@/components/ui/spinner";
 import { MobileBackButton } from "@/components/mobile-back-button";
+import { getSourceLogoUrl } from "@/lib/source-logo";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -16,6 +17,7 @@ type SourceData = {
   handle: string;
   name: string;
   logo_url: string | null;
+  site_url: string | null;
   verification_status: string | null;
 };
 
@@ -212,36 +214,28 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
               >
                 {/* Logo */}
                 <Link href={`/source/${source.handle}`} className="flex-shrink-0" style={{ textDecoration: "none" }}>
-                  {source.logo_url ? (
-                    <img
-                      src={source.logo_url}
-                      alt={source.name}
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 6,
-                        background: handleToColor(source.handle),
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontFamily: inter,
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: "#fff",
-                      }}
-                    >
-                      {source.name.slice(0, 2).toUpperCase()}
-                    </div>
-                  )}
+                  {(() => {
+                    const logoSrc = getSourceLogoUrl(source.logo_url, source.site_url);
+                    return logoSrc ? (
+                      <img
+                        src={logoSrc}
+                        alt={source.name}
+                        style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover" }}
+                        onError={(e) => { e.currentTarget.style.display = "none"; }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 32, height: 32, borderRadius: 6,
+                          background: handleToColor(source.handle),
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontFamily: inter, fontSize: 12, fontWeight: 700, color: "#fff",
+                        }}
+                      >
+                        {source.name.slice(0, 2).toUpperCase()}
+                      </div>
+                    );
+                  })()}
                 </Link>
 
                 {/* Name + handle */}

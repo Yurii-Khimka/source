@@ -18,7 +18,7 @@ type ArticleData = {
   published_at: string | null;
   like_count: number;
   source_id: string;
-  sources: { name: string; handle: string; logo_url: string | null } | null;
+  sources: { name: string; handle: string; logo_url: string | null; site_url?: string | null } | null;
   tags: { slug: string; name: string }[];
 };
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, ShieldCheck, X } from "lucide-react";
 import { RankedTable } from "@/components/ranked-table";
 import { dark } from "@/lib/tokens";
+import { getSourceLogoUrl } from "@/lib/source-logo";
 import { ArticleCard } from "@/components/article-card";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -17,6 +18,7 @@ type Source = {
   handle: string;
   name: string;
   site_url: string | null;
+  logo_url: string | null;
   verification_status: string | null;
   followers_count: number;
 };
@@ -39,7 +41,7 @@ type ArticleData = {
     published_at: string | null;
     like_count: number;
     source_id: string;
-    sources: { name: string; handle: string; logo_url: string | null } | null;
+    sources: { name: string; handle: string; logo_url: string | null; site_url?: string | null } | null;
     tags?: { slug: string; name: string }[];
   };
   initialLiked: boolean;
@@ -363,24 +365,36 @@ export function DiscoveryClient({
                   {/* Avatar + info row */}
                   <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                     <Link href={`/source/${source.handle}`} className="flex-shrink-0" style={{ textDecoration: "none" }}>
-                      <div
-                        style={{
-                          width: 42,
-                          height: 42,
-                          borderRadius: 6,
-                          background: handleToColor(source.handle),
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flexShrink: 0,
-                          fontFamily: inter,
-                          fontSize: 15,
-                          fontWeight: 700,
-                          color: "#fff",
-                        }}
-                      >
-                        {getInitials(source.name)}
-                      </div>
+                      {(() => {
+                        const logoSrc = getSourceLogoUrl(source.logo_url, source.site_url);
+                        return logoSrc ? (
+                          <img
+                            src={logoSrc}
+                            alt={source.name}
+                            style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover" }}
+                            onError={(e) => { e.currentTarget.style.display = "none"; }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: 6,
+                              background: handleToColor(source.handle),
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexShrink: 0,
+                              fontFamily: inter,
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "#fff",
+                            }}
+                          >
+                            {getInitials(source.name)}
+                          </div>
+                        );
+                      })()}
                     </Link>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>

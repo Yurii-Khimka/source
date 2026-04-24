@@ -37,7 +37,7 @@ export async function GET() {
 
     const { data: sources } = await supabase
       .from("sources")
-      .select("id, name, handle")
+      .select("id, name, handle, logo_url, site_url")
       .in("id", follows.map((f) => f.source_id))
       .eq("is_hidden", false)
       .order("name");

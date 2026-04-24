@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import useSWR from "swr";
 import { Home, Compass, Users, Bookmark } from "lucide-react";
+import { getSourceLogoUrl } from "@/lib/source-logo";
 
 const inter = "'Inter', system-ui, sans-serif";
 const mono = "'JetBrains Mono', monospace";
@@ -26,7 +27,7 @@ export function SidebarNav() {
     fetcher,
     { revalidateOnFocus: false, dedupingInterval: 30000 }
   );
-  const { data: followData, mutate: mutateFollows } = useSWR<{ sources: { id: string; name: string; handle: string }[] }>(
+  const { data: followData, mutate: mutateFollows } = useSWR<{ sources: { id: string; name: string; handle: string; logo_url: string | null; site_url: string | null }[] }>(
     "/api/followed-sources",
     fetcher,
     { revalidateOnFocus: false, dedupingInterval: 30000 }
@@ -145,7 +146,19 @@ export function SidebarNav() {
                     textDecoration: "none",
                   }}
                 >
-                  <span style={{ color: "#A3ACBD", flexShrink: 0 }}>#</span>
+                  {(() => {
+                    const logoSrc = getSourceLogoUrl(source.logo_url, source.site_url);
+                    return logoSrc ? (
+                      <img
+                        src={logoSrc}
+                        alt=""
+                        style={{ width: 16, height: 16, borderRadius: 3, objectFit: "cover", flexShrink: 0 }}
+                        onError={(e) => { e.currentTarget.style.display = "none"; }}
+                      />
+                    ) : (
+                      <span style={{ color: "#A3ACBD", flexShrink: 0 }}>#</span>
+                    );
+                  })()}
                   <span className="truncate">{source.name}</span>
                 </Link>
               );

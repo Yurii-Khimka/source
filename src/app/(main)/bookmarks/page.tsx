@@ -23,7 +23,7 @@ export default async function BookmarksPage() {
 
   const { data: bookmarks } = await supabase
     .from("bookmarks")
-    .select("article_id, created_at, articles:articles(id, title, url, published_at, description, image_url, like_count, source_id, is_hidden, sources:sources(name, handle, logo_url))")
+    .select("article_id, created_at, articles:articles(id, title, url, published_at, description, image_url, like_count, source_id, is_hidden, sources:sources(name, handle, logo_url, site_url))")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -32,7 +32,7 @@ export default async function BookmarksPage() {
       id: string; title: string; url: string; published_at: string | null;
       description: string | null; image_url: string | null; like_count: number;
       source_id: string; is_hidden: boolean;
-      sources: { name: string; handle: string; logo_url: string | null } | null;
+      sources: { name: string; handle: string; logo_url: string | null; site_url?: string | null } | null;
     })
     .filter((a) => a && !a.is_hidden);
 

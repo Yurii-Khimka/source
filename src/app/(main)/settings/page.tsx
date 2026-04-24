@@ -31,11 +31,11 @@ export default async function SettingsPage() {
 
   const { data: mutesData } = await supabase
     .from("mutes")
-    .select("source_id, sources:sources(id, name, handle, logo_url)")
+    .select("source_id, sources:sources(id, name, handle, logo_url, site_url)")
     .eq("user_id", user.id);
 
   const mutedSources = (mutesData ?? []).map(
-    (r) => r.sources as unknown as { id: string; name: string; handle: string; logo_url: string | null }
+    (r) => r.sources as unknown as { id: string; name: string; handle: string; logo_url: string | null; site_url: string | null }
   ).filter(Boolean);
 
   return (
