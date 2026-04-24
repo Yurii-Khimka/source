@@ -58,6 +58,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Image container only renders after silent load + size check pass
 - [2026-04-24] Remove Following/All tabs — show only followed sources
 - [2026-04-24] Discovery page
+- [2026-04-24] Rebuild Discovery page
 
 ## In Progress
 - Article card design polish
@@ -66,6 +67,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Added update_session.py and CLAUDE.md rule
 - [2026-04-24] Right rail hashtags now match trending sources layout
 - [2026-04-24] Built /discovery with sources grid, trending tags, search, tab filters, follow/unfollow toggle
+- [2026-04-24] Sources grid with follower counts, trending tags table with rank/delta/24h, top stories with ArticleCard, underline tabs, search with clear button
 
 ## Backlog (priority order)
 1. Discovery page
