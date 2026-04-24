@@ -150,8 +150,7 @@ export function RightRail() {
           lineHeight: 1.8,
         }}
       >
-        <div><Link href="/about" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · Feedback · Privacy · Terms · <Link href="/trust" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link></div>
-        <div>GitHub</div>
+        <div><Link href="/about" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · Feedback · <Link href="/privacy" style={{ color: dark.textMute, textDecoration: "none" }}>Privacy</Link> · <Link href="/terms" style={{ color: dark.textMute, textDecoration: "none" }}>Terms</Link> · <Link href="/trust" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link> · <a href="https://github.com/Yurii-Khimka/source" target="_blank" rel="noopener noreferrer" style={{ color: dark.textMute, textDecoration: "none" }}>GitHub</a></div>
         <div>© 2026 The Source</div>
       </div>
     </div>

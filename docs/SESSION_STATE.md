@@ -101,6 +101,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Trust Standards page
 - [2026-04-24] Trust page content centred
 - [2026-04-24] About page
+- [2026-04-24] Terms and Privacy pages + GitHub footer link
 
 ## In Progress
 - Article card design polish
@@ -152,6 +153,7 @@ Phase 1 — MVP in progress
 - [2026-04-24] Built /trust with intro, 4 criteria cards, dynamic standards and community sections. Added Standards link to right rail footer.
 - [2026-04-24] Wrapped trust page content in max-width 680px centred container.
 - [2026-04-24] Built /about with intro, 3 philosophy cards, journey section. Added About link to right rail footer.
+- [2026-04-24] Built /terms and /privacy with full content. GitHub link added to right rail footer. Privacy and Terms footer links now point to correct routes.
 
 ## Backlog (priority order)
 1. Discovery page
