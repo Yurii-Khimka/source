@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton, SourceList } from "@/components/settings-actions";
 import { BackButton } from "@/components/ui/back-button";
+import { Button } from "@/components/ui/button";
 import { dark } from "@/lib/tokens";
 
 export const revalidate = 0;
@@ -74,7 +75,7 @@ export default async function SettingsPage() {
       <div style={sectionSeparator}>
         <h2 style={sectionHeading}>Theme</h2>
         <div className="flex gap-2" style={{ padding: "12px 0" }}>
-          <button
+          <Button
             className="btn-primary"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
@@ -84,12 +85,11 @@ export default async function SettingsPage() {
               border: "none",
               borderRadius: 6,
               padding: "6px 16px",
-              cursor: "pointer",
             }}
           >
             Dark
-          </button>
-          <button
+          </Button>
+          <Button
             disabled
             className="btn-outline"
             style={{
@@ -103,7 +103,7 @@ export default async function SettingsPage() {
             }}
           >
             Light (coming soon)
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { dark } from "@/lib/tokens";
+import { Button } from "@/components/ui/button";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -101,9 +102,9 @@ export default function SignInPage() {
         </p>
 
         {/* Google */}
-        <button
+        <Button
           onClick={handleGoogle}
-          className="btn-primary w-full rounded-lg cursor-pointer"
+          className="btn-primary w-full rounded-lg"
           style={{
             background: dark.accent,
             color: "#fff",
@@ -115,7 +116,7 @@ export default function SignInPage() {
           }}
         >
           Continue with Google
-        </button>
+        </Button>
 
         {/* Divider */}
         <div className="flex items-center gap-3 my-5">
@@ -173,10 +174,10 @@ export default function SignInPage() {
             </p>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="btn-outline w-full rounded-lg cursor-pointer"
+            className="btn-outline w-full rounded-lg"
             style={{
               background: "transparent",
               color: dark.text,
@@ -189,7 +190,7 @@ export default function SignInPage() {
             }}
           >
             {loading ? "Signing in…" : "Sign in with email"}
-          </button>
+          </Button>
         </form>
 
         {/* Sign up link */}

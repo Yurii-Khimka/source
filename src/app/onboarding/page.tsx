@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { getSourceLogoUrl } from "@/lib/source-logo";
+import { Button } from "@/components/ui/button";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -206,9 +207,9 @@ export default function OnboardingPage() {
         <div className="flex items-center justify-between" style={{ marginTop: 20 }}>
           <div style={{ width: 120 }}>
             {step > 0 && (
-              <button
+              <Button
                 onClick={back}
-                className="btn-outline cursor-pointer"
+                className="btn-outline"
                 style={{
                   background: "none",
                   border: `1px solid ${dark.line2}`,
@@ -217,23 +218,22 @@ export default function OnboardingPage() {
                   fontFamily: sans,
                   fontSize: 13,
                   color: dark.textSub,
-                  cursor: "pointer",
                   display: "flex", alignItems: "center", gap: 6,
                   whiteSpace: "nowrap",
                 }}
               >
                 <ArrowLeft size={12} />
                 <span>Back</span>
-              </button>
+              </Button>
             )}
           </div>
           <span style={{ fontFamily: mono, fontSize: 12, color: dark.textMute }}>
             step {step + 1} of 4
           </span>
           <div style={{ width: 120, textAlign: "right" }}>
-            <button
+            <Button
               onClick={next}
-              className="btn-primary cursor-pointer"
+              className="btn-primary"
               style={{
                 background: dark.accent,
                 border: "none",
@@ -243,14 +243,13 @@ export default function OnboardingPage() {
                 fontSize: 13,
                 fontWeight: 600,
                 color: "#fff",
-                cursor: "pointer",
                 display: "flex", alignItems: "center", gap: 6,
                 whiteSpace: "nowrap",
               }}
             >
               <span>{step === 3 ? "Go to my feed" : "Continue"}</span>
               <ArrowRight size={12} />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

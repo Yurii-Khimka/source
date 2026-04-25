@@ -8,6 +8,7 @@ import { dark } from "@/lib/tokens";
 import { getSourceLogoUrl } from "@/lib/source-logo";
 import { ArticleCard } from "@/components/article-card";
 import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
@@ -430,10 +431,10 @@ export function DiscoveryClient({
 
                   {/* Buttons row */}
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 12 }}>
-                    <button
+                    <Button
                       onClick={() => toggleFollow(source.id)}
                       disabled={isLoading || !isLoggedIn}
-                      className={`cursor-pointer ${isFollowing ? "btn-following" : "btn-primary"}`}
+                      className={isFollowing ? "btn-following" : "btn-primary"}
                       style={{
                         fontFamily: mono,
                         fontSize: 11,
@@ -453,7 +454,7 @@ export function DiscoveryClient({
                     >
                       {isLoading && <Spinner />}
                       {isFollowing ? "Following" : "Follow"}
-                    </button>
+                    </Button>
                     <Link
                       href={`/source/${source.handle}`}
                       className="text-link"

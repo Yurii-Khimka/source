@@ -5,6 +5,17 @@
 :root {
   --background: #0A0E14;
   --foreground: #EEF1F6;
+  --primary: rgb(100,104,240);
+  --primary-foreground: #ffffff;
+  --muted: #161B26;
+  --muted-foreground: #C7CCD6;
+  --secondary: #161B26;
+  --secondary-foreground: #A3ACBD;
+  --destructive: rgb(244,82,108);
+  --destructive-foreground: #ffffff;
+  --border: rgba(255,255,255,0.10);
+  --input: rgba(255,255,255,0.10);
+  --ring: rgb(100,104,240);
 }
 
 body {

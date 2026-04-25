@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { dark } from "@/lib/tokens";
+import { Button } from "@/components/ui/button";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -151,10 +152,10 @@ export default function SignUpPage() {
             </p>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full rounded-lg cursor-pointer"
+            className="btn-primary w-full rounded-lg"
             style={{
               background: dark.accent,
               color: "#fff",
@@ -167,7 +168,7 @@ export default function SignUpPage() {
             }}
           >
             {loading ? "Creating account…" : "Create account"}
-          </button>
+          </Button>
         </form>
 
         {/* Sign in link */}

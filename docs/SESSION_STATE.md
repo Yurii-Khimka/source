@@ -126,6 +126,8 @@ Phase 1 — MVP in progress
 - [2026-04-25] Fix RSS fetcher — httpx version conflict
 - [2026-04-25] Feedback page
 - [2026-04-25] Fix feedback success state layout
+- [2026-04-25] Rollback to 728070b
+- [2026-04-25] Standardise all buttons to shared Button component
 
 ## In Progress
 - Article card design polish
@@ -202,6 +204,8 @@ Phase 1 — MVP in progress
 - [2026-04-25] Downgraded httpx from 0.28.1 to 0.27.2 to satisfy supabase 2.10.0 constraint (requires httpx>=0.26,<0.28).
 - [2026-04-25] Built /feedback with Resend email to sayhi.source@gmail.com. API route at /api/feedback. Success/error states. Linked from right rail footer and mobile profile menu.
 - [2026-04-25] Centred success state content. Replaced plain link with Button outline component.
+- [2026-04-25] Hard reset to feedback success state commit. Removed: Button component fix, source action states fix, API error handling fix.
+- [2026-04-25] Wired CSS vars for Tailwind theme (primary, muted, secondary, destructive, border, input, ring). Fixed Button default variant hover bug ([a]:hover → hover:). Added cursor-pointer to Button base. Replaced 19 raw buttons across 12 files with Button component. Added btn-primary class to error page buttons. All remaining raw buttons are intentional exceptions (micro-interactions, toggles, nav tabs, pills).
 
 ## Backlog (priority order)
 1. Discovery page

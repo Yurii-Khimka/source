@@ -92,6 +92,7 @@ export default function Error({
           <div style={{ marginTop: 28 }}>
             <button
               onClick={reset}
+              className="btn-primary"
               style={{
                 display: "inline-block",
                 background: accent,

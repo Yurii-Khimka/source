@@ -6,6 +6,7 @@ import { CheckCircle2 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { Spinner } from "@/components/ui/spinner";
 import { BackButton } from "@/components/ui/back-button";
+import { Button } from "@/components/ui/button";
 import { getSourceLogoUrl } from "@/lib/source-logo";
 
 const mono = "'JetBrains Mono', monospace";
@@ -269,10 +270,10 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                 </div>
 
                 {/* Unfollow */}
-                <button
+                <Button
                   onClick={() => unfollowSource(source.id)}
                   disabled={loadingSource.has(source.id)}
-                  className="btn-outline cursor-pointer"
+                  className="btn-outline"
                   style={{
                     fontFamily: mono,
                     fontSize: 11,
@@ -291,7 +292,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                 >
                   {loadingSource.has(source.id) && <Spinner />}
                   Unfollow
-                </button>
+                </Button>
               </div>
             ))}
           </div>
@@ -371,10 +372,10 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                 </div>
 
                 {/* Unfollow */}
-                <button
+                <Button
                   onClick={() => unfollowTag(tag.id)}
                   disabled={loadingTag.has(tag.id)}
-                  className="btn-outline cursor-pointer"
+                  className="btn-outline"
                   style={{
                     fontFamily: mono,
                     fontSize: 11,
@@ -393,7 +394,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                 >
                   {loadingTag.has(tag.id) && <Spinner />}
                   Unfollow
-                </button>
+                </Button>
               </div>
             ))}
           </div>

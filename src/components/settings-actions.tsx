@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
 import { dark } from "@/lib/tokens";
 import { getSourceLogoUrl } from "@/lib/source-logo";
+import { Button } from "@/components/ui/button";
 
 type Source = {
   id: string;
@@ -29,9 +30,9 @@ export function SignOutButton() {
   }
 
   return (
-    <button
+    <Button
       onClick={handleSignOut}
-      className="btn-outline cursor-pointer"
+      className="btn-outline"
       style={{
         fontFamily: "'Inter', system-ui, sans-serif",
         fontSize: 13,
@@ -43,7 +44,7 @@ export function SignOutButton() {
       }}
     >
       Sign out
-    </button>
+    </Button>
   );
 }
 
@@ -118,9 +119,9 @@ export function SourceList({
           >
             {source.name}
           </Link>
-          <button
+          <Button
             onClick={() => handleRemove(source.id)}
-            className="btn-outline cursor-pointer"
+            className="btn-outline"
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 12,
@@ -132,7 +133,7 @@ export function SourceList({
             }}
           >
             {type === "follow" ? "Unfollow" : "Unmute"}
-          </button>
+          </Button>
         </div>
       ))}
     </div>

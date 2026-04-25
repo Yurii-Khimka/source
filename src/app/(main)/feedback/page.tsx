@@ -198,10 +198,10 @@ export default function FeedbackPage() {
         )}
 
         {/* Submit */}
-        <button
+        <Button
           onClick={handleSubmit}
           disabled={sending}
-          className="cursor-pointer"
+          className="btn-primary"
           style={{
             width: "100%",
             height: 42,
@@ -232,7 +232,7 @@ export default function FeedbackPage() {
             />
           )}
           {sending ? "Sending..." : "Send feedback"}
-        </button>
+        </Button>
       </div>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>

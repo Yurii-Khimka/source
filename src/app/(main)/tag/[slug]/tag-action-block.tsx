@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Tag, VolumeX } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 const mono = "'JetBrains Mono', monospace";
 const inter = "'Inter', system-ui, sans-serif";
@@ -94,10 +95,10 @@ export function TagActionBlock({ tagId, initialFollowing, initialMuted, isLogged
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <button
+        <Button
           onClick={handleFollow}
           disabled={followLoading}
-          className="cursor-pointer"
+          className={following ? "btn-following" : "btn-primary"}
           style={{
             width: "100%",
             padding: "7px 0",
@@ -118,12 +119,12 @@ export function TagActionBlock({ tagId, initialFollowing, initialMuted, isLogged
         >
           {followLoading ? <Spinner /> : <Tag size={13} />}
           {following ? "Following" : "Follow tag"}
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={handleMute}
           disabled={muteLoading}
-          className="cursor-pointer"
+          className="btn-outline"
           style={{
             width: "100%",
             padding: "7px 0",
@@ -144,7 +145,7 @@ export function TagActionBlock({ tagId, initialFollowing, initialMuted, isLogged
         >
           {muteLoading ? <Spinner /> : <VolumeX size={13} />}
           {muted ? "Muted" : "Mute tag"}
-        </button>
+        </Button>
       </div>
 
       <div style={{ borderTop: `1px solid ${dark.line}`, marginTop: 14, paddingTop: 12 }}>
