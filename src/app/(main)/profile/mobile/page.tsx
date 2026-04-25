@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Users,
   Info,
+  MessageSquare,
   ShieldCheck,
   Lock,
   FileText,
@@ -208,6 +209,7 @@ export default function MobileProfilePage() {
 
       {/* Info */}
       <SectionLabel>Info</SectionLabel>
+      <MenuRow href="/feedback" icon={MessageSquare} label="Feedback" />
       <MenuRow href="/about" icon={Info} label="About" />
       <MenuRow href="/trust" icon={ShieldCheck} label="Trust Standards" />
       <MenuRow href="/privacy" icon={Lock} label="Privacy" />

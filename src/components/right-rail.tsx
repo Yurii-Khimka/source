@@ -149,7 +149,7 @@ export function RightRail() {
           lineHeight: 1.8,
         }}
       >
-        <div><Link href="/about" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · Feedback · <Link href="/privacy" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Privacy</Link> · <Link href="/terms" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Terms</Link> · <Link href="/trust" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link> · <a href="https://github.com/Yurii-Khimka/source" target="_blank" rel="noopener noreferrer" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>GitHub</a></div>
+        <div><Link href="/about" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · <Link href="/feedback" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Feedback</Link> · <Link href="/privacy" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Privacy</Link> · <Link href="/terms" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Terms</Link> · <Link href="/trust" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link> · <a href="https://github.com/Yurii-Khimka/source" target="_blank" rel="noopener noreferrer" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>GitHub</a></div>
         <div>© 2026 The Source</div>
       </div>
     </div>
