@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import Image from "next/image";
 import { dark } from "@/lib/tokens";
 
 export default function SignInPage() {
@@ -64,7 +64,7 @@ export default function SignInPage() {
       >
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          <ShieldCheck size={20} style={{ color: "#fff" }} />
+          <Image src="/logo-dark.svg" alt="The Source" width={32} height={32} />
           <span
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",

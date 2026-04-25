@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ShieldCheck,
   Clock,
@@ -123,15 +124,7 @@ export default function OnboardingPage() {
         {/* Header */}
         <div className="flex items-center justify-between" style={{ marginBottom: 32 }}>
           <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: 36, height: 36, borderRadius: 6,
-                background: dark.text, flexShrink: 0,
-              }}
-            >
-              <ShieldCheck size={20} color={dark.bg} />
-            </div>
+            <Image src="/logo-dark.svg" alt="The Source" width={32} height={32} style={{ flexShrink: 0 }} />
             <div style={{ lineHeight: 1.3 }}>
               <div style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: dark.text, letterSpacing: 0.8 }}>
                 The Source

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import useSWR from "swr";
+import Image from "next/image";
 import {
-  Search, Settings, ShieldCheck,
+  Search, Settings,
   Sun, User,
 } from "lucide-react";
 import { dark } from "@/lib/tokens";
@@ -67,18 +68,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         {/* Left — Logo */}
         <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
-          <div
-            className="flex items-center justify-center"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 6,
-              background: dark.text,
-              flexShrink: 0,
-            }}
-          >
-            <ShieldCheck size={20} color={dark.bg} />
-          </div>
+          <Image src="/logo-dark.svg" alt="The Source" width={32} height={32} style={{ flexShrink: 0 }} />
           <div style={{ lineHeight: 1.3 }}>
             <div
               style={{

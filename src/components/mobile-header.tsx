@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ShieldCheck } from "lucide-react";
+import Image from "next/image";
+import { Search } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 export function MobileHeader() {
@@ -23,18 +24,7 @@ export function MobileHeader() {
     >
       {/* Logo */}
       <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
-        <div
-          className="flex items-center justify-center"
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 6,
-            background: dark.text,
-            flexShrink: 0,
-          }}
-        >
-          <ShieldCheck size={18} color={dark.bg} />
-        </div>
+        <Image src="/logo-dark.svg" alt="The Source" width={32} height={32} style={{ flexShrink: 0 }} />
         <div style={{ lineHeight: 1.3 }}>
           <div
             style={{
