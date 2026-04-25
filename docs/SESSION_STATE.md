@@ -123,6 +123,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Bolder header text
 - [2026-04-25] Header text weight 800
 - [2026-04-25] Revert to weight 700
+- [2026-04-25] Fix RSS fetcher — httpx version conflict
 
 ## In Progress
 - Article card design polish
@@ -196,6 +197,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Changed THE SOURCE fontWeight from 600 to 700 in all headers.
 - [2026-04-25] Changed THE SOURCE fontWeight from 700 to 800 in all headers.
 - [2026-04-25] Reverted THE SOURCE fontWeight back to 700.
+- [2026-04-25] Downgraded httpx from 0.28.1 to 0.27.2 to satisfy supabase 2.10.0 constraint (requires httpx>=0.26,<0.28).
 
 ## Backlog (priority order)
 1. Discovery page
