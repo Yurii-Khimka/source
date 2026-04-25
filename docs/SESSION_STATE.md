@@ -130,6 +130,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Standardise all buttons to shared Button component
 - [2026-04-25] Added RESEND_API_KEY check and proper error handling to API route.
 - [2026-04-25] Fix Resend from address
+- [2026-04-25] Fix feedback email recipient
 
 ## In Progress
 - Article card design polish
@@ -210,6 +211,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Wired CSS vars for Tailwind theme (primary, muted, secondary, destructive, border, input, ring). Fixed Button default variant hover bug ([a]:hover → hover:). Added cursor-pointer to Button base. Replaced 19 raw buttons across 12 files with Button component. Added btn-primary class to error page buttons. All remaining raw buttons are intentional exceptions (micro-interactions, toggles, nav tabs, pills).
 - [2026-04-25] Added env key guard, destructured Resend error response, return actual error messages to client.
 - [2026-04-25] Changed from address to onboarding@resend.dev for free tier.
+- [2026-04-25] Changed to address to jw.artwork.design@gmail.com — Resend free tier restriction. Will update after domain verification.
 
 ## Backlog (priority order)
 1. Discovery page

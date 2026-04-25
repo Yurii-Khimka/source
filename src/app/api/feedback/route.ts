@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
     const { error } = await resend.emails.send({
       from: "The Source <onboarding@resend.dev>",
-      to: "sayhi.source@gmail.com",
+      to: "jw.artwork.design@gmail.com",
       subject: `[${category || "General feedback"}] Feedback from ${name || "Anonymous"}`,
       text: `Category: ${category || "General feedback"}
 Name: ${name || "Not provided"}
