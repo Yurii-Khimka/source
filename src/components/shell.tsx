@@ -68,7 +68,7 @@ export async function Shell({ children, rightRailTop }: { children: React.ReactN
                 letterSpacing: 0.8,
               }}
             >
-              The Source
+              THE SOURCE
             </div>
             <div
               style={{

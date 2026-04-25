@@ -79,7 +79,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 letterSpacing: 0.8,
               }}
             >
-              The Source
+              THE SOURCE
             </div>
             <div
               style={{

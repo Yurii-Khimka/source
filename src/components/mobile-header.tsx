@@ -35,7 +35,7 @@ export function MobileHeader() {
               letterSpacing: 0.8,
             }}
           >
-            The Source
+            THE SOURCE
           </div>
           <div
             style={{
