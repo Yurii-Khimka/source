@@ -1,11 +1,14 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import {
   Search, Settings,
-  User,
+  User, LogOut,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import { dark } from "@/lib/tokens";
 import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
 import { SidebarNav } from "@/components/sidebar-nav";
@@ -25,6 +28,9 @@ type UserProfileData = {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { topContent } = useRightRailTop();
+  const router = useRouter();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const { data } = useSWR<UserProfileData>("/api/user-profile", fetcher, {
     revalidateOnFocus: false,
@@ -33,6 +39,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const user = data?.user ?? null;
   const profile = data?.profile ?? null;
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    if (profileOpen) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [profileOpen]);
+
+  async function handleSignOut() {
+    setProfileOpen(false);
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  }
 
   const iconBtnStyle: React.CSSProperties = {
     width: 34,
@@ -107,27 +131,94 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <ThemeToggle size={18} className="header-icon-btn" style={iconBtnStyle} />
 
-          <Link
-            href={user ? "/settings" : "/auth/signin"}
-            title={user ? "Profile" : "Sign in"}
-            className="header-icon-btn"
-            style={iconBtnStyle}
-          >
-            {user && profile?.avatar_url ? (
-              <img
-                src={profile.avatar_url}
-                alt=""
-                style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
+          {/* Profile icon + dropdown */}
+          <div ref={profileRef} style={{ position: "relative" }}>
+            {user ? (
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                title="Profile"
+                className="header-icon-btn"
+                style={iconBtnStyle}
+              >
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt=""
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <User size={18} />
+                )}
+              </button>
             ) : (
-              <User size={18} />
+              <Link
+                href="/auth/signin"
+                title="Sign in"
+                className="header-icon-btn"
+                style={iconBtnStyle}
+              >
+                <User size={18} />
+              </Link>
             )}
-          </Link>
+
+            {profileOpen && user && (
+              <div
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 40,
+                  zIndex: 50,
+                  background: dark.surface,
+                  border: `1px solid ${dark.line}`,
+                  borderRadius: 8,
+                  minWidth: 180,
+                  padding: 6,
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: 12,
+                    color: dark.textMute,
+                    padding: "8px 12px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {profile?.display_name || user.email}
+                </div>
+                <div style={{ height: 1, background: dark.line, margin: "2px 0" }} />
+                <button
+                  onClick={handleSignOut}
+                  className="menu-item cursor-pointer"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    width: "100%",
+                    background: "none",
+                    border: "none",
+                    fontFamily: "'Inter', system-ui, sans-serif",
+                    fontSize: 13,
+                    color: dark.danger,
+                    padding: "8px 12px",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  <LogOut size={14} />
+                  Sign out
+                </button>
+              </div>
+            )}
+          </div>
 
           <Link href="/settings" title="Settings" className="header-icon-btn" style={iconBtnStyle}>
             <Settings size={18} />

@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createBrowserClient } from "@supabase/ssr";
 import { dark } from "@/lib/tokens";
 import { getSourceLogoUrl } from "@/lib/source-logo";
 import { Button } from "@/components/ui/button";
@@ -16,37 +14,11 @@ type Source = {
   site_url: string | null;
 };
 
-export function SignOutButton() {
-  const router = useRouter();
-
-  async function handleSignOut() {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-    await supabase.auth.signOut();
-    router.push("/");
-    router.refresh();
-  }
-
-  return (
-    <Button
-      onClick={handleSignOut}
-      className="btn-outline"
-      style={{
-        fontFamily: "'Inter', system-ui, sans-serif",
-        fontSize: 13,
-        color: dark.danger,
-        background: "none",
-        border: `1px solid ${dark.dangerDim}`,
-        borderRadius: 6,
-        padding: "6px 14px",
-      }}
-    >
-      Sign out
-    </Button>
-  );
-}
+type Tag = {
+  id: string;
+  slug: string;
+  label: string;
+};
 
 export function SourceList({
   sources,
@@ -133,6 +105,83 @@ export function SourceList({
             }}
           >
             {type === "follow" ? "Unfollow" : "Unmute"}
+          </Button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function TagList({ tags }: { tags: Tag[] }) {
+  const [items, setItems] = useState(tags);
+
+  async function handleRemove(tagId: string) {
+    setItems((prev) => prev.filter((t) => t.id !== tagId));
+    await fetch("/api/mute-tag", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tag_id: tagId }),
+    });
+  }
+
+  if (items.length === 0) {
+    return (
+      <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: dark.textMute }}>
+        {"// no muted tags"}
+      </p>
+    );
+  }
+
+  return (
+    <div>
+      {items.map((tag) => (
+        <div
+          key={tag.id}
+          className="flex items-center gap-3"
+          style={{
+            padding: "12px 0",
+            borderBottom: `1px solid ${dark.hover}`,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 14,
+              fontWeight: 700,
+              color: dark.accent,
+              width: 24,
+              textAlign: "center",
+              flexShrink: 0,
+            }}
+          >
+            #
+          </span>
+          <Link
+            href={`/tag/${tag.slug}`}
+            className="text-link flex-1"
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 13,
+              color: dark.text,
+              textDecoration: "none",
+            }}
+          >
+            {tag.label}
+          </Link>
+          <Button
+            onClick={() => handleRemove(tag.id)}
+            className="btn-outline"
+            style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: 12,
+              color: dark.danger,
+              background: "none",
+              border: `1px solid ${dark.line2}`,
+              borderRadius: 4,
+              padding: "4px 10px",
+            }}
+          >
+            Unmute
           </Button>
         </div>
       ))}

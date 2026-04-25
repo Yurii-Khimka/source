@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { SignOutButton, SourceList } from "@/components/settings-actions";
+import { SourceList, TagList } from "@/components/settings-actions";
 import { BackButton } from "@/components/ui/back-button";
 import { SettingsThemeToggle } from "@/components/settings-theme-toggle";
 import { dark } from "@/lib/tokens";
@@ -32,12 +32,22 @@ export default async function SettingsPage() {
 
   const { data: mutesData } = await supabase
     .from("mutes")
-    .select("source_id, sources:sources(id, name, handle, logo_url, site_url)")
+    .select("source_id, tag_id, sources:sources(id, name, handle, logo_url, site_url), tags:tags(id, slug, label)")
     .eq("user_id", user.id);
 
-  const mutedSources = (mutesData ?? []).map(
-    (r) => r.sources as unknown as { id: string; name: string; handle: string; logo_url: string | null; site_url: string | null }
-  ).filter(Boolean);
+  const mutedSources = (mutesData ?? [])
+    .filter((r) => r.source_id != null)
+    .map(
+      (r) => r.sources as unknown as { id: string; name: string; handle: string; logo_url: string | null; site_url: string | null }
+    )
+    .filter(Boolean);
+
+  const mutedTags = (mutesData ?? [])
+    .filter((r) => r.tag_id != null)
+    .map(
+      (r) => r.tags as unknown as { id: string; slug: string; label: string }
+    )
+    .filter(Boolean);
 
   return (
     <div className="page-content p-6">
@@ -54,21 +64,16 @@ export default async function SettingsPage() {
         Settings
       </h1>
 
-      {/* Account */}
+      {/* Muted sources */}
       <div>
-        <h2 style={sectionHeading}>Account</h2>
-        <div className="flex items-center justify-between" style={{ padding: "12px 0" }}>
-          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, color: dark.textDim }}>
-            {user.email}
-          </span>
-          <SignOutButton />
-        </div>
+        <h2 style={sectionHeading}>Muted sources ({mutedSources.length})</h2>
+        <SourceList sources={mutedSources} type="mute" />
       </div>
 
-      {/* Muted */}
+      {/* Muted tags */}
       <div style={sectionSeparator}>
-        <h2 style={sectionHeading}>Muted ({mutedSources.length})</h2>
-        <SourceList sources={mutedSources} type="mute" />
+        <h2 style={sectionHeading}>Muted tags ({mutedTags.length})</h2>
+        <TagList tags={mutedTags} />
       </div>
 
       {/* Theme */}

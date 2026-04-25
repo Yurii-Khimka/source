@@ -134,6 +134,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Add 5 new RSS sources (of 9 requested)
 - [2026-04-25] Add failed sources — corrected RSS URLs
 - [2026-04-25] Light/dark theme toggle
+- [2026-04-25] Profile icon dropdown + settings cleanup
 
 ## In Progress
 - Article card design polish
@@ -218,6 +219,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Added france24, euobserver, politico-europe, europravda, aljazeera. 4 sources failed RSS test (kyivindependent, babel, hromadske, rferl — all return 404). 88 articles fetched across new sources.
 - [2026-04-25] Fixed RSS URLs for babel (rss.xml) and rferl (ukraine feed). kyivindependent and hromadske have no working RSS — feeds removed by publishers. babel: 162 articles, rferl: 20 articles.
 - [2026-04-25] CSS variables for both themes, ThemeProvider, toggle in header and settings, logo swap, Supabase sync.
+- [2026-04-25] Profile icon now shows sign out dropdown. Settings page reduced to muted sources, muted tags, and theme toggle.
 
 ## Backlog (priority order)
 1. Discovery page
