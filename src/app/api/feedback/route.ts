@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const { error } = await resend.emails.send({
-      from: "SORCE Feedback <feedback@sorce.info>",
+      from: "The Source <onboarding@resend.dev>",
       to: "sayhi.source@gmail.com",
       subject: `[${category || "General feedback"}] Feedback from ${name || "Anonymous"}`,
       text: `Category: ${category || "General feedback"}
