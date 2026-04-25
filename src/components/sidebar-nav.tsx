@@ -77,15 +77,15 @@ export function SidebarNav() {
                 borderRadius: 6,
                 fontFamily: inter,
                 fontSize: 13.5,
-                color: active ? "#EEF1F6" : "#C7CCD6",
-                background: active ? "#161B26" : undefined,
-                borderLeft: active ? "2px solid rgb(100,104,240)" : "2px solid transparent",
+                color: active ? "var(--text)" : "var(--text-sub)",
+                background: active ? "var(--surface2)" : undefined,
+                borderLeft: active ? "2px solid var(--accent)" : "2px solid transparent",
                 textDecoration: "none",
               }}
             >
               <Icon
                 size={16}
-                style={{ color: active ? "#EEF1F6" : "#A3ACBD", flexShrink: 0 }}
+                style={{ color: active ? "var(--text)" : "var(--text-dim)", flexShrink: 0 }}
               />
               <span style={{ flex: 1 }}>{item.label}</span>
               {item.label === "Bookmarks" && bookmarkCount > 0 && (
@@ -93,9 +93,9 @@ export function SidebarNav() {
                   style={{
                     fontFamily: mono,
                     fontSize: 10,
-                    color: "#6C727E",
-                    background: "#161B26",
-                    border: "1px solid rgba(255,255,255,0.10)",
+                    color: "var(--text-mute)",
+                    background: "var(--surface2)",
+                    border: "1px solid var(--line2)",
                     borderRadius: 3,
                     padding: "1px 5px",
                     lineHeight: 1.4,
@@ -118,7 +118,7 @@ export function SidebarNav() {
               fontSize: 10,
               textTransform: "uppercase",
               letterSpacing: 1.2,
-              color: "#6C727E",
+              color: "var(--text-mute)",
               padding: "6px 10px",
             }}
           >
@@ -140,9 +140,9 @@ export function SidebarNav() {
                     borderRadius: 6,
                     fontFamily: inter,
                     fontSize: 13.5,
-                    color: active ? "#EEF1F6" : "#C7CCD6",
-                    background: active ? "#161B26" : undefined,
-                    borderLeft: active ? "2px solid rgb(100,104,240)" : "2px solid transparent",
+                    color: active ? "var(--text)" : "var(--text-sub)",
+                    background: active ? "var(--surface2)" : undefined,
+                    borderLeft: active ? "2px solid var(--accent)" : "2px solid transparent",
                     textDecoration: "none",
                   }}
                 >
@@ -156,7 +156,7 @@ export function SidebarNav() {
                         onError={(e) => { e.currentTarget.style.display = "none"; }}
                       />
                     ) : (
-                      <span style={{ color: "#A3ACBD", flexShrink: 0 }}>#</span>
+                      <span style={{ color: "var(--text-dim)", flexShrink: 0 }}>#</span>
                     );
                   })()}
                   <span className="truncate">{source.name}</span>
@@ -176,7 +176,7 @@ export function SidebarNav() {
               fontSize: 10,
               textTransform: "uppercase",
               letterSpacing: 1.2,
-              color: "#6C727E",
+              color: "var(--text-mute)",
               padding: "6px 10px",
             }}
           >
@@ -198,13 +198,13 @@ export function SidebarNav() {
                     borderRadius: 6,
                     fontFamily: inter,
                     fontSize: 13.5,
-                    color: active ? "#EEF1F6" : "#C7CCD6",
-                    background: active ? "#161B26" : undefined,
-                    borderLeft: active ? "2px solid rgb(100,104,240)" : "2px solid transparent",
+                    color: active ? "var(--text)" : "var(--text-sub)",
+                    background: active ? "var(--surface2)" : undefined,
+                    borderLeft: active ? "2px solid var(--accent)" : "2px solid transparent",
                     textDecoration: "none",
                   }}
                 >
-                  <span style={{ color: "#A3ACBD", flexShrink: 0 }}>#</span>
+                  <span style={{ color: "var(--text-dim)", flexShrink: 0 }}>#</span>
                   <span className="truncate">{tag.label}</span>
                 </Link>
               );

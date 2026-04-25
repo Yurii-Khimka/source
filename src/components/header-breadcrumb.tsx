@@ -40,15 +40,15 @@ export function HeaderBreadcrumb() {
     >
       {route.parent && (
         <>
-          <span style={{ color: "#A3ACBD", fontWeight: 400 }}>
+          <span style={{ color: "var(--text-dim)", fontWeight: 400 }}>
             {route.parent}
           </span>
-          <span style={{ color: "#A3ACBD", fontWeight: 400, margin: "0 6px" }}>
+          <span style={{ color: "var(--text-dim)", fontWeight: 400, margin: "0 6px" }}>
             ›
           </span>
         </>
       )}
-      <span style={{ color: "#EEF1F6", fontWeight: 500 }}>{route.label}</span>
+      <span style={{ color: "var(--text)", fontWeight: 500 }}>{route.label}</span>
     </div>
   );
 }

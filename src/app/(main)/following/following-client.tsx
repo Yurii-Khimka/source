@@ -230,7 +230,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                           width: 32, height: 32, borderRadius: 6,
                           background: handleToColor(source.handle),
                           display: "flex", alignItems: "center", justifyContent: "center",
-                          fontFamily: inter, fontSize: 12, fontWeight: 700, color: "#fff",
+                          fontFamily: inter, fontSize: 12, fontWeight: 700, color: "var(--on-accent)",
                         }}
                       >
                         {source.name.slice(0, 2).toUpperCase()}

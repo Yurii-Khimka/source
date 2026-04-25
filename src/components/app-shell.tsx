@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import useSWR from "swr";
-import Image from "next/image";
 import {
   Search, Settings,
-  Sun, User,
+  User,
 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
@@ -14,6 +13,8 @@ import { RightRail } from "@/components/right-rail";
 import { useRightRailTop } from "@/components/right-rail-context";
 import { MobileHeader } from "@/components/mobile-header";
 import { BottomTabBar } from "@/components/bottom-tab-bar";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { ThemeLogo } from "@/components/ui/theme-logo";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -68,7 +69,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         {/* Left — Logo */}
         <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
-          <Image src="/logo-white.svg" alt="The Source" width={32} height={32} style={{ flexShrink: 0 }} />
+          <ThemeLogo />
           <div style={{ lineHeight: 1.3 }}>
             <div
               style={{
@@ -104,9 +105,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Search size={18} />
           </Link>
 
-          <button title="Toggle theme" className="header-icon-btn" style={iconBtnStyle}>
-            <Sun size={18} />
-          </button>
+          <ThemeToggle size={18} className="header-icon-btn" style={iconBtnStyle} />
 
           <Link
             href={user ? "/settings" : "/auth/signin"}

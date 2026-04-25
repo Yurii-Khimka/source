@@ -183,7 +183,7 @@ export default function MobileProfilePage() {
                   display: "inline-block",
                   marginTop: 8,
                   background: dark.accent,
-                  color: "#fff",
+                  color: "var(--on-accent)",
                   fontFamily: sans,
                   fontSize: 13,
                   fontWeight: 600,

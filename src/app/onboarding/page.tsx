@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { ThemeLogo } from "@/components/ui/theme-logo";
 import {
   ShieldCheck,
   Clock,
@@ -125,7 +125,7 @@ export default function OnboardingPage() {
         {/* Header */}
         <div className="flex items-center justify-between" style={{ marginBottom: 32 }}>
           <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
-            <Image src="/logo-white.svg" alt="The Source" width={32} height={32} style={{ flexShrink: 0 }} />
+            <ThemeLogo />
             <div style={{ lineHeight: 1.3 }}>
               <div style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: dark.text, letterSpacing: 0.8 }}>
                 The Source
@@ -242,7 +242,7 @@ export default function OnboardingPage() {
                 fontFamily: sans,
                 fontSize: 13,
                 fontWeight: 600,
-                color: "#fff",
+                color: "var(--on-accent)",
                 display: "flex", alignItems: "center", gap: 6,
                 whiteSpace: "nowrap",
               }}
@@ -370,7 +370,7 @@ function StepSources({
                     className="flex items-center justify-center"
                     style={{
                       width: 32, height: 32, borderRadius: 6, background: bg,
-                      fontFamily: sans, fontSize: 13, fontWeight: 700, color: "#fff", flexShrink: 0,
+                      fontFamily: sans, fontSize: 13, fontWeight: 700, color: "var(--on-accent)", flexShrink: 0,
                     }}
                   >
                     {initial}
@@ -430,7 +430,7 @@ function StepTags({
                 border: followed
                   ? `1px solid ${dark.accent}`
                   : `1px solid ${dark.line}`,
-                background: followed ? "rgba(100,104,240,0.15)" : dark.surface,
+                background: followed ? dark.accentDim : dark.surface,
                 color: followed ? dark.accent : dark.textSub,
                 cursor: "pointer",
               }}

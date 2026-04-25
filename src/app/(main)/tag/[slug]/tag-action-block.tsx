@@ -113,7 +113,7 @@ export function TagActionBlock({ tagId, initialFollowing, initialMuted, isLogged
             gap: 6,
             transition: "all 0.12s",
             background: following ? "transparent" : dark.accent,
-            color: following ? dark.accent : "#fff",
+            color: following ? dark.accent : "var(--on-accent)",
             border: following ? `1px solid ${dark.accentLine}` : `1px solid ${dark.accent}`,
           }}
         >

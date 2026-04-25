@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { ArticleCardSkeleton } from "@/components/ui/skeletons";
+import { dark } from "@/lib/tokens";
 
 export function SearchClient() {
   const [query, setQuery] = useState("");
@@ -29,7 +30,7 @@ export function SearchClient() {
       <div style={{ position: "relative", marginBottom: 24 }}>
         <Search
           size={16}
-          style={{ position: "absolute", left: 14, top: 14, color: "#6C727E" }}
+          style={{ position: "absolute", left: 14, top: 14, color: dark.textMute }}
         />
         <input
           autoFocus
@@ -42,10 +43,10 @@ export function SearchClient() {
             height: 44,
             paddingLeft: 40,
             paddingRight: 16,
-            background: "#11151D",
-            border: "1px solid rgba(255,255,255,0.10)",
+            background: dark.surface,
+            border: `1px solid ${dark.line2}`,
             borderRadius: 6,
-            color: "#EEF1F6",
+            color: dark.text,
             fontSize: 15,
             fontFamily: "'JetBrains Mono', monospace",
             outline: "none",
@@ -62,12 +63,12 @@ export function SearchClient() {
         </div>
       )}
       {!loading && query.length >= 2 && results.length === 0 && (
-        <p style={{ fontFamily: "monospace", color: "#6C727E", fontSize: 11 }}>
+        <p style={{ fontFamily: "monospace", color: dark.textMute, fontSize: 11 }}>
           {"// no results found"}
         </p>
       )}
       {!loading && query.length < 2 && (
-        <p style={{ fontFamily: "monospace", color: "#6C727E", fontSize: 11 }}>
+        <p style={{ fontFamily: "monospace", color: dark.textMute, fontSize: 11 }}>
           {"// type to search articles"}
         </p>
       )}
@@ -78,8 +79,8 @@ export function SearchClient() {
             key={article.id}
             className="search-result-card"
             style={{
-              background: "#11151D",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: dark.surface,
+              border: `1px solid ${dark.line}`,
               borderRadius: 8,
               padding: 16,
             }}
@@ -88,7 +89,7 @@ export function SearchClient() {
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: 11,
-                color: "#6C727E",
+                color: dark.textMute,
                 marginBottom: 6,
               }}
             >
@@ -96,7 +97,7 @@ export function SearchClient() {
                 <Link
                   href={`/source/${article.sources.handle}`}
                   className="text-link"
-                  style={{ color: "#6C727E", textDecoration: "none" }}
+                  style={{ color: dark.textMute, textDecoration: "none" }}
                 >
                   {article.sources.name}
                 </Link>
@@ -111,7 +112,7 @@ export function SearchClient() {
               rel="noopener noreferrer"
               className="text-link"
               style={{
-                color: "#EEF1F6",
+                color: dark.text,
                 textDecoration: "none",
                 fontFamily: "'Source Serif 4', Georgia, serif",
                 fontSize: 18,
@@ -129,7 +130,7 @@ export function SearchClient() {
                   margin: 0,
                   fontFamily: "'Inter', sans-serif",
                   fontSize: 13.5,
-                  color: "#C7CCD6",
+                  color: dark.textSub,
                   lineHeight: 1.55,
                 }}
               >

@@ -83,7 +83,7 @@ export function SourceList({
           className="flex items-center gap-3"
           style={{
             padding: "12px 0",
-            borderBottom: "1px solid rgba(255,255,255,0.04)",
+            borderBottom: `1px solid ${dark.hover}`,
           }}
         >
           {(() => {
@@ -100,7 +100,7 @@ export function SourceList({
                 className="flex items-center justify-center"
                 style={{
                   width: 24, height: 24, borderRadius: 4, background: dark.textMute,
-                  fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11, fontWeight: 700, color: "#fff",
+                  fontFamily: "'Inter', system-ui, sans-serif", fontSize: 11, fontWeight: 700, color: "var(--on-accent)",
                 }}
               >
                 {source.name.charAt(0).toUpperCase()}

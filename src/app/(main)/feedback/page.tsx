@@ -29,7 +29,7 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   background: dark.surface,
-  border: "1px solid rgba(255,255,255,0.08)",
+  border: `1px solid ${dark.line2}`,
   borderRadius: 6,
   padding: "10px 14px",
   fontSize: 14,
@@ -136,8 +136,8 @@ export default function FeedbackPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={inputStyle}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(100,104,240,0.6)")}
-            onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
+            onFocus={(e) => (e.currentTarget.style.borderColor = `${dark.accentLine}`)}
+            onBlur={(e) => (e.currentTarget.style.borderColor = `${dark.line2}`)}
           />
         </div>
 
@@ -150,8 +150,8 @@ export default function FeedbackPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             style={inputStyle}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(100,104,240,0.6)")}
-            onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
+            onFocus={(e) => (e.currentTarget.style.borderColor = `${dark.accentLine}`)}
+            onBlur={(e) => (e.currentTarget.style.borderColor = `${dark.line2}`)}
           />
           <div style={{ fontSize: 11, color: dark.textMute, marginTop: 4 }}>
             Only if you&apos;d like a reply.
@@ -165,8 +165,8 @@ export default function FeedbackPage() {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             style={{ ...inputStyle, appearance: "auto" }}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(100,104,240,0.6)")}
-            onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
+            onFocus={(e) => (e.currentTarget.style.borderColor = `${dark.accentLine}`)}
+            onBlur={(e) => (e.currentTarget.style.borderColor = `${dark.line2}`)}
           >
             {categories.map((c) => (
               <option key={c} value={c}>
@@ -185,14 +185,14 @@ export default function FeedbackPage() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             style={{ ...inputStyle, resize: "vertical" }}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(100,104,240,0.6)")}
-            onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
+            onFocus={(e) => (e.currentTarget.style.borderColor = `${dark.accentLine}`)}
+            onBlur={(e) => (e.currentTarget.style.borderColor = `${dark.line2}`)}
           />
         </div>
 
         {/* Error */}
         {error && (
-          <div style={{ fontSize: 13, color: "#F87171", marginTop: -8 }}>
+          <div style={{ fontSize: 13, color: dark.danger, marginTop: -8 }}>
             {error}
           </div>
         )}
@@ -205,8 +205,8 @@ export default function FeedbackPage() {
           style={{
             width: "100%",
             height: 42,
-            background: sending ? "rgba(100,104,240,0.7)" : dark.accent,
-            color: "#fff",
+            background: sending ? `${dark.accentLine}` : dark.accent,
+            color: "var(--on-accent)",
             border: "none",
             borderRadius: 6,
             fontSize: 14,
@@ -223,8 +223,8 @@ export default function FeedbackPage() {
               style={{
                 width: 14,
                 height: 14,
-                border: "2px solid rgba(255,255,255,0.3)",
-                borderTopColor: "#fff",
+                border: `2px solid ${dark.line3}`,
+                borderTopColor: "var(--on-accent)",
                 borderRadius: "50%",
                 animation: "spin 0.6s linear infinite",
                 display: "inline-block",

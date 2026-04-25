@@ -167,22 +167,22 @@ export function Feed({
       {/* Markets ticker card */}
       <div
         style={{
-          background: "#11151D",
-          border: "1px solid rgba(255,255,255,0.06)",
+          background: dark.surface,
+          border: `1px solid ${dark.line}`,
           borderRadius: 8,
           padding: "14px 16px",
           marginBottom: 16,
         }}
       >
         {/* Ticker bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 12, marginBottom: 14, marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 12, marginBottom: 14, marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16, borderBottom: `1px solid ${dark.line}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
             <span
               style={{
                 width: 8,
                 height: 8,
                 borderRadius: "50%",
-                background: "rgb(68,189,56)",
+                background: dark.success,
                 display: "inline-block",
               }}
             />
@@ -192,7 +192,7 @@ export function Feed({
                 fontSize: 10,
                 textTransform: "uppercase",
                 letterSpacing: 1.2,
-                color: "rgb(68,189,56)",
+                color: dark.success,
               }}
             >
               Markets
@@ -202,7 +202,7 @@ export function Feed({
             style={{
               fontFamily: mono,
               fontSize: 11,
-              color: "#6C727E",
+              color: dark.textMute,
               flex: 1,
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -215,7 +215,7 @@ export function Feed({
             style={{
               fontFamily: mono,
               fontSize: 10,
-              color: "#6C727E",
+              color: dark.textMute,
               flexShrink: 0,
             }}
           >
@@ -229,7 +229,7 @@ export function Feed({
             fontFamily: serif,
             fontSize: 24,
             fontWeight: 700,
-            color: "#EEF1F6",
+            color: dark.text,
             margin: 0,
           }}
         >
@@ -239,7 +239,7 @@ export function Feed({
           style={{
             fontFamily: mono,
             fontSize: 11,
-            color: "#6C727E",
+            color: dark.textMute,
             marginTop: 4,
           }}
         >
@@ -254,7 +254,7 @@ export function Feed({
           position: "sticky",
           top: 64,
           zIndex: 20,
-          background: "#0A0E14",
+          background: dark.bg,
           marginLeft: -36,
           marginRight: -36,
           paddingLeft: 36,
@@ -289,11 +289,11 @@ export function Feed({
                   borderRadius: 3,
                   cursor: "pointer",
                   transition: "background 0.12s, border-color 0.12s",
-                  background: active ? "rgba(100,104,240,0.16)" : "#11151D",
-                  color: active ? "rgb(100,104,240)" : "#A3ACBD",
+                  background: active ? dark.accentDim : dark.surface,
+                  color: active ? dark.accent : dark.textDim,
                   border: active
-                    ? "1px solid rgba(100,104,240,0.42)"
-                    : "1px solid rgba(255,255,255,0.10)",
+                    ? `1px solid ${dark.accentLine}`
+                    : `1px solid ${dark.line2}`,
                 }}
               >
                 {pill.name}
@@ -301,7 +301,7 @@ export function Feed({
             );
           })}
         </div>
-        <span className="showing-counter" style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", flexShrink: 0 }}>
+        <span className="showing-counter" style={{ fontFamily: mono, fontSize: 11, color: dark.textMute, flexShrink: 0 }}>
           showing {displayedArticles.length} of {totalCount}
         </span>
       </div>
@@ -324,7 +324,7 @@ export function Feed({
               padding: "8px 20px",
               borderRadius: 6,
               background: dark.accent,
-              color: "#fff",
+              color: "var(--on-accent)",
               fontFamily: sans,
               fontSize: 13,
               fontWeight: 600,
@@ -337,7 +337,7 @@ export function Feed({
       ) : displayedArticles.length === 0 ? (
         <p
           className="text-center py-12"
-          style={{ fontFamily: mono, fontSize: 12, color: "#6C727E" }}
+          style={{ fontFamily: mono, fontSize: 12, color: dark.textMute }}
         >
           No articles match this filter.
         </p>
@@ -371,7 +371,7 @@ export function Feed({
       {!hasMore && displayedArticles.length > 0 && (
         <p
           className="text-center"
-          style={{ fontFamily: mono, fontSize: 11, color: "#6C727E", marginTop: 32, marginBottom: 16 }}
+          style={{ fontFamily: mono, fontSize: 11, color: dark.textMute, marginTop: 32, marginBottom: 16 }}
         >
           {"// caught up · The Source never serves you posts out of order"}
         </p>

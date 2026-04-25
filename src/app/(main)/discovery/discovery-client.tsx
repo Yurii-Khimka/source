@@ -389,7 +389,7 @@ export function DiscoveryClient({
                               fontFamily: inter,
                               fontSize: 13,
                               fontWeight: 700,
-                              color: "#fff",
+                              color: "var(--on-accent)",
                             }}
                           >
                             {getInitials(source.name)}
@@ -443,7 +443,7 @@ export function DiscoveryClient({
                         borderRadius: 4,
                         cursor: isLoading ? "wait" : isLoggedIn ? "pointer" : "default",
                         background: isFollowing ? "transparent" : dark.accent,
-                        color: isFollowing ? dark.accent : "#fff",
+                        color: isFollowing ? dark.accent : "var(--on-accent)",
                         border: isFollowing
                           ? `1px solid ${dark.accentLine}`
                           : `1px solid ${dark.accent}`,

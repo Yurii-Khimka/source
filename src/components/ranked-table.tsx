@@ -49,7 +49,7 @@ export function RankedTable({ items, showDelta = true }: Props) {
             : `${item.delta >= 0 ? "+" : ""}${item.delta}%`;
         const deltaPositive =
           item.delta === null || item.delta === undefined || item.delta >= 0;
-        const deltaColor = deltaPositive ? "#4CAF50" : dark.danger;
+        const deltaColor = deltaPositive ? dark.success : dark.danger;
 
         return (
           <div

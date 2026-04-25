@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Search } from "lucide-react";
 import { dark } from "@/lib/tokens";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { ThemeLogo } from "@/components/ui/theme-logo";
 
 export function MobileHeader() {
   return (
@@ -24,7 +25,7 @@ export function MobileHeader() {
     >
       {/* Logo */}
       <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
-        <Image src="/logo-white.svg" alt="The Source" width={32} height={32} style={{ flexShrink: 0 }} />
+        <ThemeLogo />
         <div style={{ lineHeight: 1.3 }}>
           <div
             style={{
@@ -51,6 +52,15 @@ export function MobileHeader() {
 
       {/* Icons */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <ThemeToggle
+          size={20}
+          className="header-icon-btn"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 6,
+          }}
+        />
         <Link
           href="/search"
           className="header-icon-btn"
@@ -68,7 +78,6 @@ export function MobileHeader() {
         >
           <Search size={20} />
         </Link>
-
       </div>
     </header>
   );

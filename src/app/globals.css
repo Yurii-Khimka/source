@@ -3,24 +3,106 @@
 @tailwind utilities;
 
 :root {
-  --background: #0A0E14;
-  --foreground: #EEF1F6;
-  --primary: rgb(100,104,240);
-  --primary-foreground: #ffffff;
-  --muted: #161B26;
-  --muted-foreground: #C7CCD6;
-  --secondary: #161B26;
-  --secondary-foreground: #A3ACBD;
-  --destructive: rgb(244,82,108);
-  --destructive-foreground: #ffffff;
-  --border: rgba(255,255,255,0.10);
-  --input: rgba(255,255,255,0.10);
-  --ring: rgb(100,104,240);
+  /* ── Dark theme (default) ── */
+  --bg:         #0A0E14;
+  --bg-alt:     #07090F;
+  --surface:    #11151D;
+  --surface2:   #161B26;
+  --surface3:   #1C2230;
+  --hover:      rgba(255,255,255,0.04);
+  --line:       rgba(255,255,255,0.06);
+  --line2:      rgba(255,255,255,0.10);
+  --line3:      rgba(255,255,255,0.14);
+  --text:       #EEF1F6;
+  --text-sub:   #C7CCD6;
+  --text-dim:   #A3ACBD;
+  --text-mute:  #6C727E;
+  --accent:     rgb(100,104,240);
+  --accent-hi:  rgb(129,133,255);
+  --accent-dim: rgba(100,104,240,0.16);
+  --accent-line:rgba(100,104,240,0.42);
+  --accent-bg:  rgba(100,104,240,0.08);
+  --on-accent:  #FFFFFF;
+  --danger:     rgb(244,82,108);
+  --danger-dim: rgba(244,63,94,0.14);
+  --success:    rgb(68,189,56);
+
+  /* ── Hover overlays ── */
+  --hover-surface: #161B26;
+  --hover-line:    rgba(255,255,255,0.12);
+  --hover-text:    #EEF1F6;
+  --hover-card-bg: #131822;
+  --hover-card-line: rgba(255,255,255,0.09);
+  --hover-ranked:  rgba(255,255,255,0.03);
+  --hover-icon-bg: rgba(22, 27, 38, 0.6);
+  --hover-btn-primary: rgb(85, 89, 220);
+  --hover-accent-dim: rgba(100, 104, 240, 0.22);
+
+  /* shadcn compat */
+  --background: var(--bg);
+  --foreground: var(--text);
+  --primary: var(--accent);
+  --primary-foreground: var(--on-accent);
+  --muted: var(--surface2);
+  --muted-foreground: var(--text-sub);
+  --secondary: var(--surface2);
+  --secondary-foreground: var(--text-dim);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--on-accent);
+  --border: var(--line2);
+  --input: var(--line2);
+  --ring: var(--accent);
+
+  /* ── Shimmer ── */
+  --shimmer-from: transparent;
+  --shimmer-mid: rgba(255, 255, 255, 0.04);
+  --shimmer-peak: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="light"] {
+  --bg:         #F6F7F9;
+  --bg-alt:     #FFFFFF;
+  --surface:    #FFFFFF;
+  --surface2:   #F3F4F7;
+  --surface3:   #EDEEF3;
+  --hover:      rgba(29,41,61,0.04);
+  --line:       rgb(228,232,239);
+  --line2:      rgb(221,221,227);
+  --line3:      rgb(201,206,216);
+  --text:       rgb(29,41,61);
+  --text-sub:   rgb(54,64,80);
+  --text-dim:   rgb(108,114,126);
+  --text-mute:  rgb(146,152,164);
+  --accent:     rgb(100,104,240);
+  --accent-hi:  rgb(79,70,229);
+  --accent-dim: rgb(225,231,253);
+  --accent-line:rgba(100,104,240,0.42);
+  --accent-bg:  rgba(100,104,240,0.06);
+  --on-accent:  #FFFFFF;
+  --danger:     rgb(244,63,94);
+  --danger-dim: rgba(244,63,94,0.10);
+  --success:    rgb(51,170,40);
+
+  /* ── Hover overlays ── */
+  --hover-surface: #EDEEF3;
+  --hover-line:    rgb(201,206,216);
+  --hover-text:    rgb(29,41,61);
+  --hover-card-bg: #F3F4F7;
+  --hover-card-line: rgb(221,221,227);
+  --hover-ranked:  rgba(29,41,61,0.03);
+  --hover-icon-bg: rgba(29,41,61,0.06);
+  --hover-btn-primary: rgb(79, 70, 229);
+  --hover-accent-dim: rgb(210,218,250);
+
+  /* ── Shimmer ── */
+  --shimmer-from: transparent;
+  --shimmer-mid: rgba(0, 0, 0, 0.04);
+  --shimmer-peak: rgba(0, 0, 0, 0.06);
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg);
+  color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
 }
 
@@ -29,11 +111,11 @@ body {
   transition: background 150ms ease-out, color 120ms ease-out;
 }
 .header-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.04) !important;
-  color: #EEF1F6 !important;
+  background: var(--hover) !important;
+  color: var(--text) !important;
 }
 .header-icon-btn:focus-visible {
-  outline: 2px solid rgb(100, 104, 240);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -42,11 +124,11 @@ body {
   transition: background 120ms ease-out, color 120ms ease-out;
 }
 .sidebar-nav-item:hover {
-  background: #161B26 !important;
-  color: #EEF1F6 !important;
+  background: var(--hover-surface) !important;
+  color: var(--hover-text) !important;
 }
 .sidebar-nav-item:focus-visible {
-  outline: 2px solid rgb(100, 104, 240);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -55,9 +137,9 @@ body {
   transition: background 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
 }
 .right-rail-tag:hover {
-  background: #161B26 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #EEF1F6 !important;
+  background: var(--hover-surface) !important;
+  border-color: var(--hover-line) !important;
+  color: var(--hover-text) !important;
 }
 
 /* ── Primary button ── */
@@ -65,14 +147,14 @@ body {
   transition: background 150ms ease-out, transform 80ms ease-out;
 }
 .btn-primary:hover:not(:disabled) {
-  background: rgb(85, 89, 220) !important;
+  background: var(--hover-btn-primary) !important;
 }
 .btn-primary:active:not(:disabled) {
   transform: scale(0.97);
   filter: brightness(0.95);
 }
 .btn-primary:focus-visible {
-  outline: 2px solid rgb(100, 104, 240);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 .btn-primary:disabled {
@@ -85,14 +167,14 @@ body {
   transition: background 150ms ease-out, border-color 150ms ease-out, transform 80ms ease-out;
 }
 .btn-outline:hover:not(:disabled) {
-  background: #161B26 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: var(--hover-surface) !important;
+  border-color: var(--hover-line) !important;
 }
 .btn-outline:active:not(:disabled) {
   transform: scale(0.97);
 }
 .btn-outline:focus-visible {
-  outline: 2px solid rgb(100, 104, 240);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 .btn-outline:disabled {
@@ -105,9 +187,9 @@ body {
   transition: background 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
 }
 .tag-pill:hover {
-  background: #161B26 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #EEF1F6 !important;
+  background: var(--hover-surface) !important;
+  border-color: var(--hover-line) !important;
+  color: var(--hover-text) !important;
 }
 
 /* ── Tag pill (active / followed) ── */
@@ -115,7 +197,7 @@ body {
   transition: background 120ms ease-out, border-color 120ms ease-out;
 }
 .tag-pill-active:hover {
-  background: rgba(100, 104, 240, 0.22) !important;
+  background: var(--hover-accent-dim) !important;
 }
 
 /* ── Article card ── */
@@ -123,8 +205,8 @@ body {
   transition: background 150ms ease-out, border-color 150ms ease-out;
 }
 .article-card:hover {
-  border-color: rgba(255, 255, 255, 0.09) !important;
-  background: #131822 !important;
+  border-color: var(--hover-card-line) !important;
+  background: var(--hover-card-bg) !important;
 }
 
 /* ── Icon button (like, bookmark, share, menu) ── */
@@ -132,8 +214,8 @@ body {
   transition: color 120ms ease-out, background 120ms ease-out;
 }
 .icon-btn:hover:not(:disabled) {
-  color: #EEF1F6 !important;
-  background: rgba(22, 27, 38, 0.6) !important;
+  color: var(--hover-text) !important;
+  background: var(--hover-icon-bg) !important;
 }
 .icon-btn-active:hover:not(:disabled) {
   filter: brightness(1.15);
@@ -145,7 +227,7 @@ body {
   cursor: pointer;
 }
 .source-row:hover {
-  background: #161B26 !important;
+  background: var(--hover-surface) !important;
 }
 
 /* ── Nav tabs (discovery, following) ── */
@@ -153,7 +235,7 @@ body {
   transition: color 120ms ease-out;
 }
 .nav-tab:hover {
-  color: #EEF1F6 !important;
+  color: var(--hover-text) !important;
 }
 
 /* ── Ranked table row ── */
@@ -161,7 +243,7 @@ body {
   transition: background 120ms ease-out;
 }
 .ranked-row:hover {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: var(--hover-ranked) !important;
 }
 
 /* ── View / small outline link-button ── */
@@ -169,9 +251,9 @@ body {
   transition: border-color 120ms ease-out, background 120ms ease-out, color 120ms ease-out;
 }
 .view-btn:hover {
-  background: #161B26 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #EEF1F6 !important;
+  background: var(--hover-surface) !important;
+  border-color: var(--hover-line) !important;
+  color: var(--hover-text) !important;
 }
 
 /* ── Footer link ── */
@@ -179,7 +261,7 @@ body {
   transition: color 120ms ease-out;
 }
 .footer-link:hover {
-  color: #C7CCD6 !important;
+  color: var(--text-sub) !important;
 }
 
 /* ── Text link ── */
@@ -187,7 +269,7 @@ body {
   transition: color 120ms ease-out;
 }
 .text-link:hover {
-  color: #EEF1F6 !important;
+  color: var(--hover-text) !important;
 }
 
 /* ── Onboarding source card ── */
@@ -195,8 +277,8 @@ body {
   transition: background 150ms ease-out, border-color 150ms ease-out;
 }
 .onboarding-source-card:hover {
-  background: #161B26 !important;
-  border-color: rgba(255, 255, 255, 0.10) !important;
+  background: var(--hover-surface) !important;
+  border-color: var(--line2) !important;
 }
 .onboarding-source-card-selected {
   transition: background 150ms ease-out, border-color 150ms ease-out;
@@ -210,15 +292,15 @@ body {
   transition: background 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
 }
 .onboarding-tag-pill:hover {
-  background: #161B26 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #EEF1F6 !important;
+  background: var(--hover-surface) !important;
+  border-color: var(--hover-line) !important;
+  color: var(--hover-text) !important;
 }
 .onboarding-tag-pill-active {
   transition: background 150ms ease-out, border-color 150ms ease-out;
 }
 .onboarding-tag-pill-active:hover {
-  background: rgba(100, 104, 240, 0.22) !important;
+  background: var(--hover-accent-dim) !important;
 }
 
 /* ── Search result card ── */
@@ -226,8 +308,8 @@ body {
   transition: background 150ms ease-out, border-color 150ms ease-out;
 }
 .search-result-card:hover {
-  border-color: rgba(255, 255, 255, 0.09) !important;
-  background: #131822 !important;
+  border-color: var(--hover-card-line) !important;
+  background: var(--hover-card-bg) !important;
 }
 
 /* ── Dropdown menu item ── */
@@ -235,7 +317,7 @@ body {
   transition: background 100ms ease-out;
 }
 .menu-item:hover {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--hover) !important;
 }
 
 /* ── Follow button (already following state) ── */
@@ -243,13 +325,13 @@ body {
   transition: background 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out, transform 80ms ease-out;
 }
 .btn-following:hover:not(:disabled) {
-  background: rgba(100, 104, 240, 0.08) !important;
+  background: var(--accent-bg) !important;
 }
 .btn-following:active:not(:disabled) {
   transform: scale(0.97);
 }
 .btn-following:focus-visible {
-  outline: 2px solid rgb(100, 104, 240);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -261,11 +343,11 @@ body {
 .skeleton-shimmer {
   background-image: linear-gradient(
     90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.04) 40%,
-    rgba(255, 255, 255, 0.06) 50%,
-    rgba(255, 255, 255, 0.04) 60%,
-    transparent 100%
+    var(--shimmer-from) 0%,
+    var(--shimmer-mid) 40%,
+    var(--shimmer-peak) 50%,
+    var(--shimmer-mid) 60%,
+    var(--shimmer-from) 100%
   );
   background-size: 800px 100%;
   animation: shimmer 1.5s infinite linear;
@@ -283,11 +365,11 @@ body {
   transition: border-color 0.15s ease-out, background-color 0.15s ease-out;
 }
 .input-field:hover {
-  border-color: rgba(255, 255, 255, 0.18) !important;
+  border-color: var(--line3) !important;
 }
 .input-field:focus {
-  border-color: rgb(100, 104, 240) !important;
-  background-color: rgba(100, 104, 240, 0.04) !important;
+  border-color: var(--accent) !important;
+  background-color: var(--accent-bg) !important;
 }
 
 /* ══════════════════════════════════════════

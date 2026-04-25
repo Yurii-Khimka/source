@@ -210,7 +210,7 @@ export function SourceProfileClient({
                 fontFamily: inter,
                 fontSize: 18,
                 fontWeight: 700,
-                color: "#fff",
+                color: "var(--on-accent)",
               }}
             >
               {getInitials(source.name)}

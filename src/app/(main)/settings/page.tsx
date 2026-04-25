@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton, SourceList } from "@/components/settings-actions";
 import { BackButton } from "@/components/ui/back-button";
-import { Button } from "@/components/ui/button";
+import { SettingsThemeToggle } from "@/components/settings-theme-toggle";
 import { dark } from "@/lib/tokens";
 
 export const revalidate = 0;
@@ -47,7 +47,7 @@ export default async function SettingsPage() {
           fontFamily: "'Source Serif 4', Georgia, serif",
           fontSize: 24,
           fontWeight: 700,
-          color: "#EEF1F6",
+          color: dark.text,
           marginBottom: 24,
         }}
       >
@@ -74,37 +74,7 @@ export default async function SettingsPage() {
       {/* Theme */}
       <div style={sectionSeparator}>
         <h2 style={sectionHeading}>Theme</h2>
-        <div className="flex gap-2" style={{ padding: "12px 0" }}>
-          <Button
-            className="btn-primary"
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: 13,
-              color: "#fff",
-              background: dark.accent,
-              border: "none",
-              borderRadius: 6,
-              padding: "6px 16px",
-            }}
-          >
-            Dark
-          </Button>
-          <Button
-            disabled
-            className="btn-outline"
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: 13,
-              color: dark.textMute,
-              background: "none",
-              border: `1px solid ${dark.line2}`,
-              borderRadius: 6,
-              padding: "6px 16px",
-            }}
-          >
-            Light (coming soon)
-          </Button>
-        </div>
+        <SettingsThemeToggle />
       </div>
     </div>
   );

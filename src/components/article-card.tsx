@@ -217,7 +217,7 @@ export function ArticleCard({
                 className="flex items-center justify-center"
                 style={{
                   width: 32, height: 32, borderRadius: 6, background: avatarBg,
-                  fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: "#fff",
+                  fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: "var(--on-accent)",
                 }}
               >
                 {initial}
@@ -407,8 +407,8 @@ export function ArticleCard({
           disabled={likeLoading}
           className={`flex items-center gap-1.5 cursor-pointer ${liked ? "icon-btn-active" : "icon-btn"}`}
           style={{
-            background: liked ? "rgba(100,104,240,0.12)" : "none",
-            border: liked ? "1px solid rgba(100,104,240,0.42)" : "1px solid transparent",
+            background: liked ? dark.accentDim : "none",
+            border: liked ? `1px solid ${dark.accentLine}` : "1px solid transparent",
             padding: "4px 10px",
             borderRadius: 6,
             font: "inherit",

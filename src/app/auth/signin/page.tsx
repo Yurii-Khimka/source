@@ -4,8 +4,8 @@ import { useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { dark } from "@/lib/tokens";
+import { ThemeLogo } from "@/components/ui/theme-logo";
 import { Button } from "@/components/ui/button";
 
 export default function SignInPage() {
@@ -65,13 +65,13 @@ export default function SignInPage() {
       >
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          <Image src="/logo-white.svg" alt="The Source" width={32} height={32} />
+          <ThemeLogo />
           <span
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 18,
               fontWeight: 700,
-              color: "#fff",
+              color: "var(--on-accent)",
             }}
           >
             The Source
@@ -107,7 +107,7 @@ export default function SignInPage() {
           className="btn-primary w-full rounded-lg"
           style={{
             background: dark.accent,
-            color: "#fff",
+            color: "var(--on-accent)",
             fontFamily: "'Inter', system-ui, sans-serif",
             fontSize: 14,
             fontWeight: 600,
