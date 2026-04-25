@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { BackButton } from "@/components/ui/back-button";
+import { Button } from "@/components/ui/button";
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Georgia', 'Times New Roman', serif";
@@ -81,7 +82,7 @@ export default function FeedbackPage() {
     return (
       <div className="page-content" style={{ maxWidth: 600, margin: "0 auto", padding: "32px 24px" }}>
         <BackButton />
-        <div style={{ textAlign: "center", padding: "40px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "60px 0", width: "100%" }}>
           <CheckCircle size={32} style={{ color: dark.accent }} />
           <h2
             style={{
@@ -98,17 +99,8 @@ export default function FeedbackPage() {
           <p style={{ fontSize: 14, color: dark.textDim, marginTop: 8 }}>
             Thank you. We read every message and take all feedback seriously.
           </p>
-          <Link
-            href="/"
-            style={{
-              display: "inline-block",
-              marginTop: 20,
-              fontSize: 14,
-              color: dark.accent,
-              textDecoration: "none",
-            }}
-          >
-            &larr; Back to feed
+          <Link href="/" style={{ marginTop: 20, textDecoration: "none" }}>
+            <Button variant="outline">&larr; Back to feed</Button>
           </Link>
         </div>
       </div>

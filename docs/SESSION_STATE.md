@@ -125,6 +125,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Revert to weight 700
 - [2026-04-25] Fix RSS fetcher — httpx version conflict
 - [2026-04-25] Feedback page
+- [2026-04-25] Fix feedback success state layout
 
 ## In Progress
 - Article card design polish
@@ -200,6 +201,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Reverted THE SOURCE fontWeight back to 700.
 - [2026-04-25] Downgraded httpx from 0.28.1 to 0.27.2 to satisfy supabase 2.10.0 constraint (requires httpx>=0.26,<0.28).
 - [2026-04-25] Built /feedback with Resend email to sayhi.source@gmail.com. API route at /api/feedback. Success/error states. Linked from right rail footer and mobile profile menu.
+- [2026-04-25] Centred success state content. Replaced plain link with Button outline component.
 
 ## Backlog (priority order)
 1. Discovery page
