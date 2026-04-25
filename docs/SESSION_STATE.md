@@ -122,6 +122,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Uppercase header logo text
 - [2026-04-25] Bolder header text
 - [2026-04-25] Header text weight 800
+- [2026-04-25] Revert to weight 700
 
 ## In Progress
 - Article card design polish
@@ -194,6 +195,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Changed 'The Source' to 'THE SOURCE' in desktop header, shell, and mobile header.
 - [2026-04-25] Changed THE SOURCE fontWeight from 600 to 700 in all headers.
 - [2026-04-25] Changed THE SOURCE fontWeight from 700 to 800 in all headers.
+- [2026-04-25] Reverted THE SOURCE fontWeight back to 700.
 
 ## Backlog (priority order)
 1. Discovery page
