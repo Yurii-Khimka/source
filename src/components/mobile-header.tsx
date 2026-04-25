@@ -30,7 +30,7 @@ export function MobileHeader() {
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 13,
-              fontWeight: 700,
+              fontWeight: 800,
               color: dark.text,
               letterSpacing: 0.8,
             }}
