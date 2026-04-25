@@ -74,7 +74,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
                 fontSize: 13,
-                fontWeight: 600,
+                fontWeight: 700,
                 color: dark.text,
                 letterSpacing: 0.8,
               }}

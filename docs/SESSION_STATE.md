@@ -120,6 +120,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] New logo and favicon
 - [2026-04-25] Fix logo variant
 - [2026-04-25] Uppercase header logo text
+- [2026-04-25] Bolder header text
 
 ## In Progress
 - Article card design polish
@@ -190,6 +191,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Replaced logo with logo-dark.svg at 32x32px in all headers. Updated favicon to favicon-32x32.png and favicon-16x16.png.
 - [2026-04-25] Swapped to logo-white.svg for dark theme (light bg, dark S). logo-dark.svg reserved for future light theme.
 - [2026-04-25] Changed 'The Source' to 'THE SOURCE' in desktop header, shell, and mobile header.
+- [2026-04-25] Changed THE SOURCE fontWeight from 600 to 700 in all headers.
 
 ## Backlog (priority order)
 1. Discovery page

@@ -63,7 +63,7 @@ export async function Shell({ children, rightRailTop }: { children: React.ReactN
               style={{
                 fontFamily: "'Inter', system-ui, sans-serif",
                 fontSize: 13,
-                fontWeight: 600,
+                fontWeight: 700,
                 color: dark.text,
                 letterSpacing: 0.8,
               }}
