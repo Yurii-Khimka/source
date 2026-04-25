@@ -64,7 +64,7 @@ export default function SignInPage() {
       >
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          <Image src="/logo-dark.svg" alt="The Source" width={32} height={32} />
+          <Image src="/logo-white.svg" alt="The Source" width={32} height={32} />
           <span
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",

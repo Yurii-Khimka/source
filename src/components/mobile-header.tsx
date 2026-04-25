@@ -24,7 +24,7 @@ export function MobileHeader() {
     >
       {/* Logo */}
       <Link href="/" className="flex items-center gap-[10px]" style={{ textDecoration: "none" }}>
-        <Image src="/logo-dark.svg" alt="The Source" width={32} height={32} style={{ flexShrink: 0 }} />
+        <Image src="/logo-white.svg" alt="The Source" width={32} height={32} style={{ flexShrink: 0 }} />
         <div style={{ lineHeight: 1.3 }}>
           <div
             style={{

@@ -118,6 +118,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Mobile typography and bottom bar safe area fix
 - [2026-04-25] Static page text size bump
 - [2026-04-25] New logo and favicon
+- [2026-04-25] Fix logo variant
 
 ## In Progress
 - Article card design polish
@@ -186,6 +187,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Article title and description +2px on mobile. Body text +2px globally on mobile. Bottom tab bar uses env(safe-area-inset-bottom) with viewport-fit=cover.
 - [2026-04-25] Paragraphs and list items in page-content bump to 16px on mobile/tablet via CSS override.
 - [2026-04-25] Replaced logo with logo-dark.svg at 32x32px in all headers. Updated favicon to favicon-32x32.png and favicon-16x16.png.
+- [2026-04-25] Swapped to logo-white.svg for dark theme (light bg, dark S). logo-dark.svg reserved for future light theme.
 
 ## Backlog (priority order)
 1. Discovery page
