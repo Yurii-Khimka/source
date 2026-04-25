@@ -131,6 +131,8 @@ Phase 1 — MVP in progress
 - [2026-04-25] Added RESEND_API_KEY check and proper error handling to API route.
 - [2026-04-25] Fix Resend from address
 - [2026-04-25] Fix feedback email recipient
+- [2026-04-25] Add 5 new RSS sources (of 9 requested)
+- [2026-04-25] Add failed sources — corrected RSS URLs
 
 ## In Progress
 - Article card design polish
@@ -212,6 +214,8 @@ Phase 1 — MVP in progress
 - [2026-04-25] Added env key guard, destructured Resend error response, return actual error messages to client.
 - [2026-04-25] Changed from address to onboarding@resend.dev for free tier.
 - [2026-04-25] Changed to address to jw.artwork.design@gmail.com — Resend free tier restriction. Will update after domain verification.
+- [2026-04-25] Added france24, euobserver, politico-europe, europravda, aljazeera. 4 sources failed RSS test (kyivindependent, babel, hromadske, rferl — all return 404). 88 articles fetched across new sources.
+- [2026-04-25] Fixed RSS URLs for babel (rss.xml) and rferl (ukraine feed). kyivindependent and hromadske have no working RSS — feeds removed by publishers. babel: 162 articles, rferl: 20 articles.
 
 ## Backlog (priority order)
 1. Discovery page
