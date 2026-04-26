@@ -45,6 +45,17 @@ export async function GET() {
     for (const r of recentFollowUsers ?? []) activeUserIds.add(r.user_id);
     const recentUsers = activeUserIds.size;
 
+    // Fetch profiles for active users (max 10 shown)
+    let activeUserProfiles: { display_name: string | null; avatar_url: string | null }[] = [];
+    const activeIds = Array.from(activeUserIds).slice(0, 10);
+    if (activeIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("display_name, avatar_url")
+        .in("id", activeIds);
+      activeUserProfiles = profiles ?? [];
+    }
+
     // Recent tags
     let recentTags: { slug: string; name: string; count: number }[] = [];
 
@@ -106,6 +117,7 @@ export async function GET() {
         totalSources: totalSources ?? 0,
         totalArticles: totalArticles ?? 0,
       },
+      activeUserProfiles,
       trendingSources: trendingSources ?? [],
       recentTags,
     });
@@ -113,6 +125,7 @@ export async function GET() {
     console.error("Right rail error:", error);
     return NextResponse.json({
       stats: { activeUsers: 0, totalSources: 0, totalArticles: 0 },
+      activeUserProfiles: [],
       trendingSources: [],
       recentTags: [],
     });
