@@ -26,14 +26,24 @@ export async function GET() {
     const [
       { count: totalSources },
       { count: totalArticles },
-      { count: recentUsers },
+      { data: recentLikeUsers },
+      { data: recentBookmarkUsers },
+      { data: recentFollowUsers },
       { data: trendingSources },
     ] = await Promise.all([
       supabase.from("sources").select("*", { count: "exact", head: true }).eq("is_hidden", false),
       supabase.from("articles").select("*", { count: "exact", head: true }).eq("is_hidden", false),
-      supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", yesterday),
+      supabase.from("likes").select("user_id").gte("created_at", yesterday),
+      supabase.from("bookmarks").select("user_id").gte("created_at", yesterday),
+      supabase.from("follows").select("user_id").gte("created_at", yesterday),
       supabase.from("sources").select("id, handle, name").eq("is_hidden", false).order("name").limit(5),
     ]);
+
+    const activeUserIds = new Set<string>();
+    for (const r of recentLikeUsers ?? []) activeUserIds.add(r.user_id);
+    for (const r of recentBookmarkUsers ?? []) activeUserIds.add(r.user_id);
+    for (const r of recentFollowUsers ?? []) activeUserIds.add(r.user_id);
+    const recentUsers = activeUserIds.size;
 
     // Recent tags
     let recentTags: { slug: string; name: string; count: number }[] = [];

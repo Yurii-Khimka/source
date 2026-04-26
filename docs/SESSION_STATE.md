@@ -1,5 +1,5 @@
 # The Source — Session State
-**Last updated:** 2026-04-25
+**Last updated:** 2026-04-26
 
 ## Production
 - URL: https://srct.news
@@ -135,6 +135,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Add failed sources — corrected RSS URLs
 - [2026-04-25] Light/dark theme toggle
 - [2026-04-25] Profile icon dropdown + settings cleanup
+- [2026-04-26] Fix active users counter
 
 ## In Progress
 - Article card design polish
@@ -220,6 +221,7 @@ Phase 1 — MVP in progress
 - [2026-04-25] Fixed RSS URLs for babel (rss.xml) and rferl (ukraine feed). kyivindependent and hromadske have no working RSS — feeds removed by publishers. babel: 162 articles, rferl: 20 articles.
 - [2026-04-25] CSS variables for both themes, ThemeProvider, toggle in header and settings, logo swap, Supabase sync.
 - [2026-04-25] Profile icon now shows sign out dropdown. Settings page reduced to muted sources, muted tags, and theme toggle.
+- [2026-04-26] Fixed active users (24h) query — now counts distinct users with interactions (likes, bookmarks, follows) in last 24h instead of profiles created in last 24h.
 
 ## Backlog (priority order)
 1. Discovery page
