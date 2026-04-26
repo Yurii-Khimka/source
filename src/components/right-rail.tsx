@@ -16,14 +16,8 @@ const sectionTitle: React.CSSProperties = {
   marginBottom: 10,
 };
 
-type ActiveUserProfile = {
-  display_name: string | null;
-  avatar_url: string | null;
-};
-
 type RightRailData = {
   stats: { activeUsers: number; totalSources: number; totalArticles: number };
-  activeUserProfiles: ActiveUserProfile[];
   trendingSources: { id: string; handle: string; name: string }[];
   recentTags: { slug: string; name: string; count: number }[];
 };
@@ -44,7 +38,6 @@ export function RightRail() {
       ]
     : [];
 
-  const activeUserProfiles = data?.activeUserProfiles ?? [];
   const trendingSources = data?.trendingSources ?? [];
   const recentTags = data?.recentTags ?? [];
 
@@ -88,78 +81,7 @@ export function RightRail() {
         </div>
       </div>
 
-      {/* Widget 2 — Active users */}
-      {activeUserProfiles.length > 0 && (
-        <div>
-          <div style={sectionTitle}>Active now</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {activeUserProfiles.map((u, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "4px 0",
-                }}
-              >
-                {u.avatar_url ? (
-                  <img
-                    src={u.avatar_url}
-                    alt=""
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: `1px solid ${dark.line}`,
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: dark.surface2,
-                      border: `1px solid ${dark.line}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontFamily: mono,
-                      fontSize: 10,
-                      color: dark.textDim,
-                    }}
-                  >
-                    {(u.display_name ?? "?")[0].toUpperCase()}
-                  </div>
-                )}
-                <span
-                  style={{
-                    fontFamily: inter,
-                    fontSize: 12,
-                    color: dark.textSub,
-                  }}
-                >
-                  {u.display_name ?? "Anonymous"}
-                </span>
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background: dark.success,
-                    marginLeft: "auto",
-                    flexShrink: 0,
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Widget 3 — Trending sources */}
+      {/* Widget 2 — Trending sources */}
       {trendingSources.length > 0 && (
         <div>
           <div style={sectionTitle}>Trending sources</div>
