@@ -138,6 +138,7 @@ Phase 1 — MVP in progress
 - [2026-04-26] Fix active users counter
 - [2026-04-26] Active users live list
 - [2026-04-26] Revert active users to counter only
+- [2026-04-26] Fix active users counter — last_seen_at
 
 ## In Progress
 - Article card design polish
@@ -226,6 +227,7 @@ Phase 1 — MVP in progress
 - [2026-04-26] Fixed active users (24h) query — now counts distinct users with interactions (likes, bookmarks, follows) in last 24h instead of profiles created in last 24h.
 - [2026-04-26] Added live list of active user profiles (avatar + name + green dot) in right rail, sourced from likes/bookmarks/follows in last 24h.
 - [2026-04-26] Removed active user name/avatar list from right rail. Integrity widget shows count only.
+- [2026-04-26] Counter now uses last_seen_at. Stable — not affected by likes or unlikes.
 
 ## Backlog (priority order)
 1. Discovery page

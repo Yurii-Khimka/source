@@ -25,11 +25,17 @@ export async function GET() {
       return NextResponse.json({ user: null, profile: null });
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("avatar_url, display_name")
-      .eq("id", user.id)
-      .single();
+    const [{ data: profile }] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select("avatar_url, display_name")
+        .eq("id", user.id)
+        .single(),
+      supabase
+        .from("profiles")
+        .update({ last_seen_at: new Date().toISOString() })
+        .eq("id", user.id),
+    ]);
 
     return NextResponse.json({
       user: { id: user.id, email: user.email },
