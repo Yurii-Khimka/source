@@ -142,6 +142,7 @@ Phase 1 — MVP in progress
 - [2026-04-26] Fix Android proguard build error
 - [2026-04-27] Fix infinite re-render loop on homepage
 - [2026-04-27] Fix mobile bottom bar position
+- [2026-04-27] Remove back button from bookmarks
 
 ## In Progress
 - Article card design polish
@@ -234,6 +235,7 @@ Phase 1 — MVP in progress
 - [2026-04-26] Replaced deprecated proguard-android.txt with proguard-android-optimize.txt in android/app/build.gradle
 - [2026-04-27] Fixed all root causes of continuous re-render: stabilized loadMore with refs, removed tag rebuilding in loadMore, memoized Sets, disabled infinite scroll when no followed sources.
 - [2026-04-27] Bottom tab bar now fixed to screen bottom with correct safe area inset handling.
+- [2026-04-27] Bookmarks is a primary tab — back button removed.
 
 ## Backlog (priority order)
 1. Discovery page
