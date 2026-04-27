@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleCardSkeleton } from "@/components/ui/skeletons";
 import { dark } from "@/lib/tokens";
@@ -61,7 +61,7 @@ export function Feed({
   const [articles, setArticles] = useState(initialArticles);
   const [likedIds, setLikedIds] = useState(initialLikedIds);
   const [bookmarkedIds, setBookmarkedIds] = useState(initialBookmarkedIds);
-  const [tags, setTags] = useState(initialTags);
+  const [tags] = useState(initialTags); // stable — sorted once on server
 
   const [activeTagSlug, setActiveTagSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -69,11 +69,17 @@ export function Feed({
 
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const likedSet = new Set(likedIds);
-  const bookmarkedSet = new Set(bookmarkedIds);
-  const followedSet = new Set(followedSourceIds);
-  const mutedSet = new Set(mutedSourceIds);
-  const mutedTagSet = new Set(mutedTagArticleIds);
+  // Refs for stable loadMore — avoids recreating the callback on every state change
+  const articlesRef = useRef(articles);
+  articlesRef.current = articles;
+  const loadingRef = useRef(false);
+  const hasMoreRef = useRef(initialArticles.length < totalCount);
+
+  const likedSet = useMemo(() => new Set(likedIds), [likedIds]);
+  const bookmarkedSet = useMemo(() => new Set(bookmarkedIds), [bookmarkedIds]);
+  const followedSet = useMemo(() => new Set(followedSourceIds), [followedSourceIds]);
+  const mutedSet = useMemo(() => new Set(mutedSourceIds), [mutedSourceIds]);
+  const mutedTagSet = useMemo(() => new Set(mutedTagArticleIds), [mutedTagArticleIds]);
 
   // Filter out muted sources and muted tag articles
   const visibleArticles = articles.filter(
@@ -87,26 +93,30 @@ export function Feed({
     ? followingArticles.filter((a) => activeTag.articleIds.includes(a.id))
     : followingArticles;
 
-  // Load more articles
+  // Load more articles — uses refs for stable callback identity
   const loadMore = useCallback(async () => {
-    if (loading || !hasMore) return;
+    if (loadingRef.current || !hasMoreRef.current) return;
+    loadingRef.current = true;
     setLoading(true);
     try {
-      const res = await fetch(`/api/articles?offset=${articles.length}&limit=${PAGE_SIZE}`);
+      const currentArticles = articlesRef.current;
+      const res = await fetch(`/api/articles?offset=${currentArticles.length}&limit=${PAGE_SIZE}`);
       if (!res.ok) return;
       const data = await res.json();
       const newArticles: ArticleData[] = data.articles ?? [];
 
       if (newArticles.length === 0) {
+        hasMoreRef.current = false;
         setHasMore(false);
         return;
       }
 
       // Dedupe by id
-      const existingIds = new Set(articles.map((a) => a.id));
+      const existingIds = new Set(currentArticles.map((a) => a.id));
       const unique = newArticles.filter((a) => !existingIds.has(a.id));
 
       if (unique.length === 0) {
+        hasMoreRef.current = false;
         setHasMore(false);
         return;
       }
@@ -115,39 +125,20 @@ export function Feed({
       setLikedIds((prev) => [...prev, ...(data.likedIds ?? [])]);
       setBookmarkedIds((prev) => [...prev, ...(data.bookmarkedIds ?? [])]);
 
-      // Rebuild tags from all articles
-      const allArticles = [...articles, ...unique];
-      const tagMap = new Map<string, { id: string; slug: string; name: string; articleIds: string[]; count: number }>();
-      for (const article of allArticles) {
-        for (const tag of article.tags) {
-          const existing = tagMap.get(tag.slug);
-          if (existing) {
-            existing.articleIds.push(article.id);
-            existing.count++;
-          } else {
-            tagMap.set(tag.slug, { id: tag.slug, slug: tag.slug, name: tag.name, articleIds: [article.id], count: 1 });
-          }
-        }
-      }
-      setTags(
-        Array.from(tagMap.values())
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 8)
-          .map(({ id, slug, name, articleIds }) => ({ id, slug, name, articleIds }))
-      );
-
-      if (articles.length + unique.length >= totalCount) {
+      if (currentArticles.length + unique.length >= totalCount) {
+        hasMoreRef.current = false;
         setHasMore(false);
       }
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
-  }, [articles, loading, hasMore, totalCount]);
+  }, [totalCount]);
 
-  // IntersectionObserver
+  // IntersectionObserver — skip if user follows no sources (nothing to display)
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel) return;
+    if (!sentinel || followedSourceCount === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -160,7 +151,7 @@ export function Feed({
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [loadMore]);
+  }, [loadMore, followedSourceCount]);
 
   return (
     <div className="page-content" style={{ padding: "22px 36px 80px" }}>
