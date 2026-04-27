@@ -25,7 +25,6 @@ export function BottomTabBar() {
         left: 0,
         right: 0,
         zIndex: 50,
-        height: 64,
         background: dark.surface,
         borderTop: `1px solid ${dark.line}`,
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
