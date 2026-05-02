@@ -35,7 +35,7 @@
   --hover-card-line: rgba(255,255,255,0.09);
   --hover-ranked:  rgba(255,255,255,0.03);
   --hover-icon-bg: rgba(22, 27, 38, 0.6);
-  --hover-btn-primary: rgb(85, 89, 220);
+  --hover-btn-primary: rgb(129, 133, 255);
   --hover-accent-dim: rgba(100, 104, 240, 0.22);
 
   /* shadcn compat */
@@ -148,6 +148,7 @@ body {
 }
 .btn-primary:hover:not(:disabled) {
   background: var(--hover-btn-primary) !important;
+  box-shadow: 0 0 0 2px var(--accent-dim);
 }
 .btn-primary:active:not(:disabled) {
   transform: scale(0.97);
