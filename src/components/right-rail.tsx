@@ -59,7 +59,7 @@ export function RightRail() {
           href="https://donatello.to/thesource"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-primary"
+          className="btn-outline"
           style={{
             width: "100%",
             padding: "7px 0",
@@ -73,9 +73,9 @@ export function RightRail() {
             justifyContent: "center",
             gap: 6,
             transition: "all 0.12s",
-            background: dark.accent,
-            color: "var(--on-accent)",
-            border: `1px solid ${dark.accent}`,
+            background: dark.surface2,
+            color: dark.textDim,
+            border: `1px solid ${dark.line2}`,
             textDecoration: "none",
           }}
         >

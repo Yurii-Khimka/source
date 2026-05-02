@@ -145,6 +145,7 @@ Phase 1 — MVP in progress
 - [2026-04-27] Remove back button from bookmarks
 - [2026-05-02] init workflow files
 - [2026-05-02] right rail: add Support donate button
+- [2026-05-02] right rail: Support button → secondary style
 
 ## In Progress
 - Article card design polish
@@ -240,6 +241,7 @@ Phase 1 — MVP in progress
 - [2026-04-27] Bookmarks is a primary tab — back button removed.
 - [2026-05-02] Added docs/plan.md, docs/changelog.md, docs/chat.md
 - [2026-05-02] Top-of-rail Donatello button, mirrors source page action block card + btn-primary style
+- [2026-05-02] Changed btn-primary to btn-outline with surface2/textDim/line2 colors
 
 ## Backlog (priority order)
 1. Discovery page
