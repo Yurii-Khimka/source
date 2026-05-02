@@ -14,6 +14,7 @@ import {
   ExternalLink,
   Settings,
   LogOut,
+  Heart,
 } from "lucide-react";
 import { dark } from "@/lib/tokens";
 import { createClient } from "@/lib/supabase/client";
@@ -198,6 +199,15 @@ export default function MobileProfilePage() {
           )}
         </div>
       </div>
+
+      <div style={dividerStyle} />
+      <SectionLabel>Support</SectionLabel>
+      <MenuRow
+        href="https://donatello.to/thesource"
+        icon={Heart}
+        label="Support The Source"
+        external
+      />
 
       <div style={dividerStyle} />
 

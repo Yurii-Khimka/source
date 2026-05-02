@@ -146,6 +146,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] init workflow files
 - [2026-05-02] right rail: add Support donate button
 - [2026-05-02] right rail: Support button → secondary style
+- [2026-05-02] mobile profile: add Support entry; hover audit
 
 ## In Progress
 - Article card design polish
@@ -242,6 +243,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] Added docs/plan.md, docs/changelog.md, docs/chat.md
 - [2026-05-02] Top-of-rail Donatello button, mirrors source page action block card + btn-primary style
 - [2026-05-02] Changed btn-primary to btn-outline with surface2/textDim/line2 colors
+- [2026-05-02] Added Support menu row to mobile profile tab. Audited interactive elements in 6 files for missing hover.
 
 ## Backlog (priority order)
 1. Discovery page
