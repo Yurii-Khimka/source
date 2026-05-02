@@ -1,5 +1,14 @@
 # SORCE — Changelog
 
+## 2026-05-02 — feat(tags): expand keyword vocabulary; add inspector mode
+- Massively expanded `src/lib/tag-keywords.json`: US/UK/EU political vocab, world leaders, country names, sports leagues/clubs/athletes, tech companies, cultural events.
+- Untagged articles: 2075 (25%) → 1230 (14.9%).
+- Per-tag totals after re-tag:
+  economy: 821, politics: 1695, conflict: 2350, investigation: 238, europe: 1080,
+  ukraine: 2644, world: 2982, tech: 221, climate: 232, sport: 539, culture: 322, society: 558.
+- Added `--inspect` mode to `retag_all.py` to diagnose remaining untagged articles.
+- Removed `general` tag from DB (no longer referenced).
+
 ## 2026-05-02 — feat(tags): scored synonym matcher + retag all articles
 - New single source of truth: `src/lib/tag-keywords.json` (12 tags with strong/normal/negative keywords).
 - Replaced naive `text.includes(kw)` with scored word-boundary matcher (Unicode-aware regex, title×3 weighting, per-keyword cap of 6, threshold ≥3, top-3 cap).

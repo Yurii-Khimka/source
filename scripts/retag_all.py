@@ -77,12 +77,43 @@ def paginate_all(supabase, table, select, filters=None):
     return all_rows
 
 
+def run_inspect(supabase):
+    """Inspector mode: show which articles would remain untagged."""
+    print("--- Loading articles ---")
+    all_articles = paginate_all(supabase, "articles", "id, title, description, url")
+    print(f"  Total articles: {len(all_articles)}\n")
+
+    untagged = []
+    for article in all_articles:
+        tags = infer_tags(article["title"], article.get("description"))
+        if not tags:
+            untagged.append(article)
+
+    pct = (len(untagged) / len(all_articles) * 100) if all_articles else 0
+    print(f"--- Inspector: {len(untagged)} untagged of {len(all_articles)} ({pct:.1f}%) ---\n")
+
+    for article in untagged[:50]:
+        title = article.get("title", "")
+        desc = (article.get("description") or "")[:120]
+        print(f"[untagged] {title}")
+        print(f"           {desc}")
+
+    if len(untagged) > 50:
+        print(f"\n... and {len(untagged) - 50} more")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Re-tag all articles with scored matcher")
-    parser.add_argument("--dry-run", action="store_true", help="Preview changes without writing")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--dry-run", action="store_true", help="Preview changes without writing")
+    group.add_argument("--inspect", action="store_true", help="Show untagged articles for diagnostic")
     args = parser.parse_args()
 
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+    if args.inspect:
+        run_inspect(supabase)
+        return
 
     # Step 1: Ensure tags exist
     print("--- Ensuring tags exist ---")
