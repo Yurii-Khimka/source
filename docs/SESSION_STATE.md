@@ -148,6 +148,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] right rail: Support button → secondary style
 - [2026-05-02] mobile profile: add Support entry; hover audit
 - [2026-05-02] btn-primary visible hover
+- [2026-05-02] fix Discover button hover
 
 ## In Progress
 - Article card design polish
@@ -246,6 +247,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] Changed btn-primary to btn-outline with surface2/textDim/line2 colors
 - [2026-05-02] Added Support menu row to mobile profile tab. Audited interactive elements in 6 files for missing hover.
 - [2026-05-02] Bumped --hover-btn-primary in dark theme to accent-hi; added subtle accent-dim ring shadow on hover
+- [2026-05-02] Added btn-primary class to home-page Discover button + rescan for other accent buttons missing hover class
 
 ## Backlog (priority order)
 1. Discovery page

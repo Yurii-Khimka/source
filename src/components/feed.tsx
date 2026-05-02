@@ -309,6 +309,7 @@ export function Feed({
           </p>
           <a
             href="/discovery"
+            className="btn-primary"
             style={{
               display: "inline-block",
               marginTop: 20,
