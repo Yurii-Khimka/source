@@ -203,10 +203,9 @@ export default function MobileProfilePage() {
       <div style={dividerStyle} />
       <SectionLabel>Support</SectionLabel>
       <MenuRow
-        href="https://donatello.to/thesource"
+        href="/support"
         icon={Heart}
         label="Support The Source"
-        external
       />
 
       <div style={dividerStyle} />

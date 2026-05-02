@@ -55,10 +55,8 @@ export function RightRail() {
       >
         <div style={sectionTitle}>SUPPORT</div>
 
-        <a
-          href="https://donatello.to/thesource"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/support"
           className="btn-outline"
           style={{
             width: "100%",
@@ -81,7 +79,7 @@ export function RightRail() {
         >
           <Heart size={13} />
           Support
-        </a>
+        </Link>
       </div>
 
       {/* Widget 1 — Integrity · Live */}
@@ -190,7 +188,7 @@ export function RightRail() {
           lineHeight: 1.8,
         }}
       >
-        <div><Link href="/about" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · <Link href="/feedback" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Feedback</Link> · <Link href="/privacy" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Privacy</Link> · <Link href="/terms" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Terms</Link> · <Link href="/trust" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link> · <a href="https://github.com/Yurii-Khimka/source" target="_blank" rel="noopener noreferrer" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>GitHub</a></div>
+        <div><Link href="/support" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Support</Link> · <Link href="/about" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>About</Link> · <Link href="/feedback" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Feedback</Link> · <Link href="/privacy" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Privacy</Link> · <Link href="/terms" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Terms</Link> · <Link href="/trust" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>Standards</Link> · <a href="https://github.com/Yurii-Khimka/source" target="_blank" rel="noopener noreferrer" className="footer-link" style={{ color: dark.textMute, textDecoration: "none" }}>GitHub</a></div>
         <div>© 2026 The Source</div>
       </div>
     </div>

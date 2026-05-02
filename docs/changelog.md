@@ -1,5 +1,8 @@
 # SORCE — Changelog
 
+## 2026-05-02 — feat: add /support page and route Support entries through it
+New `/support` donations explainer page mirroring About layout. Right-rail widget and mobile profile Support row now link to `/support` instead of Donatello directly. Added Support link to right-rail footer. Donate button on the page links out to Donatello.
+
 ## 2026-05-02 — fix: home Discover button now has hover
 Added `className="btn-primary"` to the Discover `<a>` on the empty-feed home page. Rescanned all `.tsx` files — no other accent-background buttons missing a hover class.
 
