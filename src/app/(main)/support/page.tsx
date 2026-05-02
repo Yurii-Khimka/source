@@ -135,7 +135,7 @@ export default function SupportPage() {
           }}
         >
           <Heart size={14} />
-          Donate
+          Support
         </a>
       </div>
     </div>
