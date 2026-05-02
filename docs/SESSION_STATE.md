@@ -1,5 +1,5 @@
 # The Source — Session State
-**Last updated:** 2026-04-27
+**Last updated:** 2026-05-02
 
 ## Production
 - URL: https://srct.news
@@ -143,6 +143,7 @@ Phase 1 — MVP in progress
 - [2026-04-27] Fix infinite re-render loop on homepage
 - [2026-04-27] Fix mobile bottom bar position
 - [2026-04-27] Remove back button from bookmarks
+- [2026-05-02] init workflow files
 
 ## In Progress
 - Article card design polish
@@ -236,6 +237,7 @@ Phase 1 — MVP in progress
 - [2026-04-27] Fixed all root causes of continuous re-render: stabilized loadMore with refs, removed tag rebuilding in loadMore, memoized Sets, disabled infinite scroll when no followed sources.
 - [2026-04-27] Bottom tab bar now fixed to screen bottom with correct safe area inset handling.
 - [2026-04-27] Bookmarks is a primary tab — back button removed.
+- [2026-05-02] Added docs/plan.md, docs/changelog.md, docs/chat.md
 
 ## Backlog (priority order)
 1. Discovery page
