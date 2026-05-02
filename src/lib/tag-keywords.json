@@ -1,24 +1,3 @@
-# SORCE — Current Plan
-_Updated by Claude Chat before each task._
-
-## Status
-**Active task:** Rebuild the tag inference engine — replace naive substring matching with a scored, word-boundary, synonym-rich matcher. Add new tags (`sport`, `culture`, `society`). Re-scan and **reassign** tags on every existing article.
-
-## Context
-- Current matcher (`scripts/fetcher.py` `TAG_KEYWORDS` + `src/lib/tag-keywords.ts`) uses raw `text.includes(kw)` / `kw in lower`. No word boundaries, no scoring, no weighting → false positives like `ai` matching inside `said`, `ес ` matching inside `процес `, `un` matching inside `funny`.
-- Two implementations (TS + Python) drift. Must become one source of truth.
-- Articles today often get wrong tags AND too many tags. Owner reports this is the visible problem on the site.
-- Tag taxonomy must be expanded to cover sport / culture / society content that currently falls through.
-- Per chat.md §13: any fetcher change must be backfilled to all existing rows in the same task and validated before the task closes.
-
-## Current Task
-
-### Part A — Single source of truth: `src/lib/tag-keywords.json`
-Create a new file `src/lib/tag-keywords.json` with this exact structure. Per tag: `strong` (high-signal terms, weight 3), `normal` (supporting terms, weight 1), `negative` (terms that, if present, cancel this tag).
-
-Tag set (12 total — drop `general` entirely):
-
-```json
 {
   "economy": {
     "strong": ["fed", "нбу", "мвф", "imf", "ecb", "єцб", "інфляц", "inflation", "deflation",
@@ -150,98 +129,9 @@ Tag set (12 total — drop `general` entirely):
                "religion", "релігі", "церкв", "church"],
     "normal": ["school", "школ", "university", "університет", "student", "студент",
                "hospital", "лікарн", "doctor", "лікар", "vaccine", "вакцин",
-               "accident", "аварі", "fire", "пожеж" ,
+               "accident", "аварі", "fire", "пожеж",
                "protest", "протест", "rally", "мітинг",
                "society", "суспільств", "community", "громад"],
     "negative": []
   }
 }
-```
-
-(If you genuinely cannot serialize the unicode keys safely, ask before falling back to a `.ts` file.)
-
-### Part B — Shared scored matcher
-
-Replace `inferTags` in `src/lib/tag-keywords.ts` AND `infer_tags` / `get_tags_from_text` / `TAG_KEYWORDS` in `scripts/fetcher.py` with a scored matcher driven by the JSON above.
-
-**Algorithm (must be identical in TS and Python):**
-1. Lowercase title and description separately.
-2. For each tag, compute a `score`:
-   - Iterate `strong` and `normal` keywords.
-   - Match a keyword as a Unicode word: keyword preceded by start-of-string or a non-letter, and followed by zero-or-more letters. In Python: `re.search(r"(?<![\\w])" + re.escape(kw) + r"\\w*", text, re.UNICODE | re.IGNORECASE)`. In TS: `new RegExp("(^|[^\\\\p{L}\\\\p{N}])" + escaped + "\\\\p{L}*", "iu")`.
-   - Per match: title hit = weight × 3, description hit = weight × 1. Weight = 3 for `strong`, 1 for `normal`.
-   - Cap each individual keyword's contribution to the tag at 6 (avoid spam).
-3. For each tag, if any `negative` keyword appears in title or description (substring check is fine here, it's a small list), set the tag score to 0.
-4. Keep only tags with `score >= 3`.
-5. Sort tags by score descending, take **top 3**.
-6. If zero tags pass, return `[]` (no `general` fallback). The article is left untagged.
-
-The TS version is used by the UI fallback only. The Python version is the canonical writer to the DB.
-
-### Part C — Update fetcher to use the new matcher
-
-In `scripts/fetcher.py`:
-- Delete the old `TAG_KEYWORDS` dict and `get_tags_from_text` / `infer_tags` body.
-- Load the JSON dict once at module top.
-- New `infer_tags(title, description)` returns the scored result above (may be `[]`).
-- `assign_tags()` is unchanged structurally but must skip cleanly when the list is empty (no insert, log `[tags] {url} → none (low confidence)`).
-- The validation step should still warn on untagged articles, but a low warning rate is now expected and acceptable.
-
-### Part D — Re-tag every existing article (REPLACE, not append)
-
-Replace `scripts/backfill_tags.py` with a new `scripts/retag_all.py` that:
-1. Loads `src/lib/tag-keywords.json` and the new `infer_tags` from `fetcher`.
-2. Ensures all 12 tag slugs exist in the `tags` table (insert if missing). Removes the `general` tag if present and not referenced; if it IS still referenced, leave it but log a warning.
-3. Pages through ALL articles (no `is_hidden` filter, paginated past the 1000-row Supabase limit — see existing pagination pattern in old `backfill_tags.py`).
-4. For each article:
-   - Compute the new tag set with the scored matcher.
-   - Read its current tag set from `article_tags`.
-   - If sets differ: `DELETE FROM article_tags WHERE article_id = ?` then insert the new rows. If sets are equal: skip (no write).
-5. Print a final diff summary:
-   ```
-   total articles:        N
-   unchanged:             N
-   re-tagged (set diff):  N
-   newly tagged:          N
-   lost all tags:         N   (these were tagged before, now score < 3)
-   per-tag totals (after):
-     economy: N
-     politics: N
-     ...
-   ```
-6. Add a `--dry-run` flag that runs steps 1–4 but skips the DELETE/INSERT and only prints the diff. **Run `--dry-run` first, paste the summary in the reply, then run for real.**
-
-### Part E — Validate and ship
-1. `npm run lint`.
-2. `cd scripts && source venv/bin/activate && python retag_all.py --dry-run` — paste the dry-run summary in the reply.
-3. After owner sees the dry-run summary in the reply, run `python retag_all.py` (no flag) to actually write.
-4. `python fetcher.py` once on the fresh logic (a normal incremental fetch — confirms new articles get tagged correctly). Paste the last 30 lines of output.
-5. `python scripts/update_session.py --completed "rebuild tag inference engine" --note "Scored, word-boundary matcher with synonym dictionary. Added sport, culture, society tags. Dropped general fallback. Re-tagged all existing articles via retag_all.py."`
-6. Append a `2026-05-02` entry to `docs/changelog.md` listing: new JSON taxonomy, scored matcher, new tags added, re-tag diff numbers from step 3.
-7. Commit message: `feat(tags): scored synonym matcher + retag all articles`
-
-## Output
-Reply with:
-1. Diffs for `src/lib/tag-keywords.ts`, `scripts/fetcher.py`, and the new `scripts/retag_all.py`. Path of new `src/lib/tag-keywords.json`.
-2. Confirmation `npm run lint` passed.
-3. **Dry-run summary** from `retag_all.py --dry-run` (full block).
-4. **Real-run summary** from `retag_all.py` (full block).
-5. Last 30 lines of `python fetcher.py` showing real new-article tagging.
-6. Confirmation `update_session.py` ran AND `docs/changelog.md` was appended.
-7. The commit hash.
-
-## Read First
-- `src/lib/tag-keywords.ts`
-- `scripts/fetcher.py`
-- `scripts/backfill_tags.py` (for the pagination pattern; then delete it)
-- `CLAUDE.md` "Key rules — never break these" (do NOT add columns to `articles` or `tags`)
-
-## Do NOT
-- Do NOT add a `general` fallback tag in either TS or Python.
-- Do NOT keep two divergent keyword lists. The JSON file is the single source of truth.
-- Do NOT use `text.includes(kw)` / `kw in lower` anywhere in the new matcher — word-boundary regex only.
-- Do NOT modify the `articles` or `tags` table schema.
-- Do NOT skip the dry-run step.
-- Do NOT leave `scripts/backfill_tags.py` in the repo after the new script is in (delete it in the same commit).
-- Do NOT cap an article at fewer than 3 tags or more than 3 tags — the cap is exactly 3.
-- Do NOT touch UI components; this task is data-layer + matcher only.

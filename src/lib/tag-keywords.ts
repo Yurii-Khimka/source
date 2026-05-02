@@ -1,53 +1,70 @@
 /**
- * Keyword-based tag matching for articles without DB tags.
- * This is a temporary fallback until the RSS fetcher assigns tags.
+ * Scored tag inference for articles — UI fallback.
+ * Single source of truth: src/lib/tag-keywords.json
  */
 
-const TAG_KEYWORDS: Record<string, string[]> = {
-  economy: ["економік", "економіч", "фінанс", "ринок",
-    "бюджет", "інфляц", "ввп", "валют", "гривн", "нбу", "мвф",
-    "кредит", "торгівл", "експорт", "імпорт",
-    "economy", "economic", "market", "finance", "bank", "inflation", "gdp", "trade"],
-  conflict: ["війна", "конфлікт", "армія", "військ", "оборон",
-    "зеленськ", "зсу", "нато", "фронт", "окупац", "окупант", "ракет", "удар",
-    "наступ", "бригад", "батальйон", "полон", "загибл",
-    "дрон", "ворог", "тцк", "мобілізац", "генштаб", "обстріл",
-    "war", "military", "attack", "conflict", "missile", "defense", "defence", "troops"],
-  ukraine: ["україна", "ukrainian",
-    "київ", "києв", "харків", "харков", "львів", "львов", "одеса", "одес",
-    "маріупол", "донецьк", "запоріжж",
-    "херсон", "сум", "дніпр",
-    "ukraine", "kyiv", "zelenskyy", "zelensky"],
-  europe: ["євросоюз", "євро", "ес ",
-    "europe", "eu", "european", "brussels"],
-  climate: ["клімат", "екологі", "енергетик",
-    "climate", "energy", "green", "carbon", "renewable", "emission"],
-  tech: ["технолог", "наука",
-    "technology", "tech", "ai", "digital", "cyber", "software"],
-  politics: ["політик", "уряд", "влад", "парламент",
-    "міністр", "президент", "кабінет", "верховна рада", "законопроект",
-    "санкц", "дипломат", "посол",
-    "politics", "political", "election", "government", "parliament", "vote"],
-  investigation: ["розслідуван", "investigation", "investigat"],
-  world: ["світ", "міжнародн",
-    "переговор", "саміт", "оон", "g7", "g20",
-    "world", "international", "global", "united nations", "un"],
-};
+import tagData from "./tag-keywords.json";
+
+type TagEntry = { strong: string[]; normal: string[]; negative: string[] };
+const TAG_DATA: Record<string, TagEntry> = tagData;
+
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 export function inferTags(
   title: string,
   description: string | null
 ): { slug: string; name: string }[] {
-  const text = `${title} ${description ?? ""}`.toLowerCase();
-  const matched: { slug: string; name: string }[] = [];
+  const titleLower = title.toLowerCase();
+  const descLower = (description ?? "").toLowerCase();
 
-  for (const [slug, keywords] of Object.entries(TAG_KEYWORDS)) {
-    if (keywords.some((kw) => text.includes(kw))) {
-      matched.push({ slug, name: slug.charAt(0).toUpperCase() + slug.slice(1) });
+  const scores: { slug: string; score: number }[] = [];
+
+  for (const [slug, entry] of Object.entries(TAG_DATA)) {
+    let score = 0;
+
+    // Check negatives first
+    const hasNegative = entry.negative.some(
+      (kw) => titleLower.includes(kw) || descLower.includes(kw)
+    );
+    if (hasNegative) continue;
+
+    // Score strong keywords (weight 3)
+    for (const kw of entry.strong) {
+      const re = new RegExp(
+        "(^|[^\\p{L}\\p{N}])" + escapeRegex(kw) + "\\p{L}*",
+        "iu"
+      );
+      let contribution = 0;
+      if (re.test(titleLower)) contribution += 3 * 3; // weight * title multiplier
+      if (re.test(descLower)) contribution += 3 * 1; // weight * desc multiplier
+      score += Math.min(contribution, 6);
+    }
+
+    // Score normal keywords (weight 1)
+    for (const kw of entry.normal) {
+      const re = new RegExp(
+        "(^|[^\\p{L}\\p{N}])" + escapeRegex(kw) + "\\p{L}*",
+        "iu"
+      );
+      let contribution = 0;
+      if (re.test(titleLower)) contribution += 1 * 3;
+      if (re.test(descLower)) contribution += 1 * 1;
+      score += Math.min(contribution, 6);
+    }
+
+    if (score >= 3) {
+      scores.push({ slug, score });
     }
   }
 
-  return matched.length > 0
-    ? matched
-    : [{ slug: "general", name: "General" }];
+  // Sort descending, take top 3
+  scores.sort((a, b) => b.score - a.score);
+  const top = scores.slice(0, 3);
+
+  return top.map((t) => ({
+    slug: t.slug,
+    name: t.slug.charAt(0).toUpperCase() + t.slug.slice(1),
+  }));
 }

@@ -1,5 +1,6 @@
 """RSS fetcher for The Source — fetches articles from all sources."""
 
+import json
 import os
 import re
 from datetime import datetime, timezone
@@ -61,59 +62,68 @@ def upgrade_guardian_image(url: str) -> str:
     return url
 
 
-# Keyword fallback tagging — matches Ukrainian and English keywords to tags
-TAG_KEYWORDS: dict[str, list[str]] = {
-    "economy":       ["економік", "економіч", "фінанс", "ринок",
-                      "бюджет", "інфляц", "ввп", "валют", "гривн", "нбу", "мвф",
-                      "кредит", "торгівл", "експорт", "імпорт",
-                      "economy", "economic", "market", "finance", "bank", "inflation", "gdp", "trade"],
-    "politics":      ["політик", "уряд", "влад", "парламент",
-                      "міністр", "президент", "кабінет", "верховна рада", "законопроект",
-                      "санкц", "дипломат", "посол",
-                      "politics", "political", "election", "government", "parliament", "vote"],
-    "conflict":      ["війна", "конфлікт", "армія", "військ", "оборон",
-                      "зеленськ", "зсу", "нато", "фронт", "окупац", "окупант", "ракет", "удар",
-                      "наступ", "бригад", "батальйон", "полон", "загибл",
-                      "дрон", "ворог", "тцк", "мобілізац", "генштаб", "обстріл",
-                      "war", "military", "attack", "conflict", "missile", "defense", "defence", "troops"],
-    "investigation": ["розслідуван",
-                      "investigation", "investigat"],
-    "europe":        ["євросоюз", "євро", "ес ",
-                      "europe", "eu", "european", "brussels"],
-    "ukraine":       ["україна", "ukrainian",
-                      "київ", "києв", "харків", "харков", "львів", "львов", "одеса", "одес",
-                      "маріупол", "донецьк", "донецьк", "запоріжж",
-                      "херсон", "сум", "дніпр",
-                      "ukraine", "kyiv", "zelenskyy", "zelensky"],
-    "world":         ["світ", "міжнародн",
-                      "переговор", "саміт", "оон", "g7", "g20",
-                      "world", "international", "global", "united nations"],
-    "tech":          ["технолог", "наука",
-                      "technology", "tech", "ai", "digital", "cyber", "software", "science"],
-    "climate":       ["клімат", "екологі", "енергетик",
-                      "climate", "energy", "green", "carbon", "renewable"],
-}
+# --- Scored tag matcher (single source of truth: src/lib/tag-keywords.json) ---
+
+_JSON_PATH = os.path.join(
+    os.path.dirname(__file__), "..", "src", "lib", "tag-keywords.json"
+)
+with open(_JSON_PATH, encoding="utf-8") as _f:
+    TAG_DATA: dict[str, dict[str, list[str]]] = json.load(_f)
 
 
-def get_tags_from_text(text: str) -> list[str]:
-    """Return list of tag slugs matched by keyword search on arbitrary text."""
-    lower = text.lower()
-    matched = []
-    for slug, keywords in TAG_KEYWORDS.items():
-        if any(kw in lower for kw in keywords):
-            matched.append(slug)
-    return matched
+def _match_keyword(kw: str, text: str) -> bool:
+    """Word-boundary match: kw preceded by non-letter/start, followed by zero+ letters."""
+    pattern = r"(?<!\w)" + re.escape(kw) + r"\w*"
+    return bool(re.search(pattern, text, re.UNICODE | re.IGNORECASE))
 
 
 def infer_tags(title: str, description: str | None) -> list[str]:
-    """Return list of tag slugs matched by keyword search on title + description."""
-    tags = get_tags_from_text(f"{title} {description or ''}")
-    return tags if tags else ["general"]
+    """Return up to 3 tag slugs using the scored word-boundary matcher."""
+    title_lower = title.lower()
+    desc_lower = (description or "").lower()
+
+    scores: list[tuple[str, int]] = []
+
+    for slug, entry in TAG_DATA.items():
+        # Check negatives (substring is fine for small list)
+        has_negative = any(
+            kw in title_lower or kw in desc_lower for kw in entry["negative"]
+        )
+        if has_negative:
+            continue
+
+        score = 0
+
+        # Strong keywords (weight 3)
+        for kw in entry["strong"]:
+            contribution = 0
+            if _match_keyword(kw, title_lower):
+                contribution += 3 * 3  # weight * title multiplier
+            if _match_keyword(kw, desc_lower):
+                contribution += 3 * 1  # weight * desc multiplier
+            score += min(contribution, 6)
+
+        # Normal keywords (weight 1)
+        for kw in entry["normal"]:
+            contribution = 0
+            if _match_keyword(kw, title_lower):
+                contribution += 1 * 3  # weight * title multiplier
+            if _match_keyword(kw, desc_lower):
+                contribution += 1 * 1  # weight * desc multiplier
+            score += min(contribution, 6)
+
+        if score >= 3:
+            scores.append((slug, score))
+
+    # Sort descending by score, take top 3
+    scores.sort(key=lambda x: x[1], reverse=True)
+    return [s[0] for s in scores[:3]]
 
 
 def assign_tags(supabase, article_id: str, tag_slugs: list[str], url: str):
     """Look up or create tags, then link to article via article_tags."""
     if not tag_slugs:
+        print(f"  [tags] {url[:60]} → none (low confidence)")
         return
 
     for slug in tag_slugs:
@@ -238,7 +248,7 @@ def fetch_source(supabase, source):
             if hasattr(entry, "tags") and entry.tags:
                 for t in entry.tags:
                     term = (t.get("term") or "").strip().lower()
-                    if term and term in TAG_KEYWORDS:
+                    if term and term in TAG_DATA:
                         rss_tags.append(term)
 
             # Keyword fallback if RSS categories yielded nothing

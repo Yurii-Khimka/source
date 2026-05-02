@@ -1,5 +1,17 @@
 # SORCE — Changelog
 
+## 2026-05-02 — feat(tags): scored synonym matcher + retag all articles
+- New single source of truth: `src/lib/tag-keywords.json` (12 tags with strong/normal/negative keywords).
+- Replaced naive `text.includes(kw)` with scored word-boundary matcher (Unicode-aware regex, title×3 weighting, per-keyword cap of 6, threshold ≥3, top-3 cap).
+- Added 3 new tags: `sport`, `culture`, `society`.
+- Dropped `general` fallback — articles with no high-confidence match remain untagged.
+- TS (`src/lib/tag-keywords.ts`) and Python (`scripts/fetcher.py`) both read from the same JSON.
+- Re-tagged all 8211 existing articles via `scripts/retag_all.py`:
+  - re-tagged (set diff): 4671
+  - lost all tags (previously general-only): 2075
+  - unchanged: 1465
+- Deleted old `scripts/backfill_tags.py`.
+
 ## 2026-05-02 — fix: revert right-rail Support to direct link; rework mobile profile Support placement
 Right-rail Support widget reverted to direct Donatello link (`target="_blank"`). Mobile profile: removed standalone Support section, added full-width Donate CTA below identity block, moved `/support` menu row into Info section between About and Trust Standards.
 
