@@ -1,5 +1,14 @@
 # SORCE — Changelog
 
+## 2026-05-02 — feat(tags): round 2 vocabulary expansion (regional UA, weather, crime, sport, culture)
+- Untagged: 1232 / 14.8% → 631 / 7.6% (target was < 9%).
+- 605 newly tagged, 1214 re-tagged (set diff), 0 lost all tags.
+- Per-tag totals after re-tag:
+  economy: 826, politics: 1713, conflict: 2430, investigation: 229, europe: 1138,
+  ukraine: 3323, world: 3177, tech: 224, climate: 344, sport: 611, culture: 504, society: 1279.
+- Delta vs previous: ukraine +679, world +195, politics +18, europe +58, society +721, culture +182, sport +72, climate +112, conflict +80, economy +5, tech +3.
+- Clusters addressed: Ukrainian regional oblast names, weather/синоптик vocabulary, crime/courts/police, NHS/health, niche sports (marathon/snooker/chess/fencing/golf/WNBA), celebrity/entertainment names, strikes/layoffs, Pope Leo, Central Asia + African nations, Balkan/Swiss/Moldovan countries.
+
 ## 2026-05-02 — feat(tags): expand keyword vocabulary; add inspector mode
 - Massively expanded `src/lib/tag-keywords.json`: US/UK/EU political vocab, world leaders, country names, sports leagues/clubs/athletes, tech companies, cultural events.
 - Untagged articles: 2075 (25%) → 1230 (14.9%).

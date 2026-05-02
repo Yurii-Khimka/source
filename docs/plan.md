@@ -2,379 +2,412 @@
 _Updated by Claude Chat before each task._
 
 ## Status
-**Active task:** Massively expand the tag-keyword dictionary so far fewer articles end up untagged. Add an untagged-inspector mode to the retag script. Re-run and report the new untagged share. Target: untagged < 8% (currently 25%).
+**Active task:** Round-2 vocabulary expansion. Add hyperlocal Ukrainian region names, weather vocabulary, UK/Ukrainian crime + courts vocabulary, NHS/health vocabulary, more sport (marathon/golf/snooker/chess/WNBA), more culture (named musicians/actors/fashion houses), strikes/layoffs vocabulary, and more world entities (Pope Leo, Central Asia, African nations). Re-run retag, target untagged < 9%.
 
 ## Context
-- Previous task shipped the scored word-boundary matcher (`src/lib/tag-keywords.json` + matcher in `tag-keywords.ts` + `scripts/fetcher.py`). The matcher logic is correct.
-- Re-run results: 8211 total, 4671 re-tagged, 1465 unchanged, **2075 lost all tags**.
-- Concrete failure example: the Guardian article "Steve Hilton: could this British former Fox News host be California's next governor?" with description "The race to succeed Gavin Newsom has teetered wildly, and with Democrats in disarray, the Republican ex-Downing Street adviser is leading in the polls. Can he really pull it off? Few political aspirations have proved more futile over the past two decades than running as a Republican for statewide of…"
-- Words in that article that SHOULD have triggered `politics`: `governor`, `republican`, `republicans`, `democrats`, `downing street`, `polls`, `political aspirations`, `statewide`. Current dict catches only `political` (normal, in description, weight 1) → score 1, threshold 3 → fails.
-- Root cause: the dictionary is thin and Ukraine-centric. It's missing US/UK/EU political vocab, world leaders, country names, sports leagues, big tech companies, etc. This task is a vocabulary expansion, NOT a matcher change.
+- After round 1 expansion: untagged 14.9% (1,232 of 8,311).
+- Tech Lead read the inspector output (100 untagged titles) and identified 4 large clusters and 5 small clusters.
+- Target: < 9% untagged after this round (≈ 750 articles).
+- All additions are **strictly additive** — do not remove or rename existing entries.
 - Per chat.md §13: backfill is mandatory. Re-run the retag script in this same task.
 
 ## Current Task
 
-### Part A — Expand `src/lib/tag-keywords.json`
+### Part A — Append to `src/lib/tag-keywords.json`
 
-REPLACE the existing JSON file with the version below. This adds hundreds of new keywords across all tags — primarily Anglo-American political vocabulary, sports leagues/clubs/figures, tech company names, cultural events, named world leaders, and country names. Preserve the schema exactly: `strong` / `normal` / `negative` per tag.
+For each tag below, MERGE the new keywords into the existing `strong` / `normal` arrays (do NOT replace the whole tag block). Order doesn't matter; deduplicate if any term already exists.
 
-Rules while expanding:
-- Each keyword must be ≥ 3 characters AND not a common English word that appears in unrelated contexts. Word-boundary matching protects us from `bank`-in-`bankrupt`, but does NOT protect us from `pope` matching a real word. Use judgment.
-- Proper nouns (people, parties, leagues, companies, countries) almost always go in `strong`.
-- Generic-but-domain-specific terms (`election`, `match`, `album`) go in `normal`.
-- A keyword may appear in multiple tags (e.g. `putin` in both `world` and `conflict`). That is intentional.
-- Keep the existing 12 tags. Do not add new tags.
-
-```json
-{
-  "economy": {
-    "strong": ["fed", "federal reserve", "нбу", "мвф", "imf", "ecb", "єцб", "world bank", "світовий банк",
-               "інфляц", "inflation", "deflation", "deflate",
-               "tariff", "тариф", "бюджет", "budget", "gdp", "ввп", "gnp", "внп",
-               "interest rate", "rate hike", "rate cut", "ставка нбу", "облікова ставка",
-               "stagflation", "рецесі", "recession", "depression",
-               "s&p 500", "nasdaq", "dow jones", "ftse", "dax", "nikkei", "ux index", "пфтс",
-               "wall street", "уолл стріт", "bitcoin", "біткоїн", "crypto", "крипто", "ethereum"],
-    "normal": ["bank", "банк", "банків", "central bank", "центробанк",
-               "finance", "фінанс", "фінансуван", "loan", "кредит", "mortgage", "іпотек",
-               "market", "ринок", "stock", "акці", "shareholder", "акціонер",
-               "bond", "облігац", "yield", "дохідність",
-               "trade", "торгівл", "export", "експорт", "import", "імпорт", "trade deficit", "торговий дефіцит",
-               "property", "real estate", "нерухомість", "оренд", "housing", "житл",
-               "tax", "податк", "fiscal", "фіскальн", "subsidy", "субсиді", "deficit", "дефіцит",
-               "currency", "валют", "гривн", "євро", "долар", "dollar", "euro", "yen", "єна", "pound", "фунт",
-               "investment", "інвестиц", "ipo", "merger", "acquisition", "злитт", "поглинан",
-               "salary", "зарплат", "pension", "пенсі", "wage", "заробітн",
-               "economy", "economic", "економік", "економіч",
-               "unemployment", "безробітт", "jobs report", "звіт зайнятост",
-               "consumer price", "споживчі ціни", "cpi", "ppi",
-               "supply chain", "ланцюг поставок", "commodity", "товарн",
-               "oil price", "ціна нафт", "gas price", "ціна газ",
-               "fund", "фонд", "etf", "hedge fund", "хедж-фонд",
-               "ceo", "chief executive", "генеральний директор", "директор компані",
-               "earnings", "прибуток", "revenue", "виторг", "quarterly results", "квартальні результати"],
-    "negative": ["central park"]
-  },
-  "politics": {
-    "strong": ["верховна рада", "парламент", "parliament", "congress", "конгрес", "senate", "сенат",
-               "house of representatives", "палата представників",
-               "кабмін", "cabinet of ministers", "cabinet meeting",
-               "election", "вибор", "primary election", "праймериз",
-               "законопроект", "законопроєкт", "bill passed", "veto", "вето",
-               "санкц", "sanction", "імпічмент", "impeachment", "coalition", "коаліці",
-               "republican", "republicans", "gop", "republican party", "республіканц",
-               "democrat", "democrats", "democratic party", "демократичн парті",
-               "tory", "tories", "conservative party", "консервативн парті",
-               "labour party", "лейборист", "labor party",
-               "liberal democrats", "lib dems", "ліберал-демократ",
-               "downing street", "даунінг-стріт", "10 downing", "no 10",
-               "white house", "білий дім", "оval office", "овальний кабінет",
-               "elysee", "єлисейський палац", "bundestag", "бундестаг",
-               "duma", "дума", "kremlin", "кремль",
-               "supreme court", "верховний суд",
-               "trump", "трамп", "biden", "байден", "harris", "гарріс", "vance", "венс",
-               "starmer", "стармер", "sunak", "сунак", "macron", "макрон",
-               "scholz", "шольц", "merz", "мерц", "meloni", "мелоні",
-               "zelensky", "zelenskyy", "зеленськ", "yermak", "єрмак",
-               "speaker of the house", "спікер палати"],
-    "normal": ["політик", "політич", "politics", "political",
-               "уряд", "government", "влад", "міністр", "minister", "secretary of state",
-               "президент", "president", "prime minister", "прем'єр",
-               "governor", "губернатор", "mayor", "мер ", "senator", "сенатор", "congressman", "congresswoman",
-               "deputy", "депутат", "mp ", " mp.", " mps ", "member of parliament",
-               "посол", "ambassador", "дипломат", "diplomat", "envoy",
-               "vote", "voter", "voting", "голосуван", "ballot", "бюлетень", "polls", "polling",
-               "policy", "політика", "campaign", "кампані", "rally", "мітинг",
-               "speaker", "спікер", "chairman", "голова комітету",
-               "treaty", "договір", "agreement signed", "угоду підписан",
-               "bipartisan", "двопартійн", "partisan", "партійн",
-               "candidate", "кандидат", "incumbent", "чинний",
-               "caucus", "кокус", "constituency", "виборчий округ",
-               "statewide", "general election", "загальні вибори"],
-    "negative": []
-  },
-  "conflict": {
-    "strong": ["війна", "war in", "war on", "missile", "ракет", "drone strike", "удар дрон",
-               "frontline", "фронт", "occupation", "окупац", "окупант",
-               "генштаб", "general staff", "зсу", "afu", "armed forces of ukraine",
-               "shelling", "обстріл", "ceasefire", "перемир", "armistice", "ceasefire deal",
-               "casualti", "загибл", "killed in", "wounded in", "поранен", "killed by russian", "loss of life",
-               "patriot system", "patriot missile", "himars", "хаймарс",
-               "kalibr", "калібр", "iskander", "іскандер", "atacms",
-               "kursk offensive", "курська область", "donbas", "донбас",
-               "wagner group", "вагнер", "kadyrov", "кадиров",
-               "putin", "путін", "shoigu", "шойгу", "gerasimov", "герасимов",
-               "f-16", "leopard tank", "abrams", "challenger 2",
-               "war crime", "військовий злочин", "geneva convention", "женевська конвенці",
-               "nato membership", "членство в нато", "nato summit", "саміт нато"],
-    "normal": ["military", "військов", "армія", "army", "navy", "військово-морські",
-               "battalion", "батальйон", "brigade", "бригад", "regiment", "полк",
-               "оборон", "defense", "defence", "attack", "атак", "strike on", "удар по",
-               "наступ", "offensive", "counteroffensive", "контрнаступ", "withdraw", "відступ",
-               "дрон", "drone", "uav", "бпла",
-               "tank", "танк", "shahed", "шахед", "kamikaze drone", "дрон-камікадзе",
-               "тцк", "мобілізац", "mobilization", "conscript", "призов",
-               "ворог", "enemy", "polon", "полон", "pow", "prisoner of war", "військовополонен",
-               "artillery", "артилері", "shell", "снаряд",
-               "trench", "окоп", "minefield", "мінне поле",
-               "command post", "командний пункт", "headquarters", "штаб",
-               "soldier", "солдат", "marine", "морпіх", "veteran", "ветеран"],
-    "negative": []
-  },
-  "investigation": {
-    "strong": ["розслідуван", "investigation", "investigative report",
-               "anti-corruption", "антикорупц", "набу", "nabu", "назк", "nazk", "сап", "sapo",
-               "leaked documents", "злив документ", "exposé", "expose", "exposed", "whistleblower", "викривач",
-               "panama papers", "pandora papers", "fbi probe", "розслідування фбр",
-               "indictment", "обвинувальн висновок", "grand jury", "велике журі",
-               "money laundering", "відмиван грошей", "tax evasion", "ухилення від податків",
-               "оffshore account", "офшорний рахунок"],
-    "normal": ["bribe", "хабар", "embezzle", "розкрадан", "fraud", "шахрайств",
-               "scheme", "схем", "kickback", "відкат",
-               "inquiry", "розслідуванн", "audit", "аудит",
-               "criminal case", "кримінальна справ", "charges filed", "пред'явлено обвинувачен",
-               "subpoena", "повістк до суду", "deposition", "свідчення під присягою"],
-    "negative": []
-  },
-  "europe": {
-    "strong": ["євросоюз", "european union", "european commission", "єврокомісі",
-               "брюссель", "brussels", "europarliament", "європарламент",
-               "schengen", "шенген", "council of europe", "рада європи",
-               "von der leyen", "фон дер ляєн", "borrell", "боррель", "kallas", "каллас",
-               "european parliament", "європейський парламент",
-               "ec president", "президент єврокомісії",
-               "eu council", "рада єс", "european council",
-               "eu accession", "вступ до єс",
-               "europol", "європол", "frontex", "фронтекс"],
-    "normal": ["eu ", " eu.", "(eu)", "європейськ", "european", "europe",
-               "germany", "німеччин", "berlin", "берлін",
-               "france", "франці", "paris", "париж",
-               "poland", "польщ", "warsaw", "варшав",
-               "italy", "італі", "rome", "рим",
-               "spain", "іспані", "madrid", "мадрид",
-               "netherlands", "нідерланд", "amsterdam", "амстердам",
-               "belgium", "бельгі", "sweden", "швеці", "finland", "фінлянді",
-               "denmark", "дані", "norway", "норвегі", "ireland", "ірланді",
-               "austria", "австрі", "vienna", "відень", "greece", "греці",
-               "portugal", "португалі", "lisbon", "лісабон",
-               "hungary", "угорщин", "orban", "орбан",
-               "czech republic", "чехі", "slovakia", "словаччин",
-               "romania", "румуні", "bulgaria", "болгарі",
-               "lithuania", "литв", "latvia", "латві", "estonia", "естоні",
-               "uk ", " uk.", "(uk)", "britain", "британі", "british", "британськ", "london", "лондон"],
-    "negative": []
-  },
-  "ukraine": {
-    "strong": ["україна", "україн", "ukrainian", "ukraine",
-               "зеленськ", "zelensky", "zelenskyy",
-               "київ", "києв", "kyiv", "kiev",
-               "verkhovna rada", "ермак", "yermak",
-               "shmyhal", "шмигаль", "kuleba", "кулеба",
-               "umerov", "умеров", "syrskyi", "сирський",
-               "naftogaz", "нафтогаз", "ukrenergo", "укренерго"],
-    "normal": ["харків", "kharkiv", "львів", "lviv", "одес", "odesa", "odessa",
-               "маріупол", "mariupol", "донецьк", "donetsk", "запоріжж", "zaporizhzhia",
-               "херсон", "kherson", "сум", "sumy", "дніпр", "dnipro", "миколаїв", "mykolaiv",
-               "крим", "crimea", "донбас", "donbas", "луганськ", "luhansk",
-               "вінниц", "vinnytsia", "чернігів", "chernihiv", "полтав", "poltava",
-               "житомир", "zhytomyr", "івано-франківськ", "ivano-frankivsk",
-               "тернопіль", "ternopil", "черкас", "cherkasy", "ужгород", "uzhhorod",
-               "hryvnia", "гривня"],
-    "negative": []
-  },
-  "world": {
-    "strong": ["united nations", " un ", " un.", "(un)", "оон", "g7", "g20", "g-7", "g-20",
-               "summit", "саміт", "treaty", "договір", "bilateral talks", "двосторонні переговори",
-               "white house", "білий дім", "kremlin", "кремль",
-               "putin", "путін", "trump", "трамп", "xi jinping", "сі цзіньпін",
-               "modi", "моді", "lula", "лула",
-               "netanyahu", "нетаньягу", "erdogan", "ердоган",
-               "israel", "ізраїль", "palestine", "палестин", "gaza", "газ",
-               "hamas", "хамас", "hezbollah", "хезболл",
-               "iran", "іран", "north korea", "північна коре", "kim jong", "кім чен",
-               "russia", "росі", "moscow", "москв",
-               "china", "китай", "beijing", "пекін", "taiwan", "тайвань",
-               "saudi arabia", "саудівська арабі", "uae", "оае",
-               "syria", "сирі", "yemen", "ємен", "lebanon", "ліван"],
-    "normal": ["міжнародн", "international", "global", "world",
-               "foreign", "іноземн", "foreign minister", "міністр закордонних",
-               "сша", "usa", "u.s.", "united states", "america",
-               "india", "індія", "japan", "японі", "tokyo", "токіо",
-               "canada", "канад", "ottawa", "оттав", "trudeau", "трюдо", "carney", "карні",
-               "mexico", "мексик", "brazil", "бразилі", "argentina", "аргентин",
-               "south korea", "південна коре", "seoul", "сеул",
-               "australia", "австралі", "new zealand", "нова зеландія",
-               "africa", "африк", "egypt", "єгипет", "south africa", "пар",
-               "embassy", "посольств", "consulate", "консульств",
-               "diplomatic relations", "дипломатичні відносин",
-               "geopolitics", "геополітик"],
-    "negative": []
-  },
-  "tech": {
-    "strong": ["artificial intelligence", "штучний інтелект", "machine learning", "машинне навчання",
-               "openai", "anthropic", "chatgpt", "claude ai", "gemini ai",
-               "llm", "large language model", "велика мовна модель",
-               "startup", "стартап", "venture capital", "венчурний капітал",
-               "cybersecurity", "кібербезпек", "cyberattack", "кібератак", "ransomware", "вірус-вимагач",
-               "semiconductor", "напівпровідник", "chipmaker", "виробник чипів",
-               "quantum computing", "квантові обчислення",
-               "tesla inc", "spacex", "starlink", "старлінк",
-               "nvidia", "amd ", "intel corp", "tsmc",
-               "iphone", "macbook", "android", "ios update", "windows 11", "windows 12",
-               "google", "apple", "microsoft", "meta platforms", "facebook", "instagram",
-               "x.com", "twitter", "tiktok", "youtube"],
-    "normal": ["technology", "технолог", "software", "програмне забезпечення",
-               "hardware", "обладнанн", "app ", "застосунок", "platform", "платформ",
-               "hack", "хак", "data breach", "витік даних", "phishing", "фішинг",
-               "наука", "science", "research", "досліджен", "scientist", "вчений",
-               "robot", "робот", "automation", "автоматизаці",
-               "blockchain", "блокчейн", "smart contract", "смарт-контракт",
-               "cloud computing", "хмарні обчислення", "saas",
-               "developer", "розробник", "engineer", "інженер",
-               "patent", "патент", "innovation", "інноваці",
-               "5g", "broadband", "широкосмуговий", "internet", "інтернет"],
-    "negative": ["said", "again", "pair", "main", "fail", "rain"]
-  },
-  "climate": {
-    "strong": ["клімат", "climate change", "climate crisis", "global warming", "глобальне потепління",
-               "carbon emission", "викиди вуглецю", "co2 emission", "net zero", "нульові викиди",
-               "renewable energy", "відновлювальна енергі",
-               "paris agreement", "паризька угода", "cop28", "cop29", "cop30",
-               "ipcc", "міжурядова група з питань зміни клімату",
-               "fossil fuel", "викопне паливо", "coal phase-out", "відмова від вугілля",
-               "greenhouse gas", "парниковий газ"],
-    "normal": ["екологі", "ecology", "environment", "довкілля", "ecosystem", "екосистем",
-               "energy", "енергетик", "wind farm", "вітрова електростанці",
-               "solar", "сонячн", "solar panel", "сонячна панель",
-               "electric vehicle", "електромобіль", "ev ",
-               "flood", "повінь", "wildfire", "пожеж", "drought", "посух",
-               "heatwave", "спек", "hurricane", "ураган", "typhoon", "тайфун",
-               "temperature record", "температурний рекорд",
-               "biodiversity", "біорізноманітт", "deforestation", "вирубка лісів",
-               "pollution", "забрудненн", "plastic waste", "пластикові відходи",
-               "recycling", "переробка"],
-    "negative": []
-  },
-  "sport": {
-    "strong": ["football", "футбол", "uefa", "уєфа", "fifa", "фіфа",
-               "olympic games", "олімпійські ігри", "olympics", "олімпіад",
-               "world cup", "чемпіонат світу", "euro 2024", "євро 2024", "euro 2028",
-               "champions league", "ліга чемпіонів", "europa league", "ліга європи",
-               "premier league", "прем'єр-ліга", "la liga", "ла ліга",
-               "serie a", "серія а", "bundesliga", "бундесліга", "ligue 1", "ліга 1",
-               "усик", "usyk", "shevchenko", "шевченко", "ломаченко", "lomachenko",
-               "messi", "мессі", "ronaldo", "роналду", "mbappe", "мбаппе", "haaland", "холанд",
-               "djokovic", "джокович", "alcaraz", "алькарас", "sinner", "сіннер",
-               "tennis", "теніс", "wimbledon", "вімблдон", "us open", "roland garros", "ролан гаррос",
-               "boxing", "бокс", "heavyweight title", "титул важковаговик",
-               "mma", "ufc", "юфс",
-               "f1", "formula 1", "формула 1", "grand prix", "гран-прі",
-               "nba", "нба", "nfl", "нфл", "mlb ", "nhl", "нхл"],
-    "normal": ["match", "матч", "goal scored", "гол", "tournament", "турнір",
-               "champion", "чемпіон", "title", "титул", "trophy", "трофей",
-               "coach", "тренер", "player", "гравець", "manager", "менеджер",
-               "real madrid", "barcelona", "барселон", "manchester united", "manchester city",
-               "liverpool", "ліверпул", "chelsea", "челсі", "arsenal", "арсенал",
-               "psg", "bayern munich", "баварі", "juventus", "ювентус", "milan",
-               "динамо київ", "шахтар",
-               "athlete", "спортсмен", "stadium", "стадіон", "arena", "арена",
-               "league", "ліг", "season", "сезон",
-               "transfer", "трансфер", "contract signed", "підписав контракт",
-               "score", "рахунок", "scoreline", "результат матчу",
-               "referee", "арбітр", "penalty kick", "пенальті"],
-    "negative": []
-  },
-  "culture": {
-    "strong": ["eurovision", "євробачен", "oscar", "оскар", "academy award", "премія оскар",
-               "cannes", "канн", "venice film festival", "венеційський кінофестиваль",
-               "berlinale", "берлінале", "sundance", "санденс",
-               "grammy", "греммі", "emmy", "еммі", "tony award", "tony awards",
-               "nobel prize", "нобелівська преміі", "booker prize", "букерівська премія",
-               "exhibition", "виставк", "premiere", "прем'єр",
-               "met gala", "мет гала", "fashion week", "тиждень моди"],
-    "normal": ["music", "музик", "song released", "пісня вийшла",
-               "film", "фільм", "movie", "кіно", "cinema", "кінотеатр",
-               "book", "книг", "novel", "роман", "memoir", "мемуар",
-               "art", "мистецтв", "painting", "картин", "sculpture", "скульптур",
-               "theatre", "theater", "театр", "play", "вистав",
-               "concert", "концерт", "tour announced", "оголошено тур",
-               "album released", "альбом", "single released", "сингл",
-               "director", "режисер", "actor", "актор", "actress", "актрис",
-               "writer", "письменник", "poet", "поет",
-               "museum", "музей", "gallery", "галере",
-               "festival", "фестиваль", "celebrity", "знаменитість"],
-    "negative": []
-  },
-  "society": {
-    "strong": ["education reform", "освітня реформ", "healthcare reform", "медична реформ",
-               "covid", "covid-19", "pandemic", "пандемі",
-               "human rights", "права людини", "lgbt", "лгбт",
-               "religion", "релігі", "церкв", "church", "vatican", "ватикан", "pope francis", "папа франциск",
-               "abortion", "аборт", "gender equality", "гендерна рівність",
-               "domestic violence", "домашнє насильство", "femicide", "фемініцид"],
-    "normal": ["school", "школ", "university", "університет", "student", "студент",
-               "teacher", "вчитель", "professor", "професор",
-               "hospital", "лікарн", "doctor", "лікар", "nurse", "медсестр",
-               "vaccine", "вакцин", "vaccination", "вакцинаці", "outbreak", "спалах",
-               "accident", "аварі", "car crash", "автокатастроф",
-               "fire broke out", "пожеж", "rescue", "порятун",
-               "protest", "протест", "rally", "мітинг", "demonstration", "демонстраці",
-               "society", "суспільств", "community", "громад",
-               "migration", "міграці", "refugee", "біженц", "asylum", "притулок",
-               "homeless", "безхатченк", "poverty", "бідність",
-               "mental health", "психічне здоров'я", "depression", "депресі",
-               "drug overdose", "передозуван"],
-    "negative": []
-  }
-}
+**`ukraine`** — Add to `normal` (regional Ukrainian names + administrative terms):
+```
+"луцьк", "lutsk", "рівне", "rivne", "рівненщин", "рівненськ",
+"чернівці", "chernivtsi", "чернівецьк", "буковин",
+"тернопіл", "ternopil", "тернопільщин",
+"хмельницьк", "khmelnytskyi", "хмельниччин", "поділл",
+"кіровоградськ", "кіровоград", "kropyvnytskyi", "кропивницьк",
+"житомир", "zhytomyr", "житомирщин",
+"волин", "volyn", "волинськ",
+"закарпатт", "закарпатськ", "transcarpathia", "ужгородськ",
+"прикарпатт", "івано-франківщин", "прикарпатськ",
+"черкащин", "cherkasy region", "черкаськ",
+"чернігівщин", "chernihiv region",
+"харківщин", "kharkiv region", "kharkivshchyna",
+"львівщин", "lviv region", "галичин", "galicia",
+"одещин", "odesa region",
+"донеччин", "donetsk region",
+"луганщин", "luhansk region",
+"запоріжськ", "zaporizhzhia region",
+"полтавщин", "poltava region",
+"вінниччин", "vinnytsia region",
+"сумщин", "sumy region",
+"миколаївщин", "mykolaiv region",
+"херсонщин", "kherson region",
+"кам'янц", "kamianets",
+"новоград-волинськ", "новоград",
+"слов'янськ", "sloviansk", "краматорськ", "kramatorsk",
+"ічн", "ichnia", "прилуч", "pryluky",
+"малин", "malyn", "коростень", "korosten",
+"ковельськ", "kovel", "новий світ",
+"район", "області", "обласн", "обласної", "обласна",
+"селищ", "село", "village in ukraine",
+"переселенц", "internally displaced", "внутрішньо переміщ",
+"днр", "dnr", "lpr", "лнр", "донецька народна", "луганська народна",
+"бойовик", "колаборант", "collaborator",
+"волонтер", "volunteer in ukraine",
+"укрзалізниц", "ukrzaliznytsia", "ukravtodor", "укравтодор",
+"приватбанк", "privatbank", "ощадбанк", "oschadbank", "монобанк", "monobank"
 ```
 
-### Part B — Add an `--inspect` mode to `scripts/retag_all.py`
+**`society`** — Add to `normal` (weather, crime/courts, NHS/health, social, strikes):
+```
+"погода", "weather forecast", "прогноз погоди",
+"дощ", "rainfall", "сильний дощ",
+"вітер", "wind gust", "пориви вітру",
+"заморозк", "frost", "ground frost",
+"шквал", "squall", "штормове попередженн", "storm warning",
+"синоптик", "weather service", "meteorologist",
+"снігопад", "snowfall", "ожеледиц", "ice on roads",
+"спека", "heatwave warning", "cold snap",
+"туман", "fog warning",
 
-Add a new flag `--inspect` (mutually exclusive with `--dry-run` and the default real-run).
+"затримал", "detained suspect", "затримано",
+"обшук", "search warrant", "raid", "police raid",
+"підозр", "suspect in custody", "suspected of",
+"засудил", "засудж", "sentenced to", "given prison",
+"кримінальн", "criminal case opened", "criminal proceedings",
+"вирок", "verdict", "guilty verdict",
+"в'язниц", "prison sentence", "behind bars",
+"ув'язненн", "imprisonment",
+"тюрм", "jail term", "jailed for",
+"покаранн", "punishment",
+"поліці", "police arrested", "police investigation", "правоохоронц", "law enforcement",
+"слідств", "investigators say",
+"викраденн", "abduction", "kidnapping", "kidnap",
+"крадіжк", "theft", "stolen",
+"шахрайств", "scam", "scammer",
 
-Behavior of `--inspect`:
-1. Run the matcher on every article (no DB writes).
-2. Collect every article that the new matcher would leave with zero tags.
-3. Print the count, then print the **first 50 untagged article titles + first 120 chars of description**, one per line, in this format:
-   ```
-   [untagged] <title>
-              <description excerpt>
-   ```
-4. This is the diagnostic loop: we eyeball what's still missing and add to the JSON next iteration.
+"rape", "raped", "rapist", "sexual assault", "sexual abuse",
+"jailed", "found guilty", "pleaded guilty", "convicted of",
+"sentenced", "manslaughter", "homicide", "murder", "murdered",
+"gang", "gangs", "shooter", "mass shooting", "school shooting",
+"gun violence", "knife attack", "knife crime", "stabbing",
+"assault", "domestic abuse", "harassment", "stalking",
+"missing person", "missing girl", "missing boy",
+"died at", "died in", "found dead", "killed in crash",
+"car crash", "crash death", "fatal accident",
+"house fire", "killed in fire", "fire crews", "rescued from",
 
-### Part C — Run order
-1. Edit `src/lib/tag-keywords.json` per Part A.
-2. `npm run lint`.
-3. `cd scripts && source venv/bin/activate && python retag_all.py --inspect` — paste the **count** and the **first 50 lines** of the inspector output in your reply.
-4. `python retag_all.py --dry-run` — paste the dry-run summary.
-5. `python retag_all.py` — paste the real-run summary.
-6. `python fetcher.py` — paste the last 30 lines.
-7. `python scripts/update_session.py --completed "expand tag keyword vocabulary" --note "Added US/UK/EU political vocab, world leaders, country names, sports leagues+clubs+athletes, tech companies, cultural events. Added --inspect mode to retag_all.py."`
-8. Append a `2026-05-02` entry to `docs/changelog.md` with: untagged count before (2075) → after (X), per-tag totals delta, and the new untagged share %.
-9. Commit message: `feat(tags): expand keyword vocabulary; add inspector mode`
+"nhs", "nhs waiting list", "waiting list", "waiting times",
+"gene therapy", "stem cell", "clinical trial",
+"hiv", "aids", "diabetes", "cancer", "tumour", "tumor",
+"alzheimer", "dementia", "stroke", "heart attack",
+"surgery", "transplant", "dialysis",
+"allergi", "asthma", "autism",
+"opioid", "fentanyl", "addiction", "overdose", "drug overdose",
+"mental health", "anxiety", "suicide", "self-harm",
+"obesity", "bmi", "diet", "nutrition",
+"baby", "newborn", "infant", "toddler", "teenager", "teen",
+"mother", "father", "parent", "single mother", "single parent",
+"family of", "father of", "mother of", "couple from",
+
+"strike", "on strike", "go on strike", "walkout", "picket",
+"trade union", "профспілк", "trade unions",
+"labour dispute", "labor dispute", "industrial action",
+"страйк", "забастовк",
+"lufthansa", "vereinigung cockpit", "ver.di",
+"rmt union", "asef", "unison",
+
+"social media ban", "online safety", "screen time",
+"food allergy", "food poisoning", "food recall",
+"contaminated", "contamination",
+"evacuation", "evacuated",
+"animal rescue", "rescued animal", "stray dog", "stray cat"
+```
+
+**`investigation`** — Add to `normal`:
+```
+"поліц затримал", "обшук на",
+"undercover", "secretly filmed", "hidden camera",
+"sting operation",
+"corruption probe", "корупційне розслідуван",
+"shell company", "підставна компані"
+```
+
+**`sport`** — Add to `strong` (marquee names/leagues):
+```
+"london marathon", "boston marathon", "marathon runner",
+"snooker", "ronnie o'sullivan", "o'sullivan",
+"crucible", "world snooker championship",
+"golf", "golfer", "pga tour", "pga championship",
+"masters tournament", "the masters", "augusta national",
+"tiger woods", "rory mcilroy", "scottie scheffler",
+"wnba", "ncaa", "ncaa final four",
+"chess", "world chess championship", "fide",
+"magnus carlsen", "gukesh", "ding liren",
+"fencing", "world fencing", "miles chamley-watson",
+"cricket", "test cricket", "ipl", "indian premier league",
+"rugby", "six nations", "world rugby",
+"swimming championship", "athletics championship",
+"track and field",
+"hamilton f1", "verstappen", "leclerc", "norris", "russell f1",
+"burnley", "wolverhampton wanderers", "wolves fc", "leeds united",
+"newcastle united", "tottenham", "spurs",
+"relegated", "relegation", "promoted to premier league",
+"fa cup", "carabao cup", "copa america", "concacaf"
+```
+
+Add to `normal`:
+```
+"championship", "championship next season",
+"squad announcement", "starting xi",
+"mid-race", "marathon debut",
+"olympic medal", "медал", "gold medal", "silver medal", "bronze medal",
+"caps for", "international debut",
+"penalty shootout", "extra time",
+"racing", "race winner",
+"kickoff", "kick off", "halftime"
+```
+
+**`culture`** — Add to `strong`:
+```
+"drake", "iceman album", "drake's iceman",
+"foo fighters", "dave grohl",
+"daft punk", "thomas bangalter",
+"taylor swift", "beyonce", "beyoncé", "kendrick lamar",
+"billie eilish", "olivia rodrigo", "the weeknd", "dua lipa",
+"timothée chalamet", "chalamet",
+"charlize theron", "antonio banderas", "puss in boots",
+"meryl streep", "tom hanks", "scarlett johansson",
+"leonardo dicaprio", "ryan gosling",
+"martin scorsese", "christopher nolan", "greta gerwig",
+"ballet", "balerino", "балет",
+"opera", "опер",
+"jazz", "джаз", "hip hop", "хіп-хоп",
+"rapper", "репер", "pop star", "поп-зірк",
+"singer", "співак", "співачк", "songwriter",
+"fashion week", "тиждень моди",
+"bulgari", "ritz-carlton", "louis vuitton", "lv ", "gucci", "prada", "chanel",
+"hermès", "dior", "yves saint laurent", "ysl",
+"streaming series", "netflix series", "hbo series", "disney+ series"
+```
+
+Add to `normal`:
+```
+"album review", "single dropped", "music video",
+"tour dates announced", "concert review",
+"box office", "premiered at",
+"fashion show", "runway show",
+"art installation", "art exhibition", "виставка картин",
+"poet", "поетес",
+"memoir", "autobiography",
+"sculptor", "скульптор",
+"choreographer", "хореограф",
+"composer", "композитор"
+```
+
+**`tech`** — Add to `strong`:
+```
+"layoff", "layoffs", "lays off", "laid off",
+"mass layoffs", "job cuts at",
+"musk", "елон маск", "elon musk",
+"sam altman", "mark zuckerberg", "jeff bezos",
+"sundar pichai", "satya nadella", "tim cook",
+"deepmind", "google deepmind",
+"mistral ai", "perplexity ai", "perplexity",
+"agi", "artificial general intelligence",
+"oracle corporation", "oracle cloud",
+"salesforce", "snowflake inc",
+"android update", "ios 18", "ios 19", "ios 20",
+"vision pro", "apple vision",
+"openai gpt", "gpt-4", "gpt-5", "gpt-6", "claude opus", "claude sonnet",
+"data center", "ai data center",
+"robotaxi", "self-driving"
+```
+
+Add to `normal`:
+```
+"engineer", "developer", "designer",
+"product launch", "product release",
+"venture round", "series a", "series b", "series c",
+"unicorn startup",
+"tech earnings", "ai chip", "gpu", "tpu"
+```
+
+**`economy`** — Add to `strong`:
+```
+"antitrust", "monopoly ruling", "antitrust case",
+"ticketmaster", "live nation", "antitrust verdict",
+"layoff announced", "thousands of layoffs",
+"cost of living", "вартість життя",
+"jobs report", "non-farm payrolls", "nfp report",
+"retail sales", "consumer confidence",
+"profit warning", "earnings call",
+"stock split", "share buyback",
+"treasury yield", "10-year treasury", "bond yield",
+"economic forecast", "economic outlook",
+"trade war", "торгова війна"
+```
+
+Add to `normal`:
+```
+"household income", "median income", "median wage",
+"hike in prices", "price hike", "price cut",
+"job market", "ринок праці",
+"shareholder meeting", "annual general meeting",
+"profitability", "operating margin", "gross margin",
+"earnings beat", "earnings miss",
+"refinanc", "рефінансуванн",
+"liquidity", "ліквідніст",
+"insolvency", "банкрутств", "bankruptcy",
+"funding round", "раунд фінансуван"
+```
+
+**`climate`** — Add to `strong` (severe weather events):
+```
+"weather warning", "severe weather", "extreme weather",
+"polar vortex", "arctic blast",
+"tornado", "торнадо",
+"flash flood", "повінь", "blizzard", "сніжна буря",
+"avalanche", "лавин",
+"drought", "посух", "wildfire season",
+"melting glaciers", "льодовик тане",
+"sea level rise", "підвищення рівня моря"
+```
+
+Add to `normal`:
+```
+"snowfall", "снігопад",
+"frost warning", "заморозк", "ground frost",
+"heatwave", "спека", "heat record",
+"cold snap", "cold front",
+"meteorologist", "weather service", "national weather service",
+"storm warning", "штормове попередженн",
+"forecast", "прогноз погоди"
+```
+
+(Yes — basic weather words are in BOTH `society` and `climate`. That is intentional: hyperlocal weather news gets `society`+`ukraine`, while extreme/global climate events get `climate`. Top-3 cap handles overlap.)
+
+**`world`** — Add to `strong`:
+```
+"pope leo", "pope leo xiv", "pontiff", "папа леон", "папа леон xiv",
+"holy see", "святий престол", "vatican city",
+"equatorial guinea", "senegal", "dakar", "ethiopia", "kenya", "nigeria",
+"democratic republic of congo", "drc", "ivory coast", "côte d'ivoire",
+"morocco", "algeria", "tunisia", "libya", "lybia",
+"singapore", "сінгапур",
+"uzbekistan", "узбекистан", "tashkent", "ташкент", "bukhara", "бухар",
+"kazakhstan", "казахстан", "astana", "астан", "almaty", "алмати",
+"turkmenistan", "туркменистан", "tajikistan", "таджикистан", "kyrgyzstan", "киргизстан",
+"central asia", "центральна азія",
+"mongolia", "монголі", "armenia", "вірмені", "azerbaijan", "азербайджан",
+"georgia (country)", "тбілісі", "tbilisi",
+"indonesia", "індонезі", "jakarta", "джакарта",
+"philippines", "філіппін", "manila", "маніл",
+"vietnam", "в'єтнам", "thailand", "таїланд", "bangkok", "бангкок",
+"malaysia", "малайзі", "myanmar", "м'янм", "burma",
+"pakistan", "пакистан", "islamabad", "ісламабад",
+"bangladesh", "бангладеш",
+"paraguay", "парагвай", "uruguay", "уругвай",
+"venezuela", "венесуел", "colombia", "колумбі",
+"chile", "чилі", "peru", "перу",
+"turkey", "туреччин", "ankara", "анкар", "istanbul", "стамбул",
+"erdogan", "ердоган",
+"antalya diplomacy forum",
+"cold war", "холодна війн", "post-soviet", "пострадянськ"
+```
+
+Add to `normal`:
+```
+"africa", "африк", "north africa", "sub-saharan",
+"latin america", "латинська америка", "south america", "південна америка",
+"asia pacific", "азіатсько-тихоокеанськ",
+"middle east", "близький схід",
+"caribbean", "карибськ",
+"global south", "глобальний південь",
+"un security council", "радбез оон",
+"international court", "міжнародний суд",
+"world bank report", "imf report"
+```
+
+**`europe`** — Add to `strong`:
+```
+"channel migrant", "channel crossing", "channel crossings",
+"english channel", "ла-манш",
+"riot police", "riot-trained police",
+"dover", "дувр", "calais", "кале",
+"eurozone", "єврозон"
+```
+
+Add to `normal`:
+```
+"slovenia", "словені", "croatia", "хорваті", "bosnia", "боснія",
+"serbia", "сербі", "belgrade", "белград",
+"montenegro", "чорногорі", "podgorica", "подгориц",
+"north macedonia", "північна македонія",
+"albania", "албані", "kosovo", "косово",
+"moldova", "молдов", "chisinau", "кишинів",
+"iceland", "ісланді", "luxembourg", "люксембург",
+"swiss", "switzerland", "швейцарі", "bern", "берн",
+"european court of human rights", "echr",
+"european investment bank", "eib"
+```
+
+**`politics`** — Add to `strong`:
+```
+"mandelson", "mandelson vetting", "lord mandelson",
+"chief of staff", "глава апарату",
+"vetting row", "vetting process",
+"reshuffle", "cabinet reshuffle", "перестановки в уряді",
+"snap election", "позачергові вибори",
+"no-confidence vote", "вотум недовіри",
+"shadow cabinet", "тіньовий кабінет",
+"keir starmer", "rishi sunak", "kemi badenoch",
+"angela rayner", "yvette cooper",
+"jd vance", "marco rubio", "rfk jr", "kennedy jr"
+```
+
+Add to `normal`:
+```
+"front pages", "front page",
+"the papers", "newspaper review",
+"opinion poll", "ipsos poll", "yougov poll",
+"approval rating", "рейтинг довіри",
+"focus group", "фокус-група"
+```
+
+### Part B — Re-run
+
+1. `npm run lint`.
+2. `cd scripts && source venv/bin/activate && python retag_all.py --dry-run` — paste the dry-run summary.
+3. `python retag_all.py` — paste the real-run summary.
+4. `python retag_all.py --inspect` — paste the **count + first 30 untagged titles** (sample, not all 50). This is so the Tech Lead can quickly judge whether another round is worth it.
+5. `python fetcher.py` — paste the last 30 lines.
+
+### Part C — Ship
+
+1. `python scripts/update_session.py --completed "round 2 tag vocabulary expansion" --note "Added Ukrainian regional names, weather, crime/courts, NHS/health, strikes, marathon/golf/snooker/chess/WNBA, named musicians/actors/fashion houses, layoffs, Pope Leo, Central Asia + African nations. Untagged dropped from 14.9% to <target>%."`
+2. Append a `2026-05-02` entry to `docs/changelog.md` with: untagged before (1232 / 14.9%) → after (X / Y%), per-tag totals delta vs previous run, and one-line note on which clusters moved.
+3. Commit message: `feat(tags): round 2 vocabulary expansion (regional UA, weather, crime, sport, culture)`
 
 ## Output
 Reply with:
-1. Diff for `src/lib/tag-keywords.json` (just the size delta is fine if it's huge — confirm "replaced wholesale per plan").
-2. Diff for `scripts/retag_all.py` (the new `--inspect` block).
-3. Confirmation `npm run lint` passed.
-4. **Inspector output**: count of untagged + first 50 lines.
-5. Dry-run summary.
-6. Real-run summary.
-7. Last 30 lines of `python fetcher.py`.
-8. Confirmation `update_session.py` ran AND `docs/changelog.md` was appended.
-9. The commit hash.
+1. Confirmation `src/lib/tag-keywords.json` was extended (NOT replaced) — show new size in lines and a few sample new entries from each tag block to prove they were merged.
+2. Confirmation `npm run lint` passed.
+3. Dry-run summary.
+4. Real-run summary.
+5. Inspector sample: count + first 30 untagged titles.
+6. Last 30 lines of `python fetcher.py`.
+7. Confirmation `update_session.py` ran AND `docs/changelog.md` was appended.
+8. The commit hash.
 
 ## Read First
-- `src/lib/tag-keywords.json` (current version — to overwrite)
-- `scripts/retag_all.py` (to add `--inspect` mode)
+- `src/lib/tag-keywords.json` (existing, to extend in place — do NOT overwrite wholesale)
+- `scripts/retag_all.py`
 
 ## Do NOT
-- Do NOT change the matcher algorithm, scoring weights, threshold (3), or top-3 cap. This task is vocabulary-only.
+- Do NOT replace existing keyword arrays — APPEND only. Existing entries must remain.
+- Do NOT change the matcher algorithm, scoring weights, threshold (3), top-3 cap, or weighting.
 - Do NOT add new tags. Stay at 12.
 - Do NOT reintroduce a `general` fallback.
-- Do NOT remove keywords from the existing dict — this is purely additive plus the new entries shown.
-- Do NOT change `tag-keywords.ts` matcher logic — only re-load the new JSON if needed.
+- Do NOT touch `tag-keywords.ts` matcher logic — only the JSON it reads.
 - Do NOT touch any UI components.
-- Do NOT skip the inspector step. The owner needs to see what is still missing so we can iterate.
+- Do NOT skip the post-run inspector sample.

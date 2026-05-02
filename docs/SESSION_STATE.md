@@ -154,6 +154,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] rework support entry points
 - [2026-05-02] rebuild tag inference engine
 - [2026-05-02] expand tag keyword vocabulary
+- [2026-05-02] round 2 tag vocabulary expansion
 
 ## In Progress
 - Article card design polish
@@ -258,6 +259,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] Right rail Support reverted to direct Donatello link. Mobile profile: moved /support row into Info; added top Donate CTA
 - [2026-05-02] Scored, word-boundary matcher with synonym dictionary. Added sport, culture, society tags. Dropped general fallback. Re-tagged all existing articles via retag_all.py.
 - [2026-05-02] Added US/UK/EU political vocab, world leaders, country names, sports leagues+clubs+athletes, tech companies, cultural events. Added --inspect mode to retag_all.py. Untagged dropped from 25% to 14.9%.
+- [2026-05-02] Added Ukrainian regional names, weather, crime/courts, NHS/health, strikes, marathon/golf/snooker/chess/WNBA, named musicians/actors/fashion houses, layoffs, Pope Leo, Central Asia + African nations. Untagged dropped from 14.8% to 7.6%.
 
 ## Backlog (priority order)
 1. Discovery page
