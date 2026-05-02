@@ -55,8 +55,10 @@ export function RightRail() {
       >
         <div style={sectionTitle}>SUPPORT</div>
 
-        <Link
-          href="/support"
+        <a
+          href="https://donatello.to/thesource"
+          target="_blank"
+          rel="noopener noreferrer"
           className="btn-outline"
           style={{
             width: "100%",
@@ -79,7 +81,7 @@ export function RightRail() {
         >
           <Heart size={13} />
           Support
-        </Link>
+        </a>
       </div>
 
       {/* Widget 1 — Integrity · Live */}

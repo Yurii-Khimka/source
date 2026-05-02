@@ -1,5 +1,8 @@
 # SORCE — Changelog
 
+## 2026-05-02 — fix: revert right-rail Support to direct link; rework mobile profile Support placement
+Right-rail Support widget reverted to direct Donatello link (`target="_blank"`). Mobile profile: removed standalone Support section, added full-width Donate CTA below identity block, moved `/support` menu row into Info section between About and Trust Standards.
+
 ## 2026-05-02 — feat: add /support page and route Support entries through it
 New `/support` donations explainer page mirroring About layout. Right-rail widget and mobile profile Support row now link to `/support` instead of Donatello directly. Added Support link to right-rail footer. Donate button on the page links out to Donatello.
 

@@ -151,6 +151,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] fix Discover button hover
 - [2026-05-02] support page
 - [2026-05-02] support page tweaks
+- [2026-05-02] rework support entry points
 
 ## In Progress
 - Article card design polish
@@ -252,6 +253,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] Added btn-primary class to home-page Discover button + rescan for other accent buttons missing hover class
 - [2026-05-02] New /support explainer page (About-style); right rail + mobile profile + footer all route through it; donate button on page links to Donatello
 - [2026-05-02] Renamed Donate button to Support; moved footer Support link after Feedback
+- [2026-05-02] Right rail Support reverted to direct Donatello link. Mobile profile: moved /support row into Info; added top Donate CTA
 
 ## Backlog (priority order)
 1. Discovery page

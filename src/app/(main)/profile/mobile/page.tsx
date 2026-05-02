@@ -200,13 +200,31 @@ export default function MobileProfilePage() {
         </div>
       </div>
 
-      <div style={dividerStyle} />
-      <SectionLabel>Support</SectionLabel>
-      <MenuRow
-        href="/support"
-        icon={Heart}
-        label="Support The Source"
-      />
+      <a
+        href="https://donatello.to/thesource"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-primary"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          width: "100%",
+          marginBottom: 24,
+          padding: "12px 20px",
+          borderRadius: 6,
+          background: dark.accent,
+          color: "var(--on-accent)",
+          fontFamily: sans,
+          fontSize: 14,
+          fontWeight: 600,
+          textDecoration: "none",
+        }}
+      >
+        <Heart size={15} />
+        Support The Source
+      </a>
 
       <div style={dividerStyle} />
 
@@ -220,6 +238,7 @@ export default function MobileProfilePage() {
       <SectionLabel>Info</SectionLabel>
       <MenuRow href="/feedback" icon={MessageSquare} label="Feedback" />
       <MenuRow href="/about" icon={Info} label="About" />
+      <MenuRow href="/support" icon={Heart} label="Support" />
       <MenuRow href="/trust" icon={ShieldCheck} label="Trust Standards" />
       <MenuRow href="/privacy" icon={Lock} label="Privacy" />
       <MenuRow href="/terms" icon={FileText} label="Terms" />
