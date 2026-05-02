@@ -144,6 +144,7 @@ Phase 1 — MVP in progress
 - [2026-04-27] Fix mobile bottom bar position
 - [2026-04-27] Remove back button from bookmarks
 - [2026-05-02] init workflow files
+- [2026-05-02] right rail: add Support donate button
 
 ## In Progress
 - Article card design polish
@@ -238,6 +239,7 @@ Phase 1 — MVP in progress
 - [2026-04-27] Bottom tab bar now fixed to screen bottom with correct safe area inset handling.
 - [2026-04-27] Bookmarks is a primary tab — back button removed.
 - [2026-05-02] Added docs/plan.md, docs/changelog.md, docs/chat.md
+- [2026-05-02] Top-of-rail Donatello button, mirrors source page action block card + btn-primary style
 
 ## Backlog (priority order)
 1. Discovery page

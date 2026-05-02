@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import useSWR from "swr";
+import { Heart } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 const inter = "'Inter', system-ui, sans-serif";
@@ -43,6 +44,46 @@ export function RightRail() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* Widget 0 — Support */}
+      <div
+        style={{
+          background: dark.surface,
+          border: `1px solid ${dark.line}`,
+          borderRadius: 8,
+          padding: 14,
+        }}
+      >
+        <div style={sectionTitle}>SUPPORT</div>
+
+        <a
+          href="https://donatello.to/thesource"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-primary"
+          style={{
+            width: "100%",
+            padding: "7px 0",
+            borderRadius: 5,
+            fontFamily: inter,
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            transition: "all 0.12s",
+            background: dark.accent,
+            color: "var(--on-accent)",
+            border: `1px solid ${dark.accent}`,
+            textDecoration: "none",
+          }}
+        >
+          <Heart size={13} />
+          Support
+        </a>
+      </div>
+
       {/* Widget 1 — Integrity · Live */}
       <div
         style={{
