@@ -1,23 +1,63 @@
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createPublicClient } from "@supabase/supabase-js";
+import { unstable_cache } from "next/cache";
 import { Feed } from "@/components/feed";
 import { inferTags } from "@/lib/tag-keywords";
 
-export const revalidate = 0;
+function getPublicSupabase() {
+  return createPublicClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
 
-export default async function Home() {
-  const supabase = createClient();
-
-  const [{ data: articles, error }, { count: totalArticleCount }] = await Promise.all([
-    supabase
+const getRecentArticles = unstable_cache(
+  async () => {
+    const sb = getPublicSupabase();
+    const { data, error } = await sb
       .from("articles")
       .select("id, title, url, published_at, description, image_url, like_count, source_id, sources:sources(name, handle, logo_url, site_url)")
       .eq("is_hidden", false)
       .order("published_at", { ascending: false })
-      .range(0, 19),
-    supabase
+      .range(0, 19);
+    return { data, error };
+  },
+  ["home-recent-articles"],
+  { revalidate: 60, tags: ["articles"] }
+);
+
+const getTotalArticleCount = unstable_cache(
+  async () => {
+    const sb = getPublicSupabase();
+    const { count } = await sb
       .from("articles")
       .select("*", { count: "exact", head: true })
-      .eq("is_hidden", false),
+      .eq("is_hidden", false);
+    return count;
+  },
+  ["home-total-article-count"],
+  { revalidate: 60, tags: ["articles"] }
+);
+
+const getAllArticleTags = unstable_cache(
+  async () => {
+    const sb = getPublicSupabase();
+    const { data } = await sb
+      .from("article_tags")
+      .select("article_id, tag_id, tags!inner(id, slug, name:label)");
+    return data;
+  },
+  ["home-all-article-tags"],
+  { revalidate: 60, tags: ["tags"] }
+);
+
+export default async function Home() {
+  const supabase = createClient();
+
+  const [{ data: articles, error }, totalArticleCount, tagRows] = await Promise.all([
+    getRecentArticles(),
+    getTotalArticleCount(),
+    getAllArticleTags(),
   ]);
 
   if (error) {
@@ -48,11 +88,6 @@ export default async function Home() {
     mutedSourceIds = (mutesRes.data ?? []).filter((r): r is { source_id: string } => r.source_id != null).map((r) => r.source_id);
     mutedTagIds = (tagMutesRes.data ?? []).filter((r): r is { tag_id: string } => r.tag_id != null).map((r) => r.tag_id);
   }
-
-  // Fetch all article_tags with tag info (used for both per-article tags and feed filter pills)
-  const { data: tagRows } = await supabase
-    .from("article_tags")
-    .select("article_id, tag_id, tags!inner(id, slug, name:label)");
 
   // Build article→tags map and tag→articles map in one pass
   const articleTagsMap = new Map<string, { slug: string; name: string }[]>();

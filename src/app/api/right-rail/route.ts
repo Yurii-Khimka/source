@@ -98,6 +98,10 @@ export async function GET() {
       },
       trendingSources: trendingSources ?? [],
       recentTags,
+    }, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
     });
   } catch (error) {
     console.error("Right rail error:", error);

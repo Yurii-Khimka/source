@@ -1,5 +1,18 @@
 # SORCE — Changelog
 
+## 2026-05-03 — perf(cache): wrap public DB reads in unstable_cache; cache right-rail API
+Layer-1 cost reduction. Wrapped all heavy, public (non-user-specific) DB reads in `unstable_cache`.
+Per-user queries (likes, bookmarks, follows, mutes) left dynamic.
+
+| Route           | Before cold | Before warm | After cold | After warm | Change (warm) |
+|-----------------|-------------|-------------|------------|------------|---------------|
+| /               | 7.28s       | 2.07s       | 2.60s      | 0.09s      | -96%          |
+| /discovery      | 5.28s       | 3.27s       | 0.92s      | 0.02s      | -99%          |
+| /tags           | 1.16s       | 0.25s       | 0.04s      | 0.004s     | -98%          |
+| /api/right-rail | 0.84s       | 0.59s       | 0.52s      | 0.43s      | -27%          |
+
+Layer-2 (RPC aggregates + scoped queries) deferred pending real-world measurement.
+
 ## 2026-05-02 — feat(tags): round 2 vocabulary expansion (regional UA, weather, crime, sport, culture)
 - Untagged: 1232 / 14.8% → 631 / 7.6% (target was < 9%).
 - 605 newly tagged, 1214 re-tagged (set diff), 0 lost all tags.

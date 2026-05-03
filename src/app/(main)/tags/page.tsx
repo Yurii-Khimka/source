@@ -1,34 +1,43 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createPublicClient } from "@supabase/supabase-js";
+import { unstable_cache } from "next/cache";
 import { dark } from "@/lib/tokens";
 import Link from "next/link";
-
-export const revalidate = 0;
 
 const mono = "'JetBrains Mono', monospace";
 const serif = "'Source Serif 4', Georgia, serif";
 
+const getTagsWithCounts = unstable_cache(
+  async () => {
+    const sb = createPublicClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    const [{ data: allTags }, { data: allTagRows }] = await Promise.all([
+      sb.from("tags").select("id, slug, name:label"),
+      sb.from("article_tags").select("tag_id"),
+    ]);
+
+    const countsTotal = new Map<string, number>();
+    for (const row of allTagRows ?? []) {
+      countsTotal.set(row.tag_id, (countsTotal.get(row.tag_id) ?? 0) + 1);
+    }
+
+    return (allTags ?? [])
+      .map((t) => ({
+        id: t.id,
+        slug: t.slug,
+        name: t.name,
+        count: countsTotal.get(t.id) ?? 0,
+      }))
+      .sort((a, b) => b.count - a.count);
+  },
+  ["tags-with-counts"],
+  { revalidate: 300, tags: ["tags"] }
+);
+
 export default async function TagsPage() {
-  const supabase = createClient();
-
-  const [{ data: allTags }, { data: allTagRows }] = await Promise.all([
-    supabase.from("tags").select("id, slug, name:label"),
-    supabase.from("article_tags").select("tag_id"),
-  ]);
-
-  // Count articles per tag
-  const countsTotal = new Map<string, number>();
-  for (const row of allTagRows ?? []) {
-    countsTotal.set(row.tag_id, (countsTotal.get(row.tag_id) ?? 0) + 1);
-  }
-
-  const tags = (allTags ?? [])
-    .map((t) => ({
-      id: t.id,
-      slug: t.slug,
-      name: t.name,
-      count: countsTotal.get(t.id) ?? 0,
-    }))
-    .sort((a, b) => b.count - a.count);
+  const tags = await getTagsWithCounts();
 
   return (
     <div className="page-content" style={{ padding: "32px 36px 60px" }}>
