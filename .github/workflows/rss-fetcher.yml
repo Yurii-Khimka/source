@@ -4,9 +4,20 @@ on:
     - cron: '*/15 * * * *'
   workflow_dispatch:
 
+# Needed so the job can re-enable its own schedule (see "Keep schedule alive").
+permissions:
+  contents: read
+  actions: write
+
+# Never run two fetches at the same time.
+concurrency:
+  group: rss-fetcher
+  cancel-in-progress: false
+
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -17,3 +28,17 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # Tunables (defaults live in scripts/config.py). Uncomment to override:
+          # COUNTER_MIN: '30'
+          # COUNTER_MAX: '200'
+          # RETENTION_DAYS: '30'
+          # RETENTION_MODE: 'hide'   # hide | delete | off
+
+      # GitHub disables scheduled workflows after 60 days without repo
+      # activity. Re-enabling via the API resets that timer, so the fetcher
+      # keeps running even if nobody pushes for months. Cheap, one API call.
+      - name: Keep schedule alive
+        if: always() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/rss-fetcher.yml/enable" || true

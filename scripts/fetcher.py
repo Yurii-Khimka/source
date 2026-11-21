@@ -3,7 +3,8 @@
 import json
 import os
 import re
-from datetime import datetime, timezone
+import sys
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 
 import io
@@ -164,20 +165,53 @@ from supabase import create_client
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env.local"))
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config  # noqa: E402  (after load_dotenv so .env.local can override it)
+
 SUPABASE_URL = os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 
 
-def parse_published(entry) -> str | None:
-    """Extract published date as ISO string."""
-    if hasattr(entry, "published_parsed") and entry.published_parsed:
-        dt = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
-        return dt.isoformat()
+def parse_published(entry) -> datetime | None:
+    """Extract published (or updated) date as an aware UTC datetime."""
+    for attr in ("published_parsed", "updated_parsed"):
+        parsed = getattr(entry, attr, None) or entry.get(attr)
+        if parsed:
+            return datetime(*parsed[:6], tzinfo=timezone.utc)
     return None
 
 
-def fetch_source(supabase, source):
-    """Fetch and insert articles for a single source."""
+def entry_url(entry) -> str:
+    """Canonical dedup key for an entry: its link, or its guid if that is a URL."""
+    url = (entry.get("link") or "").strip()
+    if not url:
+        guid = (entry.get("id") or "").strip()
+        if guid.startswith(("http://", "https://")):
+            url = guid
+    return url
+
+
+def chunks(items: list, size: int):
+    for i in range(0, len(items), size):
+        yield items[i : i + size]
+
+
+def existing_urls_for(supabase, urls: list[str]) -> set[str]:
+    """Return the subset of `urls` that already exist in articles.
+
+    Only the URLs in the current feed are looked up (in small chunks), so this
+    stays correct no matter how many articles are in the DB. The old approach
+    loaded all URLs for a source, which PostgREST silently capped at 1000 rows.
+    """
+    found: set[str] = set()
+    for chunk in chunks(urls, 50):
+        resp = supabase.table("articles").select("url").in_("url", chunk).execute()
+        found.update(row["url"] for row in (resp.data or []))
+    return found
+
+
+def fetch_source(supabase, source, cutoff: datetime | None):
+    """Fetch a feed and insert only articles that are not in the DB yet."""
     source_id = source["id"]
     name = source["name"]
     rss_url = source["rss_url"]
@@ -186,33 +220,36 @@ def fetch_source(supabase, source):
     feed = feedparser.parse(rss_url)
     entries = feed.entries
     fetched = len(entries)
+    if feed.get("bozo") and not entries:
+        raise RuntimeError(f"feed error: {feed.get('bozo_exception')}")
 
-    # Get existing URLs for this source to skip duplicates
-    existing_resp = (
-        supabase.table("articles")
-        .select("url")
-        .eq("source_id", source_id)
-        .execute()
-    )
-    existing_urls = {row["url"] for row in existing_resp.data}
+    # 1. Build the candidate list: unique URL, not older than the retention window.
+    candidates = []
+    seen: set[str] = set()
+    too_old = 0
+    for entry in entries:
+        url = entry_url(entry)
+        if not url or url in seen:
+            continue
+        seen.add(url)
+        published = parse_published(entry)
+        if cutoff and published and published < cutoff:
+            too_old += 1  # would be cleaned up straight away — don't insert
+            continue
+        candidates.append((url, entry, published))
+
+    # 2. One lookup for just these URLs; keep only the new ones.
+    existing = existing_urls_for(supabase, [c[0] for c in candidates]) if candidates else set()
+    new_items = [c for c in candidates if c[0] not in existing]
 
     inserted = 0
-    skipped = 0
+    skipped = fetched - len(new_items)
 
-    for entry in entries:
-        url = entry.get("link", "").strip()
-        if not url:
-            skipped += 1
-            continue
-
-        if url in existing_urls:
-            skipped += 1
-            continue
-
+    for url, entry, published in new_items:
         title = entry.get("title", "").strip()
         raw_desc = entry.get("summary", "").strip()
         description = strip_html(raw_desc)[:300] if raw_desc else ""
-        published_at = parse_published(entry) or datetime.now(timezone.utc).isoformat()
+        published_at = (published or datetime.now(timezone.utc)).isoformat()
 
         image_url = None
         if hasattr(entry, "media_content") and entry.media_content:
@@ -240,7 +277,6 @@ def fetch_source(supabase, source):
             insert_resp = supabase.table("articles").insert(article).execute()
             inserted += 1
 
-            # Assign tags via keyword fallback
             article_id = insert_resp.data[0]["id"]
 
             # Try RSS categories first
@@ -257,19 +293,114 @@ def fetch_source(supabase, source):
 
             assign_tags(supabase, article_id, rss_tags, url)
         except Exception as e:
-            if "23505" in str(e):
+            if "23505" in str(e):  # raced with another insert — already there
                 skipped += 1
             else:
                 raise
 
-    print(f"  {name}: fetched={fetched}, inserted={inserted}, skipped={skipped}")
+    print(
+        f"  {name}: fetched={fetched}, new={len(new_items)}, inserted={inserted}, "
+        f"skipped={skipped}, too_old={too_old}"
+    )
     return inserted, skipped
 
 
+def bookmarked_article_ids(supabase) -> set[str]:
+    """All article ids that at least one user has bookmarked (paginated)."""
+    ids: set[str] = set()
+    page = 1000
+    start = 0
+    while True:
+        resp = (
+            supabase.table("bookmarks")
+            .select("article_id")
+            .range(start, start + page - 1)
+            .execute()
+        )
+        rows = resp.data or []
+        ids.update(r["article_id"] for r in rows)
+        if len(rows) < page:
+            return ids
+        start += page
+
+
+def cleanup_old_articles(supabase, cutoff: datetime):
+    """Hide or delete articles older than the cutoff.
+
+    Bookmarked articles are never touched: deleting them would cascade-delete
+    users' bookmarks, and hiding them would remove them from the Bookmarks page.
+    """
+    if config.RETENTION_MODE == "off":
+        print("\n--- Retention --- off")
+        return
+
+    protected = bookmarked_article_ids(supabase)
+
+    # Collect old article ids (paginated; in hide mode only still-visible ones).
+    old_ids: list[str] = []
+    page = 1000
+    start = 0
+    while True:
+        q = supabase.table("articles").select("id").lt("published_at", cutoff.isoformat())
+        if config.RETENTION_MODE == "hide":
+            q = q.eq("is_hidden", False)
+        rows = q.order("id").range(start, start + page - 1).execute().data or []
+        old_ids.extend(r["id"] for r in rows)
+        if len(rows) < page:
+            break
+        start += page
+
+    targets = [i for i in old_ids if i not in protected]
+    kept = len(old_ids) - len(targets)
+
+    for chunk in chunks(targets, 100):
+        if config.RETENTION_MODE == "delete":
+            supabase.table("articles").delete().in_("id", chunk).execute()
+        else:
+            supabase.table("articles").update({"is_hidden": True}).in_("id", chunk).execute()
+
+    verb = "deleted" if config.RETENTION_MODE == "delete" else "hidden"
+    print(
+        f"\n--- Retention ({config.RETENTION_DAYS} days, mode={config.RETENTION_MODE}) ---\n"
+        f"  older than {cutoff.date()}: {len(old_ids)}, {verb}: {len(targets)}, "
+        f"kept because bookmarked: {kept}"
+    )
+
+
+def randomize_counters(supabase):
+    """Give every visible article new random like/bookmark counters.
+
+    Uses the randomize_article_counters() SQL function (migration 007) so it is
+    a single UPDATE instead of thousands of HTTP calls.
+    """
+    if not config.RANDOMIZE_COUNTERS:
+        return
+    try:
+        resp = supabase.rpc(
+            "randomize_article_counters",
+            {"p_min": config.COUNTER_MIN, "p_max": config.COUNTER_MAX},
+        ).execute()
+        print(
+            f"\n--- Counters --- randomised {resp.data} articles "
+            f"in [{config.COUNTER_MIN}, {config.COUNTER_MAX}]"
+        )
+    except Exception as e:
+        print(
+            "\n  [WARN] counters not randomised — apply "
+            f"supabase/migrations/007_randomize_counters.sql first ({e})"
+        )
+
+
 def main():
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        sys.exit("SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set")
+
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-    # Get all sources
+    cutoff = None
+    if config.RETENTION_MODE != "off":
+        cutoff = datetime.now(timezone.utc) - timedelta(days=config.RETENTION_DAYS)
+
     sources_resp = (
         supabase.table("sources")
         .select("id, handle, name, rss_url, language")
@@ -280,18 +411,28 @@ def main():
 
     total_inserted = 0
     total_skipped = 0
+    failed = 0
 
     for source in sources:
         try:
-            ins, skip = fetch_source(supabase, source)
+            ins, skip = fetch_source(supabase, source, cutoff)
             total_inserted += ins
             total_skipped += skip
         except Exception as e:
+            failed += 1
             print(f"  ❌ {source['name']}: error — {e}")
 
     print(f"\nDone: {total_inserted} inserted, {total_skipped} skipped across {len(sources)} sources")
 
+    if cutoff:
+        cleanup_old_articles(supabase, cutoff)
+    randomize_counters(supabase)
+
     validate(supabase, total_inserted, sources)
+
+    # Make a fully broken run visible as a failed job in GitHub Actions.
+    if sources and failed == len(sources):
+        sys.exit("All sources failed — check the database and feeds")
 
 
 def validate(supabase, inserted_count: int, sources: list[dict]):
