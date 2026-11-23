@@ -126,7 +126,7 @@ export default function SupportPage() {
             marginTop: 16,
             padding: "10px 24px",
             borderRadius: 6,
-            background: dark.accent,
+            background: dark.accentSolid,
             color: "var(--on-accent)",
             fontFamily: sans,
             fontSize: 14,

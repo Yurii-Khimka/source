@@ -30,7 +30,7 @@ export default function Error({
             fontFamily: mono,
             fontSize: 120,
             fontWeight: 700,
-            color: "var(--accent)",
+            color: "var(--accent-text)",
             opacity: 0.15,
             letterSpacing: -4,
             zIndex: 0,
@@ -54,7 +54,7 @@ export default function Error({
             <button
               onClick={reset}
               className="btn-primary"
-              style={{ display: "inline-block", background: "var(--accent)", color: "var(--on-accent)", padding: "10px 24px", borderRadius: 4, fontFamily: inter, fontSize: 14, fontWeight: 500, border: "none", cursor: "pointer" }}
+              style={{ display: "inline-block", background: "var(--accent-solid)", color: "var(--on-accent)", padding: "10px 24px", borderRadius: 4, fontFamily: inter, fontSize: 14, fontWeight: 500, border: "none", cursor: "pointer" }}
             >
               Try again
             </button>

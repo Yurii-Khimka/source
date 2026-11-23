@@ -183,7 +183,7 @@ export default function MobileProfilePage() {
                 style={{
                   display: "inline-block",
                   marginTop: 8,
-                  background: dark.accent,
+                  background: dark.accentSolid,
                   color: "var(--on-accent)",
                   fontFamily: sans,
                   fontSize: 13,
@@ -214,7 +214,7 @@ export default function MobileProfilePage() {
           marginBottom: 24,
           padding: "12px 20px",
           borderRadius: 6,
-          background: dark.accent,
+          background: dark.accentSolid,
           color: "var(--on-accent)",
           fontFamily: sans,
           fontSize: 14,

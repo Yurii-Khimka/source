@@ -42,7 +42,7 @@ export function BottomTabBar() {
               alignItems: "center",
               justifyContent: "center",
               height: 64,
-              color: active ? dark.accent : dark.textMute,
+              color: active ? dark.accentText : dark.textMute,
               textDecoration: "none",
               WebkitTapHighlightColor: "transparent",
             }}

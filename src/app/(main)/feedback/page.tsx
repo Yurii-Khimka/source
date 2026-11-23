@@ -83,7 +83,7 @@ export default function FeedbackPage() {
       <div className="page-content" style={{ maxWidth: 600, margin: "0 auto", padding: "32px 24px" }}>
         <BackButton />
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "60px 0", width: "100%" }}>
-          <CheckCircle size={32} style={{ color: dark.accent }} />
+          <CheckCircle size={32} style={{ color: dark.accentText }} />
           <h2
             style={{
               fontFamily: serif,
@@ -205,7 +205,7 @@ export default function FeedbackPage() {
           style={{
             width: "100%",
             height: 42,
-            background: sending ? `${dark.accentLine}` : dark.accent,
+            background: sending ? `${dark.accentLine}` : dark.accentSolid,
             color: "var(--on-accent)",
             border: "none",
             borderRadius: 6,

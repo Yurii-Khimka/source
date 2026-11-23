@@ -42,9 +42,9 @@ function handleToColor(handle: string): string {
     hash = handle.charCodeAt(i) + ((hash << 5) - hash);
   }
   const colors = [
-    "#3d5a80", "#e0b14f", "#ee6c4d", "#5b8fb9",
-    "#9c6ade", "#44bd8f", "#cf6a87", "#4a9ec5",
-    "#d4845a", "#7b6bb5",
+    "#3d5a80", "#956d1a", "#d73a15", "#4679a3",
+    "#9057da", "#2e8262", "#c4496d", "#327b9d",
+    "#b35c2f", "#7b6bb5",
   ];
   return colors[Math.abs(hash) % colors.length];
 }
@@ -255,7 +255,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                     >
                       {source.name}
                     </Link>
-                    <CheckCircle2 size={12} style={{ color: dark.accent, flexShrink: 0 }} />
+                    <CheckCircle2 size={12} style={{ color: dark.accentText, flexShrink: 0 }} />
                   </div>
                   <div
                     style={{
@@ -335,7 +335,7 @@ export function FollowingClient({ sources: initialSources, tags: initialTags }: 
                     fontFamily: mono,
                     fontSize: 20,
                     fontWeight: 700,
-                    color: dark.accent,
+                    color: dark.accentText,
                     width: 32,
                     textAlign: "center",
                     flexShrink: 0,

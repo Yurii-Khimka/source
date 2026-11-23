@@ -157,7 +157,7 @@ export default function SignUpPage() {
             disabled={loading}
             className="btn-primary w-full rounded-lg"
             style={{
-              background: dark.accent,
+              background: dark.accentSolid,
               color: "var(--on-accent)",
               fontFamily: "'Inter', system-ui, sans-serif",
               fontSize: 14,
@@ -181,7 +181,7 @@ export default function SignUpPage() {
           }}
         >
           Already have an account?{" "}
-          <Link href="/auth/signin" className="text-link" style={{ color: dark.accent }}>
+          <Link href="/auth/signin" className="text-link" style={{ color: dark.accentText }}>
             Sign in
           </Link>
         </p>

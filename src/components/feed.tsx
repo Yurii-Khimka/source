@@ -281,7 +281,7 @@ export function Feed({
                   cursor: "pointer",
                   transition: "background 0.12s, border-color 0.12s",
                   background: active ? dark.accentDim : dark.surface,
-                  color: active ? dark.accent : dark.textDim,
+                  color: active ? dark.accentText : dark.textDim,
                   border: active
                     ? `1px solid ${dark.accentLine}`
                     : `1px solid ${dark.line2}`,
@@ -315,7 +315,7 @@ export function Feed({
               marginTop: 20,
               padding: "8px 20px",
               borderRadius: 6,
-              background: dark.accent,
+              background: dark.accentSolid,
               color: "var(--on-accent)",
               fontFamily: sans,
               fontSize: 13,

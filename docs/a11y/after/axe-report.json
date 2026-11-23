@@ -1,0 +1,520 @@
+[
+  {
+    "theme": "dark",
+    "page": "home",
+    "route": "/",
+    "status": 200,
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "target": ".article-card:nth-child(1) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(1) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .gap-4.items-center.flex > .icon-btn-active.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(5) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(5) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(6) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(6) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "theme": "dark",
+    "page": "discovery",
+    "route": "/discovery",
+    "status": 200,
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "target": ".article-card:nth-child(1) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(1) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .gap-4.items-center.flex > .icon-btn-active.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(5) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(5) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(6) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(6) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(7) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(7) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(8) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(8) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(9) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(9) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(10) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(10) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(11) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(11) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(12) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(12) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "theme": "dark",
+    "page": "following",
+    "route": "/following",
+    "status": 200,
+    "violations": []
+  },
+  {
+    "theme": "dark",
+    "page": "source",
+    "route": "/source/kyivdaily",
+    "status": 200,
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "target": ".article-card:nth-child(1) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(1) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "theme": "dark",
+    "page": "tag",
+    "route": "/tag/politics",
+    "status": 200,
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "target": ".article-card:nth-child(1) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(1) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "theme": "light",
+    "page": "home",
+    "route": "/",
+    "status": 200,
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "target": ".article-card:nth-child(1) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(1) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .gap-4.items-center.flex > .icon-btn-active.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(5) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(5) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(6) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(6) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "theme": "light",
+    "page": "discovery",
+    "route": "/discovery",
+    "status": 200,
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "target": ".article-card:nth-child(1) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(1) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .gap-4.items-center.flex > .icon-btn-active.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(5) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(5) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(6) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(6) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(7) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(7) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(8) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(8) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(9) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(9) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(10) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(10) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(11) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(11) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(12) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(12) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "theme": "light",
+    "page": "following",
+    "route": "/following",
+    "status": 200,
+    "violations": []
+  },
+  {
+    "theme": "light",
+    "page": "source",
+    "route": "/source/kyivdaily",
+    "status": 200,
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "target": ".article-card:nth-child(1) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(1) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "theme": "light",
+    "page": "tag",
+    "route": "/tag/politics",
+    "status": 200,
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "target": ".article-card:nth-child(1) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(1) > .gap-4.items-center.flex > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(2) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(3) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .items-start.gap-3.mb-3 > .relative.flex-shrink-0 > .icon-btn.cursor-pointer",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          },
+          {
+            "target": ".article-card:nth-child(4) > .gap-4.items-center.flex > .icon-btn.cursor-pointer:nth-child(2)",
+            "summary": "Fix any of the following:   Element does not have inner text that is visible to screen readers"
+          }
+        ]
+      }
+    ]
+  }
+]

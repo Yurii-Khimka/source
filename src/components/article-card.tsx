@@ -34,12 +34,12 @@ type Props = {
 
 const avatarColors: Record<string, string> = {
   B: "#3d5a80",
-  D: "#e0b14f",
-  E: "#ee6c4d",
-  G: "#5b8fb9",
-  R: "#9c6ade",
-  S: "#44bd8f",
-  T: "#cf6a87",
+  D: "#956d1a",
+  E: "#d73a15",
+  G: "#4679a3",
+  R: "#9057da",
+  S: "#2e8262",
+  T: "#c4496d",
   U: "#3d5a80",
 };
 
@@ -230,7 +230,7 @@ export function ArticleCard({
             <Link href={`/source/${source?.handle ?? "unknown"}`} className="text-link" style={{ textDecoration: "none", fontFamily: "'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: dark.text }}>
               {name}
             </Link>
-            <CheckCircle2 size={12} style={{ color: dark.accent, flexShrink: 0 }} />
+            <CheckCircle2 size={12} style={{ color: dark.accentText, flexShrink: 0 }} />
           </div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: dark.textMute }}>
             @{source?.handle ?? "unknown"} · {timeAgo}
@@ -412,16 +412,16 @@ export function ArticleCard({
             padding: "4px 10px",
             borderRadius: 6,
             font: "inherit",
-            color: liked ? dark.accent : dark.textMute,
+            color: liked ? dark.accentText : dark.textMute,
             cursor: likeLoading ? "wait" : "pointer",
           }}
         >
-          {likeLoading ? <Spinner /> : <ThumbsUp size={14} fill={liked ? dark.accent : "none"} />}
+          {likeLoading ? <Spinner /> : <ThumbsUp size={14} fill={liked ? dark.accentText : "none"} />}
           <span
             style={{
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: 12,
-              color: liked ? dark.accent : dark.textMute,
+              color: liked ? dark.accentText : dark.textMute,
             }}
           >
             {likeCount}
@@ -433,11 +433,11 @@ export function ArticleCard({
           className={`cursor-pointer ${bookmarked ? "icon-btn-active" : "icon-btn"}`}
           style={{
             background: "none", border: "none", padding: 4, borderRadius: 4, font: "inherit",
-            color: bookmarked ? dark.accent : dark.textMute,
+            color: bookmarked ? dark.accentText : dark.textMute,
             cursor: bookmarkLoading ? "wait" : "pointer",
           }}
         >
-          {bookmarkLoading ? <Spinner /> : <Bookmark size={14} fill={bookmarked ? dark.accent : "none"} />}
+          {bookmarkLoading ? <Spinner /> : <Bookmark size={14} fill={bookmarked ? dark.accentText : "none"} />}
         </button>
         <a
           href={article.url}

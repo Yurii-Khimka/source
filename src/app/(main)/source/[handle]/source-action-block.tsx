@@ -131,9 +131,9 @@ export function SourceActionBlock({ sourceId, initialFollowing, initialMuted, is
             justifyContent: "center",
             gap: 6,
             transition: "all 0.12s",
-            background: following ? "transparent" : dark.accent,
-            color: following ? dark.accent : "var(--on-accent)",
-            border: following ? `1px solid ${dark.accentLine}` : `1px solid ${dark.accent}`,
+            background: following ? "transparent" : dark.accentSolid,
+            color: following ? dark.accentText : "var(--on-accent)",
+            border: following ? `1px solid ${dark.accentLine}` : `1px solid ${dark.accentSolid}`,
           }}
         >
           {followLoading ? <Spinner /> : <UserPlus size={13} />}

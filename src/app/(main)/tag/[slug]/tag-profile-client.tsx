@@ -126,7 +126,7 @@ export function TagProfileClient({
             fontFamily: mono,
             fontSize: 28,
             fontWeight: 700,
-            color: dark.accent,
+            color: dark.accentText,
             margin: 0,
           }}
         >
