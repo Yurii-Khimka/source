@@ -241,6 +241,8 @@ export function ArticleCard({
         <div className="relative flex-shrink-0" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={`Options for ${source?.name ?? "source"}`}
+            aria-expanded={menuOpen}
             className="icon-btn cursor-pointer"
             style={{ background: "none", border: "none", padding: 4, borderRadius: 4, color: dark.textMute }}
           >
@@ -405,6 +407,8 @@ export function ArticleCard({
         <button
           onClick={handleLike}
           disabled={likeLoading}
+          aria-label={`Like, ${likeCount} ${likeCount === 1 ? "like" : "likes"}`}
+          aria-pressed={liked}
           className={`flex items-center gap-1.5 cursor-pointer ${liked ? "icon-btn-active" : "icon-btn"}`}
           style={{
             background: liked ? dark.accentDim : "none",
@@ -430,6 +434,8 @@ export function ArticleCard({
         <button
           onClick={handleBookmark}
           disabled={bookmarkLoading}
+          aria-label="Bookmark"
+          aria-pressed={bookmarked}
           className={`cursor-pointer ${bookmarked ? "icon-btn-active" : "icon-btn"}`}
           style={{
             background: "none", border: "none", padding: 4, borderRadius: 4, font: "inherit",

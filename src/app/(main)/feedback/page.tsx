@@ -160,8 +160,9 @@ export default function FeedbackPage() {
 
         {/* Category */}
         <div>
-          <label style={labelStyle}>Category</label>
+          <label htmlFor="feedback-category" style={labelStyle}>Category</label>
           <select
+            id="feedback-category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             style={{ ...inputStyle, appearance: "auto" }}
