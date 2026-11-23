@@ -16,9 +16,14 @@
   --text:       #EEF1F6;
   --text-sub:   #C7CCD6;
   --text-dim:   #A3ACBD;
-  --text-mute:  #6C727E;
+  --text-mute:  #868C98;
   --accent:     rgb(100,104,240);
   --accent-hi:  rgb(129,133,255);
+  /* Accessible accent variants (WCAG 2.1 AA).
+     --accent stays for borders, tints and decoration. */
+  --accent-solid:       #5A5EE8; /* filled buttons, white text 5.0:1 */
+  --accent-solid-hover: #4F46E5; /* filled button hover, 6.29:1     */
+  --accent-text:        #8185FF; /* accent text, icons, focus ring   */
   --accent-dim: rgba(100,104,240,0.16);
   --accent-line:rgba(100,104,240,0.42);
   --accent-bg:  rgba(100,104,240,0.08);
@@ -35,13 +40,13 @@
   --hover-card-line: rgba(255,255,255,0.09);
   --hover-ranked:  rgba(255,255,255,0.03);
   --hover-icon-bg: rgba(22, 27, 38, 0.6);
-  --hover-btn-primary: rgb(129, 133, 255);
+  --hover-btn-primary: var(--accent-solid-hover);
   --hover-accent-dim: rgba(100, 104, 240, 0.22);
 
   /* shadcn compat */
   --background: var(--bg);
   --foreground: var(--text);
-  --primary: var(--accent);
+  --primary: var(--accent-solid);
   --primary-foreground: var(--on-accent);
   --muted: var(--surface2);
   --muted-foreground: var(--text-sub);
@@ -51,7 +56,7 @@
   --destructive-foreground: var(--on-accent);
   --border: var(--line2);
   --input: var(--line2);
-  --ring: var(--accent);
+  --ring: var(--accent-text);
 
   /* ── Shimmer ── */
   --shimmer-from: transparent;
@@ -71,17 +76,20 @@
   --line3:      rgb(201,206,216);
   --text:       rgb(29,41,61);
   --text-sub:   rgb(54,64,80);
-  --text-dim:   rgb(108,114,126);
-  --text-mute:  rgb(146,152,164);
+  --text-dim:   #565C68;
+  --text-mute:  #666C78;
   --accent:     rgb(100,104,240);
   --accent-hi:  rgb(79,70,229);
+  --accent-solid:       #5A5EE8;
+  --accent-solid-hover: #4F46E5;
+  --accent-text:        #4F46E5;
   --accent-dim: rgb(225,231,253);
   --accent-line:rgba(100,104,240,0.42);
   --accent-bg:  rgba(100,104,240,0.06);
   --on-accent:  #FFFFFF;
-  --danger:     rgb(244,63,94);
+  --danger:     #BE123C;
   --danger-dim: rgba(244,63,94,0.10);
-  --success:    rgb(51,170,40);
+  --success:    #23751C;
 
   /* ── Hover overlays ── */
   --hover-surface: #EDEEF3;
@@ -91,7 +99,7 @@
   --hover-card-line: rgb(221,221,227);
   --hover-ranked:  rgba(29,41,61,0.03);
   --hover-icon-bg: rgba(29,41,61,0.06);
-  --hover-btn-primary: rgb(79, 70, 229);
+  --hover-btn-primary: var(--accent-solid-hover);
   --hover-accent-dim: rgb(210,218,250);
 
   /* ── Shimmer ── */
@@ -106,6 +114,25 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
 }
 
+/* ── Focus ring (WCAG 2.4.7 / 1.4.11) ──
+   One visible ring for every interactive element. --accent-text is
+   ≥3:1 against every background in both themes (see
+   scripts/a11y/check-contrast.mjs). !important beats inline
+   `outline: none` on inputs and the shadcn Button's outline-none. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible,
+[role="menuitem"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid var(--accent-text) !important;
+  outline-offset: 2px !important;
+}
+
 /* ── Header icon buttons ── */
 .header-icon-btn {
   transition: background 150ms ease-out, color 120ms ease-out;
@@ -113,10 +140,6 @@ body {
 .header-icon-btn:hover {
   background: var(--hover) !important;
   color: var(--text) !important;
-}
-.header-icon-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 /* ── Sidebar nav items ── */
@@ -126,10 +149,6 @@ body {
 .sidebar-nav-item:hover {
   background: var(--hover-surface) !important;
   color: var(--hover-text) !important;
-}
-.sidebar-nav-item:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 /* ── Right-rail tag pills ── */
@@ -154,10 +173,6 @@ body {
   transform: scale(0.97);
   filter: brightness(0.95);
 }
-.btn-primary:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
 .btn-primary:disabled {
   opacity: 0.4;
   cursor: not-allowed !important;
@@ -173,10 +188,6 @@ body {
 }
 .btn-outline:active:not(:disabled) {
   transform: scale(0.97);
-}
-.btn-outline:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 .btn-outline:disabled {
   opacity: 0.4;
@@ -330,10 +341,6 @@ body {
 }
 .btn-following:active:not(:disabled) {
   transform: scale(0.97);
-}
-.btn-following:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 @keyframes shimmer {

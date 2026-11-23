@@ -115,8 +115,8 @@ export default function OnboardingPage() {
   }
 
   const avatarColors: Record<string, string> = {
-    B: "#3d5a80", D: "#e0b14f", E: "#ee6c4d", G: "#5b8fb9",
-    R: "#9c6ade", S: "#44bd8f", T: "#cf6a87", U: "#3d5a80",
+    B: "#3d5a80", D: "#956d1a", E: "#d73a15", G: "#4679a3",
+    R: "#9057da", S: "#2e8262", T: "#c4496d", U: "#3d5a80",
   };
 
   return (
@@ -235,7 +235,7 @@ export default function OnboardingPage() {
               onClick={next}
               className="btn-primary"
               style={{
-                background: dark.accent,
+                background: dark.accentSolid,
                 border: "none",
                 borderRadius: 6,
                 padding: "8px 16px",
@@ -281,7 +281,7 @@ function StepWelcome() {
       <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 14 }}>
         {features.map((f) => (
           <div key={f.text} className="flex items-center gap-3">
-            <f.icon size={16} style={{ color: dark.accent, flexShrink: 0 }} />
+            <f.icon size={16} style={{ color: dark.accentText, flexShrink: 0 }} />
             <span style={{ fontFamily: sans, fontSize: 13, color: dark.textSub }}>{f.text}</span>
           </div>
         ))}
@@ -353,7 +353,7 @@ function StepSources({
                     justifyContent: "center",
                   }}
                 >
-                  <Check size={12} style={{ color: dark.accent }} />
+                  <Check size={12} style={{ color: dark.accentText }} />
                 </div>
               )}
               {(() => {
@@ -431,7 +431,7 @@ function StepTags({
                   ? `1px solid ${dark.accent}`
                   : `1px solid ${dark.line}`,
                 background: followed ? dark.accentDim : dark.surface,
-                color: followed ? dark.accent : dark.textSub,
+                color: followed ? dark.accentText : dark.textSub,
                 cursor: "pointer",
               }}
             >
@@ -466,7 +466,7 @@ function StepComplete() {
       <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 14 }}>
         {features.map((f) => (
           <div key={f.text} className="flex items-center gap-3">
-            <f.icon size={16} style={{ color: dark.accent, flexShrink: 0 }} />
+            <f.icon size={16} style={{ color: dark.accentText, flexShrink: 0 }} />
             <span style={{ fontFamily: sans, fontSize: 13, color: dark.textSub }}>{f.text}</span>
           </div>
         ))}

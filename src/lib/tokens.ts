@@ -12,7 +12,10 @@ export const dark = {
   textSub:   'var(--text-sub)',
   textDim:   'var(--text-dim)',
   textMute:  'var(--text-mute)',
-  accent:    'var(--accent)',
+  accent:    'var(--accent)',          // borders, tints, decoration only
+  accentSolid:      'var(--accent-solid)',       // filled button background
+  accentSolidHover: 'var(--accent-solid-hover)', // filled button hover
+  accentText:       'var(--accent-text)',        // accent text, icons, indicators
   accentDim: 'var(--accent-dim)',
   accentLine:'var(--accent-line)',
   accentBg:  'var(--accent-bg)',

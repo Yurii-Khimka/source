@@ -148,7 +148,7 @@ export function TagList({ tags }: { tags: Tag[] }) {
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: 14,
               fontWeight: 700,
-              color: dark.accent,
+              color: dark.accentText,
               width: 24,
               textAlign: "center",
               flexShrink: 0,

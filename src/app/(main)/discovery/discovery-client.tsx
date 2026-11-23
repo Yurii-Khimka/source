@@ -69,9 +69,9 @@ function handleToColor(handle: string): string {
     hash = handle.charCodeAt(i) + ((hash << 5) - hash);
   }
   const colors = [
-    "#3d5a80", "#e0b14f", "#ee6c4d", "#5b8fb9",
-    "#9c6ade", "#44bd8f", "#cf6a87", "#4a9ec5",
-    "#d4845a", "#7b6bb5",
+    "#3d5a80", "#956d1a", "#d73a15", "#4679a3",
+    "#9057da", "#2e8262", "#c4496d", "#327b9d",
+    "#b35c2f", "#7b6bb5",
   ];
   return colors[Math.abs(hash) % colors.length];
 }
@@ -413,7 +413,7 @@ export function DiscoveryClient({
                         </Link>
                         <ShieldCheck
                           size={13}
-                          style={{ color: dark.accent, flexShrink: 0 }}
+                          style={{ color: dark.accentText, flexShrink: 0 }}
                         />
                       </div>
                       <div
@@ -442,11 +442,11 @@ export function DiscoveryClient({
                         padding: "5px 14px",
                         borderRadius: 4,
                         cursor: isLoading ? "wait" : isLoggedIn ? "pointer" : "default",
-                        background: isFollowing ? "transparent" : dark.accent,
-                        color: isFollowing ? dark.accent : "var(--on-accent)",
+                        background: isFollowing ? "transparent" : dark.accentSolid,
+                        color: isFollowing ? dark.accentText : "var(--on-accent)",
                         border: isFollowing
                           ? `1px solid ${dark.accentLine}`
-                          : `1px solid ${dark.accent}`,
+                          : `1px solid ${dark.accentSolid}`,
                         display: "flex",
                         alignItems: "center",
                         gap: 6,

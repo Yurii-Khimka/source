@@ -1,5 +1,5 @@
 # The Source — Session State
-**Last updated:** 2026-05-03
+**Last updated:** 2026-11-23
 
 ## Production
 - URL: https://srct.news
@@ -156,6 +156,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] expand tag keyword vocabulary
 - [2026-05-02] round 2 tag vocabulary expansion
 - [2026-05-03] Layer-1 cost reduction: cache public DB reads
+- [2026-11-23] WCAG AA colour contrast
 
 ## In Progress
 - Article card design polish
@@ -262,6 +263,7 @@ Phase 1 — MVP in progress
 - [2026-05-02] Added US/UK/EU political vocab, world leaders, country names, sports leagues+clubs+athletes, tech companies, cultural events. Added --inspect mode to retag_all.py. Untagged dropped from 25% to 14.9%.
 - [2026-05-02] Added Ukrainian regional names, weather, crime/courts, NHS/health, strikes, marathon/golf/snooker/chess/WNBA, named musicians/actors/fashion houses, layoffs, Pope Leo, Central Asia + African nations. Untagged dropped from 14.8% to 7.6%.
 - [2026-05-03] Wrapped article/tag/source queries in unstable_cache (60s on home, 300s on discovery/tags). Added Cache-Control on right-rail API. Per-user queries unchanged. Home warm TTFB dropped from 2.07s to 0.09s (-96%).
+- [2026-11-23] New tokens --accent-solid/-hover and --accent-text; raised --text-mute (both), light --text-dim/--danger/--success; global :focus-visible ring; avatar palette darkened. Contrast script + axe audit (421 -> 0 color-contrast). See docs/a11y/README.md
 
 ## Backlog (priority order)
 1. Discovery page
