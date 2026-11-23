@@ -6,10 +6,10 @@ import { Home, Compass, Bookmark, User } from "lucide-react";
 import { dark } from "@/lib/tokens";
 
 const tabs = [
-  { icon: Home, href: "/", match: (p: string) => p === "/" },
-  { icon: Compass, href: "/discovery", match: (p: string) => p.startsWith("/discovery") },
-  { icon: Bookmark, href: "/bookmarks", match: (p: string) => p.startsWith("/bookmarks") },
-  { icon: User, href: "/profile/mobile", match: (p: string) => p.startsWith("/profile/mobile") },
+  { icon: Home, label: "Home", href: "/", match: (p: string) => p === "/" },
+  { icon: Compass, label: "Discovery", href: "/discovery", match: (p: string) => p.startsWith("/discovery") },
+  { icon: Bookmark, label: "Bookmarks", href: "/bookmarks", match: (p: string) => p.startsWith("/bookmarks") },
+  { icon: User, label: "Profile", href: "/profile/mobile", match: (p: string) => p.startsWith("/profile/mobile") },
 ];
 
 export function BottomTabBar() {
@@ -17,6 +17,7 @@ export function BottomTabBar() {
 
   return (
     <nav
+      aria-label="Main"
       className="bottom-tab-bar"
       style={{
         display: "none",
@@ -36,6 +37,8 @@ export function BottomTabBar() {
           <Link
             key={tab.href}
             href={tab.href}
+            aria-label={tab.label}
+            aria-current={active ? "page" : undefined}
             style={{
               flex: 1,
               display: "flex",
@@ -47,7 +50,7 @@ export function BottomTabBar() {
               WebkitTapHighlightColor: "transparent",
             }}
           >
-            <tab.icon size={22} />
+            <tab.icon size={22} aria-hidden="true" />
           </Link>
         );
       })}

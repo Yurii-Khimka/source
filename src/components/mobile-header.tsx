@@ -63,6 +63,7 @@ export function MobileHeader() {
         />
         <Link
           href="/search"
+          aria-label="Search"
           className="header-icon-btn"
           style={{
             width: 44,
